@@ -1,0 +1,44 @@
+<?php
+
+$this->headScript()
+        ->appendFile(("//cdn.ckeditor.com/4.15.1/standard/ckeditor.js"));
+$title = 'Dodaj Lekarza';
+$this->headTitle($title);
+              
+?>
+
+
+<?php
+
+
+
+$form = $this->form;
+$form->setAttribute('method', 'POST');
+$form->setAttribute('action', $this->url('lekarz', ['action' => 'dodaj'])); 
+$opis=$form->get('lekarz_fieldset')->get('opis');
+$opis->setAttributes([
+   'id'  => 'editor',    
+]);
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+echo $this->formCollection($form);
+echo $this->form()->closeTag();
+?>
+
+           
+       
+
+
+
+ <script>
+                // Replace the <textarea id="editor1"> with a CKEditor 4
+                // instance, using default configuration.
+              CKEDITOR.replace( 'editor', {
+    language: 'pl',
+    uiColor: '#9AB8F3'
+});
+            </script>
+
+
