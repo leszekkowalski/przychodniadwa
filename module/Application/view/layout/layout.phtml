@@ -21,7 +21,10 @@
         ?>
 
         <!-- Scripts -->
-        <?= $this->headScript()  ?>
+        <?= $this->headScript()  
+            ->prependFile($this->basePath('js/bootstrap.min.js'))
+            ->prependFile($this->basePath('js/jquery-3.5.1.min.js')) 
+        ?>    
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: blue;">
@@ -72,10 +75,6 @@
                 <p>&copy; <?= date('Y') ?> <a href="<?= $this->url('home') ?>">Przychodnia</a> LS Company S.A..</p>
             </footer>
         </div>
-        <?= $this->inlineScript()
-            ->prependFile($this->basePath('js/bootstrap.min.js'))
-            ->prependFile($this->basePath('js/jquery-3.5.1.min.js')) 
-         //->prependFile($this->basePath('js/ckeditor.js'))
-        ?>
+     
     </body>
 </html>

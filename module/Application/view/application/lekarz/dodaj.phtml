@@ -1,44 +1,522 @@
-<?php
-
-$this->headScript()
-        ->appendFile(("//cdn.ckeditor.com/4.15.1/standard/ckeditor.js"));
+<?=  $this->headScript()
+        ->prependFile(("//cdn.ckeditor.com/4.15.1/standard/ckeditor.js"))
+         ->prependFile($this->basePath('js/messages_pl.js'))
+          ->prependFile($this->basePath('js/additional-methods.js'))
+            ->prependFile($this->basePath('js/jquery.validate.min.js')) 
+        ;
+        
+        
 $title = 'Dodaj Lekarza';
 $this->headTitle($title);
-              
-?>
-
-
-<?php
-
-
+$bledy_formularza=null;   
+$bledy=null;
 
 $form = $this->form;
-$form->setAttribute('method', 'POST');
+
 $form->setAttribute('action', $this->url('lekarz', ['action' => 'dodaj'])); 
+$form->setAttribute('method', 'POST');
+$form->setAttribute('id', 'dodaj_form_lekarz');
+
+$imie=$form->get('lekarz_fieldset')->get('imie');
+$imie->setAttributes([
+    'id'=>'imie',
+   'aria-label'  => 'imie',    
+    'class' => 'form-control',
+    'placeholder'=>' imię ',
+  
+]);
+
+$nazwisko=$form->get('lekarz_fieldset')->get('nazwisko');
+$nazwisko->setAttributes([
+    'id'=>'nazwisko',
+   'aria-label'  => 'nazwisko',    
+    'class' => 'form-control',
+    'placeholder'=>' nazwisko ',
+   
+]);
+
+$pesel=$form->get('lekarz_fieldset')->get('pesel');
+$pesel->setAttributes([
+    'id'=>'pesel',
+   'aria-label'  => 'pesel',    
+    'class' => 'form-control',
+  
+]);
+
+$mail=$form->get('lekarz_fieldset')->get('mail');
+$mail->setAttributes([
+   'aria-label'  => 'mail',    
+    'class' => 'form-control',
+    'placeholder'=>' mail ',
+    'id'=>'mail',
+]);
+
+//$mail2=$form->get('powtorz_mail')->get('confirm_mail');
+$mail2=$form->get('confirm_mail');
+$mail2->setAttributes([
+   'aria-label'  => 'confirm_mail',    
+    'class' => 'form-control',
+    'placeholder'=>' powtórz mail '
+]);
+
+$specjalnosc=$form->get('lekarz_fieldset')->get('specjalnosc');
+$specjalnosc->setAttributes([
+   'aria-label'  => 'specjalnosc',    
+    'class' => 'form-control',
+]);
+
+$telefon=$form->get('lekarz_fieldset')->get('telefon');
+$telefon->setAttributes([
+   'aria-label'  => 'telefon',    
+    'class' => 'form-control',
+]);
+
+
+
 $opis=$form->get('lekarz_fieldset')->get('opis');
 $opis->setAttributes([
-   'id'  => 'editor',    
+   'id'  => 'editor',
+   'aria-label'  => 'opis',
+   'class' => 'form-control',    
 ]);
+
+$submit=$form->get('submit');
+$submit->setAttributes([
+   'id'  => 'submit',   
+]);
+
 
 $form->prepare();
 
-echo $this->form()->openTag($form);
-echo $this->formCollection($form);
-echo $this->form()->closeTag();
 ?>
 
-           
+<div class="rounded p-3 mb-2">
+   
+    <?= $this->form()->openTag($form)  ?>
+<fieldset style="color: red; border-color: red;">
+    <legend>Wprowadź dane personalne dla lekarza kliniki:</legend>  
+    
+  <div class="form-row">
+    <div class="form-group col-md-8">
+      <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Podaj imię i nazwisko Lekarza</span>
+  </div>
+       <?php
+    $bledy=$imie->getMessages();
+    foreach ($bledy as $blad){
+        $bledy_formularza['Imię lekarza:'][]=$blad;
+    }
+   
+    $bledy=null;
+     
+      echo $this->formElement($imie);  
        
-
-
-
+    $bledy=$nazwisko->getMessages();
+    foreach ($bledy as $blad){
+        $bledy_formularza['Nazwisko lekarza:'][]=$blad; 
+    }
+    
+    $bledy=null;
+?>    
+   
+      <?= $this->formElement($nazwisko)  ?>
+              
+    </div>    
+  </div>
+  <div class="form-group col-md-4">
+      <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Podaj Pesel</span>
+  </div>
+        <?php
+    $bledy=$pesel->getMessages();
+    foreach ($bledy as $blad){
+        $bledy_formularza['Pesel lekarza:'][]=$blad;
+    }
+    
+    $bledy=null;
+?>         
+      <?= $this->formElement($pesel)  ?>           
+    </div>    
+  </div>
+  </div>
+    
+    
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Podaj i powtórz maila</span>
+  </div>
+      <?php
+    $bledy=$mail->getMessages();
+    foreach ($bledy as $blad){
+        $bledy_formularza['Mail lekarza:'][]=$blad; 
+    }
+    
+    $bledy=null;
+?>          
+      <?= $this->formEmail($mail)  ?>
+     <?php
+    $bledy=$mail2->getMessages(); 
+    foreach ($bledy as $blad){
+        $bledy_formularza['Mail lekarza:'][]=$blad; 
+    }
+  
+    $bledy=null;
+?>           
+          
+          
+      <?php  echo $this->formEmail($mail2)  ?>
+    </div>    
+  </div>
+  </div>   
+ 
+   <div class="form-row">
+    <div class="form-group col-md-8">
+      <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Podaj specjalność</span>
+  </div>
+         <?php
+    $bledy=$specjalnosc->getMessages();
+    foreach ($bledy as $blad){
+        $bledy_formularza['Specjalność lekarza:'][]=$blad; 
+    }
+   
+    $bledy=null;
+?>      
+      <?= $this->formElement($specjalnosc)  ?>   
+    </div>    
+  </div>
+  <div class="form-group col-md-4">
+      <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Podaj telefon</span>
+  </div>
+         <?php
+    $bledy=$telefon->getMessages();
+    foreach ($bledy as $blad){
+        $bledy_formularza['Telefon lekarza:'][]=$blad; 
+    }
+    
+    $bledy=null;
+?>      
+      <?= $this->formTel($telefon) ?>
+    </div>    
+  </div>
+  </div>  
+    
+    <div class="form-row">
+    <div class="form-group col-md-9">
+   <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Podaj opis</span>
+  </div>
+  <?=  $this->formTextarea($opis); ?>
+</div> 
+ </div>
+      <div class="form-group col-md-3">
+      <div class="input-group">
+      <?= $this->formSubmit($submit);  ?> 
+    </div>    
+  </div>    
+        
+  </div>   
+   </fieldset> 
+    <?= $this->form()->closeTag();  ?>
+</div>
+<div class="error">
+    <span></span>
+</div>   
+<div style="text-align: center">
+       <?= $this->partial('partial/pokazBledy.phtml',['bledy_formularza'=>$bledy_formularza]); ?>  
+</div> 
+   
  <script>
+    
+     
                 // Replace the <textarea id="editor1"> with a CKEditor 4
                 // instance, using default configuration.
               CKEDITOR.replace( 'editor', {
     language: 'pl',
     uiColor: '#9AB8F3'
 });
-            </script>
+</script>
+<script type="text/javascript">
+		    
+// just for the demos, avoids form submit
+//jQuery.validator.setDefaults({
+//  debug: true,
+//  success: "valid"
+//});
+function kontroladlugosci11(value) {
+    let dozwolonadlugosc=11;
+    let dlugosc=value.length;
+    if(dlugosc===dozwolonadlugosc){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function kontroladigit(value){
+    let wynik;
+    wynik=/[0-9]{11}/.test(value);
+    return wynik;
+}
+
+function rozkodujPesel(pesel)
+{
+    //pobranie daty
+    var rok     = parseInt(pesel.substring(0,2),10);
+    var miesiac = parseInt(pesel.substring(2,4),10)-1;
+    var dzien   = parseInt(pesel.substring(4,6),10);
+
+    if(miesiac >= 80)
+    {
+        rok += 1800;
+        miesiac = miesiac - 80;
+    }
+    else if(miesiac >= 60)
+    {
+        rok += 2200;
+        miesiac = miesiac - 60;
+    }
+    else if (miesiac >= 40)
+    {
+        rok += 2100;
+        miesiac = miesiac-40;
+    }
+    else if (miesiac >= 20)
+    {
+        rok += 2000;
+        miesiac = miesiac - 20;
+    }
+    else
+    {
+        rok += 1900;
+    }
+
+    var dataUrodzenia = new Date();
+    dataUrodzenia.setFullYear(rok, miesiac, dzien);
+
+    // Weryfikacja numery PESEL
+    var wagi = [9,7,3,1,9,7,3,1,9,7];
+    var suma = 0;
+
+    for(var i=0;i < wagi.length; i++)
+    {
+        suma+=(parseInt(pesel.substring(i,i+1),10)*wagi[i]);
+    }
+
+    suma=suma % 10;
+
+    var cyfraKontr = parseInt(pesel.substring(10,11),10);
+    var poprawnosc = (suma === cyfraKontr);
+
+    //określenie płci
+    var plec = 'k';
+
+    if(parseInt(pesel.substring(9,10),10) % 2 === 1)
+    {
+        plec = 'm';
+    }
+
+    return {
+        valid: poprawnosc,
+        sex: plec,
+        date: dataUrodzenia
+    };
+}
 
 
+ //jQuery.validator.setDefaults({
+  //      debug: true,
+   //     success: "valid"
+      //      });
+     
+$( document ).ready( function () {
+            
+$( "input:blank" ).css( "background-color", "#bbbbff" );
+ // $( "input:filled" ).css( "background-color", "red" );
+
+$.validator.methods.pesel = function( value, element )
+{
+return this.optional( element ) || (rozkodujPesel(value).valid && kontroladigit(value)&& kontroladlugosci11(value)) ;  
+}
+
+//nadpisanie metody email 
+$.validator.methods.email = function( value, element ) 
+{
+  return this.optional( element ) || /[a-z]+@[a-z]+\.[a-z]+/.test( value );  
+ }
+// stworzenie własnej nowej metody
+jQuery.validator.addMethod("mojEmail", function(value, element) {
+  // allow any non-whitespace characters as the host part
+return this.optional( element ) || /[a-z]+@[a-z]+\.[a-z]+/.test(value);
+}, 'Prosimy o wpisanie prawidłowego adresu mail.');
+                   
+
+var check_mail="http://localhost/przychodniadwa/check_mail";
+ ///////////////////////////////////////////////////// 
+ // własna metoda walidacji 
+$.validator.addMethod("validateUserPesel", function(value, element)
+{
+ var inputElem = $('#dodaj_form_lekarz :input[name="lekarz_fieldset[pesel]"]'),
+  data = { "pesel" : inputElem.val() },
+  eReport = ''; //error report
+    $.ajax(
+    {
+        type: "GET",
+        url: check_mail,
+        dataType: "json",
+        data: data,
+        success: function(data)
+        {
+            if (data !== 'true')
+            {
+              return 'Taki mail jest już zajestrowany.';
+            }
+            else
+            {
+               return true;
+            }
+        },
+        error: function(xhr, textStatus, errorThrown)
+        {
+            alert('ajax loading error... ... ');
+            return false;
+        }
+    });
+
+}, '');
+
+//$(':input[name="lekarz_fieldset[pesel]"]').rules("add", { "validateUserPesel" : true} );
+
+// włąsna metoda na polskie znaki
+$.validator.addMethod( "polskieznaki", function( value, element ) {
+	return this.optional( element ) || /^[a-ząśżźćńęł]+$/i.test( value );
+}, "Tylko polskie znaki" );
+
+                   
+/////////////////////////////////////////////////////////////////////////                    
+
+			$( "#dodaj_form_lekarz" ).validate( {
+                              // This global normalizer will trim the value of all elements
+                                // before validatng them.
+                                normalizer: function( value ) {
+                                return $.trim( value );
+                                 },
+				rules: {
+					//firstname: "required",
+					"lekarz_fieldset[nazwisko]": { 
+                                          required: true,
+						minlength: 3,
+                                                polskieznaki: true,
+                                        },
+					"lekarz_fieldset[imie]": {
+						required: true,
+						minlength: 3,
+                                                polskieznaki: true,
+					},
+                                        "lekarz_fieldset[pesel]": {
+						required: true,
+                                                pesel: true,
+                                                remote: {
+                                                   url: check_mail,
+                                                    type: "POST",
+                                                   data: {
+                                                    pesel: function() {
+                                                    return $( "#pesel" ).val();
+                                                                    }
+                                                         }      
+                                                        }
+					},
+					confirm_mail: {
+						required: true,
+                                                equalTo: "#mail",
+					},
+					"lekarz_fieldset[telefon]": {
+						required: true,
+                                                phonePL: true
+					},
+					"lekarz_fieldset[mail]": {
+						required: true,
+						mojEmail: true
+					},
+                                        "lekarz_fieldset[opis]": {
+						required: true,
+					},
+				//	agree: "required"
+				},
+				messages: {
+					//firstname: "Please enter your firstname",
+					"lekarz_fieldset[nazwisko]": {
+						required: "Please enter a nazwisko",
+						minlength: "Your username must consist of at least 3 characters",
+                                                polskieznaki: "Akceptujemy tylko polskie znaki"
+					},
+					"lekarz_fieldset[imie]": {
+						required: "Please enter a username",
+						minlength: "Your username must consist of at least 3 characters",
+                                                polskieznaki: "Tylko polskie znaki"
+					},
+                                        "lekarz_fieldset[pesel]": {
+						required: "Please enter a PESEL",
+                                                pesel: "Pesel nieprawidłowy !",
+                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny")
+					},
+					confirm_mail: {
+						required: "Please provide a mail drugi",
+                                                equalTo: "Maile są nie identyczne",
+					},
+					"lekarz_fieldset[telefon]": {
+						required: "Pole telefon jest wymagane",
+						phonePL: "Wymagany polski numer +48123456789"
+					},
+                                        "lekarz_fieldset[mail]": {
+						required: "Pole mail jest wymagane",
+						mojEmail: "Please enter a valid email address"
+					},
+                                         "lekarz_fieldset[opis]": {
+						required: "Pole mail jest wymagane",
+					},
+					//agree: "Please accept our policy"
+				},
+                              //  submitHandler: function (form) {
+                                //  form.submit();
+                               //         },
+                                
+				errorElement: "em",
+     
+				errorPlacement: function ( error, element ) {
+					// Add the `invalid-feedback` class to the error element
+					error.addClass( "invalid-feedback text-center" );
+
+					if ( element.prop( "type" ) === "checkbox" ) {
+						error.insertAfter( element.next( "label" ) );
+					} else {
+						error.insertAfter( element );
+					}
+                                    //    if ( element.prop( "type" ) === "textarea" ) {    
+					//error.insertAfter( element.next( "label" ) );
+                                    //    } else {
+				//	error.insertAfter( element );
+                                 //           }
+				},
+				highlight: function ( element, errorClass, validClass ) {
+					$( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+				},
+				unhighlight: function (element, errorClass, validClass) {
+					$( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+				},
+                                
+			} );
+
+		} );
+
+	</script>
+
+              

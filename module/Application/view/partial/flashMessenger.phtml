@@ -1,0 +1,19 @@
+
+<?= $this->flashMessenger()->render('error', ['alert', 'alert-warning'])?>
+<?= $this->flashMessenger()->render('success', ['alert', 'alert-success'])?>
+<?= $this->flashMessenger()->render('info', ['alert', 'alert-info'])?> 
+
+<?php 
+// działa tylko dla wywołania addMessage('....')
+if($this->flashMessenger()->hasMessages()) :
+    ?>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong><?= $this->flashMessenger()->render();?></strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<?php 
+endif;
+?>
+

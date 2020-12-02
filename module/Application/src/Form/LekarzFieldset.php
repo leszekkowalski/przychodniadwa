@@ -17,7 +17,7 @@ use Laminas\Form\Element\Tel;
 use Laminas\Db\Adapter\AdapterInterface;
 
 
-class LekarzFieldset extends Fieldset{
+class LekarzFieldset extends Fieldset  {
  
     public $adapter;
     
@@ -68,7 +68,7 @@ class LekarzFieldset extends Fieldset{
                 'label' => 'Podaj mail:',
             ],
         ]);
-         
+                 
          $this->add([
             'type' => Text::class,
             'name' => 'specjalnosc',
@@ -95,9 +95,11 @@ class LekarzFieldset extends Fieldset{
              
         ]);
          
+         
       
         
     }
-     
+
+
 }
 

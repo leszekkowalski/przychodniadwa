@@ -16,6 +16,11 @@ $this->headTitle($title);
 <div class="card-deck">
  <div class="card">
         <h2 class="card-header mx-auto">Zarządzaj lekarzami przychodni</h2>
+ <div>
+        <?= $this->partial('partial/flashMessenger.phtml'); ?>
+</div>       
+        
+        
         <div class="card-body">
  <a href="<?= $this->url('lekarz', ['action' => 'dodaj']) ?>" title="Dodaj lekarza">
 <button type="button" class="btn btn-primary btn-lg btn-block">Dodaj lekarza</button>            
@@ -41,7 +46,7 @@ $this->headTitle($title);
       $link=$lekarz->getZdjecie();
                 
               if(!$link){
-                  $link='/img/Anonymous_male.jpg';
+                 $link='/public/img/Anonymous_male.jpg';
               }
               
             //  echo $this->baseUrl.$link;

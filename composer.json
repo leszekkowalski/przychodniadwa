@@ -23,7 +23,10 @@
         "laminas/laminas-session": "^2.10",
         "laminas/laminas-i18n": "^2.11",
         "laminas/laminas-paginator": "^2.9",
-        "laminas/laminas-serializer": "^2.9"
+        "laminas/laminas-serializer": "^2.9",
+        "laminas/laminas-view": "^2.11",
+        "laminas/laminas-mvc-plugin-flashmessenger": "^1.2",
+        "laminas/laminas-json": "^3.1"
     },
     "autoload": {
         "psr-4": {

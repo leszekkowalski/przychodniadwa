@@ -30,6 +30,7 @@ return [
         'factories' => [
             Lekarz::class=> LekarzFactory::class,
             LekarzPolaczenie::class=> Polaczenie\Factory\LekarzPolaczenieFactory::class,
+       
         ],
     ],
     
@@ -37,6 +38,7 @@ return [
         'factories' => [
             Controller\IndexController::class => Controller\Factory\IndexControllerFactory::class,
             Controller\LekarzController::class=> Controller\Factory\LekarzControllerFactory::class,
+            Controller\LekarzjsonController::class=> Controller\Factory\LekarzjsonControllerFactory::class,
         ],
     ],
 
@@ -74,6 +76,21 @@ return [
                 ],
             ],
             ////////////////////////////////////////////
+             'check_mail' => [
+                'type'    => 'Literal',
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/check_mail',
+                    'defaults' => [
+                        'controller'    => Controller\LekarzjsonController::class,
+                        'action'        => 'dodajjson',
+                    ],
+                ],
+            ],
+            
+            
+            
+            ////////////////////////////////////////////////
             'lekarz' => [
                 'type'    => Segment::class,
                 'options' => [
@@ -124,4 +141,16 @@ return [
         ],
         'base_path' => '/przychodniadwa/public/'
     ],
+    
+    
+    
+    'view_helper_config' => [
+    'flashmessenger' => [
+        'message_open_format'      => '<div%s><button type="button" class="close"
+data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
+        'message_close_string'     => '</li></ul></div>',
+        'message_separator_string' => '</li><li>',
+    ],
+],
+    
 ];

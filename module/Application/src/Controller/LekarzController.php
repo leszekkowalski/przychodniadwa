@@ -9,6 +9,7 @@ use Application\Form\LekarzDodajForm;
 use Laminas\View\Model\ViewModel;
 use Application\Polaczenie\LekarzPolaczenie;
 use Application\Model\Lekarz;
+use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 
 
 class LekarzController extends AbstractController{
@@ -17,10 +18,13 @@ class LekarzController extends AbstractController{
 
     protected $lekarzDodajForm;
     
+    public $flashMessenger; 
+    
  public function __construct(LekarzPolaczenie $lekarzDb, LekarzDodajForm $lekarzDodajForm ) {
      
      $this->lekarzDb=$lekarzDb;
      $this->lekarzDodajForm=$lekarzDodajForm;
+     $this->flashMessenger = new FlashMessenger();
  }   
   
  public function indexAction() {
@@ -50,8 +54,11 @@ $ileNaStrone=2;
  public function dodajAction() {
      
     $request   = $this->getRequest();
-
-    $viewModel = new ViewModel(['form' => $this->lekarzDodajForm]);
+    $imie=$this->lekarzDodajForm->get('lekarz_fieldset')->get('imie');
+    $viewModel = new ViewModel([
+        'form' => $this->lekarzDodajForm,
+        'flashMessenger'=> $this->flashMessenger,
+            ]);
 
 
     if (! $request->isPost() ){
@@ -59,20 +66,43 @@ $ileNaStrone=2;
         return $viewModel;
     }
     
-    // $lekarz=new Lekarz('','');
-    // $this->lekarzDodajForm->setInputFilter($lekarz->getInputFilter());
-    
-    
     $this->lekarzDodajForm->setData($request->getPost());
 
-    if (! $this->lekarzDodajForm->isValid()) {
+    if (! $this->lekarzDodajForm->isValid()) {   
         return $viewModel;
     }
+    
     $lekarz = $this->lekarzDodajForm->getData();
+
+    try{
+        $lekarz=$this->lekarzDb->wpiszLekarz($lekarz);
+    } catch (Exception $ex) {
+        throw $ex;
+    }
     
+    $flashMessenger=$this->flashMessenger;
+    $flashMessenger->addSuccessMessage('Lekarz  '.$lekarz->getImie().' '.$lekarz->getNazwisko().' została wpisana !!');
     
-    exit();
+    $this->redirect()->toRoute('lekarz');
     
  }
+ 
+ public function edytujAction() {
+     
+     $id=(int)$this->params()->fromRoute('id',0);
+     if(!$id){
+         $this->redirect()->toRoute('lekarz');
+     }
+     try{
+         $lekarz=$this->lekarzDb->pobierzJedenLekarz($id);
+     } catch (\Exception $ex) {
+
+         throw $ex;
+     }
+     
+     
+ }
+ 
+ 
  
 }

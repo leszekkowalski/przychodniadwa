@@ -1,0 +1,14 @@
+<?php
+if($this->bledy_formularza){
+foreach ($this->bledy_formularza as $bledy=>$ile){
+    if(is_array($this->bledy_formularza[$bledy])){
+        echo '<p><b>W polu ' . $bledy . ' wystąpiły błędy: </b></p><ul>';
+        for($i=0; $i<count($ile);$i++){
+            
+            echo '<li>' . $ile[$i] . '</li>';
+        }
+        echo '</ul>';
+    }
+    }
+
+}

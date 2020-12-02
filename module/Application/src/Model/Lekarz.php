@@ -58,6 +58,10 @@ class Lekarz implements InputFilterAwareInterface{
    public function getIdlekarz(): int {
        return (int)$this->idlekarz;
    } 
+   
+   public function setIdlekarz($param) {
+       $this->idlekarz=$param;
+   }
     
    public function getImie(): string {
        return $this->imie;
@@ -98,7 +102,7 @@ class Lekarz implements InputFilterAwareInterface{
        }else if($plec==0){
            return 'Kobieta';
        }else{
-           return 'Nie zidentyfikowano';
+           return 'Nie zidentyfikowano - błędny';
        }
    }
    
@@ -122,7 +126,7 @@ class Lekarz implements InputFilterAwareInterface{
        $this->zdjecie=$param;
    }
 
-    public function getZdjecie() : string {
+    public function getZdjecie() {
         return $this->zdjecie;
     }
     
@@ -179,6 +183,7 @@ class Lekarz implements InputFilterAwareInterface{
         $this->idlekarz     = !empty($data['idlekarz']) ? $data['idlekarz'] : null;
         $this->imie = !empty($data['imie']) ? $data['imie'] : null;
         $this->nazwisko  = !empty($data['nazwisko']) ? $data['nazwisko'] : null;
+        $this->pesel  = !empty($data['pesel']) ? $data['pesel'] : null;
     }
     
 
@@ -187,7 +192,7 @@ class Lekarz implements InputFilterAwareInterface{
         if ($this->inputFilter) {
              return $this->inputFilter;
          }
-         $inputFilter = new InputFilter();
+         $inputFilter = new InputFilter('');
          
     
           $inputFilter->add([
@@ -264,7 +269,7 @@ class Lekarz implements InputFilterAwareInterface{
              ['name'=> \Laminas\Filter\StringTrim::class]   ,
             ],
             'validators'=>[
-            ['name'=> PeselValidator::class],
+          //  ['name'=> PeselValidator::class],
                  ['name'=> \Laminas\Validator\Db\NoRecordExists::class,
                    'options'=>[
                         'table'   => 'lekarz',
@@ -287,7 +292,7 @@ class Lekarz implements InputFilterAwareInterface{
             ['name'=> \Laminas\Filter\StringTrim::class]   ,
             ],
             'validators'=>[
-              ['name'=> PeselValidator::class],
+           //   ['name'=> PeselValidator::class],
                  ['name'=> \Laminas\Validator\Db\NoRecordExists::class,
                    'options'=>[
                         'table'   => 'lekarz',
@@ -396,13 +401,13 @@ class Lekarz implements InputFilterAwareInterface{
                ['name'=> Filter\StripTags::class],
             ],
            'validators'=>[
-               ['name'=> \Laminas\Validator\StringLength::class,
-                'options'=>[
-                    'min'=>9,
-                    'max'=>13,
-                    'encoding'=>'UTF-8',
-                ],
-                   ],
+             //  ['name'=> \Laminas\Validator\StringLength::class,
+             //   'options'=>[
+              //      'min'=>11,
+              //      'max'=>13,
+               //     'encoding'=>'UTF-8',
+               // ],
+               //    ],
                 ['name'=> \Laminas\Validator\Regex::class,
                     'options'=>[
                         'pattern'=>"/^\+{1}[0-9]{2}[ ]{1}\d{9,11}$/",
@@ -422,7 +427,6 @@ class Lekarz implements InputFilterAwareInterface{
             'required' => false,
             'filters'=>[
               ['name'=> StringTrim::class] ,
-               ['name'=> Filter\StripTags::class],
             ],
             'validators'=>[
                           ]

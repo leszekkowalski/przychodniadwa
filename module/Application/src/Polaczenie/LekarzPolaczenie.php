@@ -12,6 +12,8 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Paginator\Adapter\DbSelect;
 use Laminas\Cache\StorageFactory;
 use Laminas\Paginator\Paginator;
+use Laminas\Db\Sql\Insert;
+use Application\Validator\PeselValidator;
 
 class LekarzPolaczenie{
     /**
@@ -134,8 +136,87 @@ private function fetchPaginatedResults()
         $paginator = new Paginator($paginatorAdapter);
         return $paginator;
     }
+    
+    public function wpiszLekarz(Lekarz $lekarz) : Lekarz {
+        
+        
+        $peselValidator=new PeselValidator();
+        $peselValidator->setPesel($lekarz->getPesel());
+        $plec=$peselValidator->getGender();
+        if(!$plec){
+            $plec=2;//wprowadzony bledny pesel - dla celów szkoleniowych
+        }
+        $wpisz=new Insert('lekarz');
+        $wpisz->values([
+            'imie'=>$lekarz->getImie(),
+            'nazwisko'=>$lekarz->getNazwisko(),
+            'pesel'=>$lekarz->getPesel(),
+            'plec'=>$plec,
+            'mail'=>$lekarz->getMail(),
+            'specjalnosc'=>$lekarz->getSpecjalnosc(),
+            'telefon'=>$lekarz->getTelefon(),
+            'opis'=>$lekarz->getOpis(),
+        ]);
+        
+        $sql=new Sql($this->adapter);
+        $statement=$sql->prepareStatementForSqlObject($wpisz);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            throw new RuntimeException('Błąd bazy danych podczas wprowadzenia danych Lekarza.');
+        }
+        $idLekarz=$wynik->getGeneratedValue();
+        $lekarz->setPlec($plec);
+        $lekarz->setIdlekarz($idLekarz);
+        return $lekarz;
+        
+    }
    
-
+    public function pobierzJedenLekarz(int $id): Lekarz {
+      
+       $sql=new Sql($this->adapter);
+       $select=$sql->select('lekarz');
+       $select=$select->columns(['imie','nazwisko','pesel','plec','zdjecie','mail','specjalnosc','telefon','opis']);
+       $select=$select->where(['idlekarz'=>$id]);
+       $rezultat=$sql->prepareStatementForSqlObject($select);
+       $wynik=$rezultat->execute();
+       
+       $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
+       $wynikSet->initialize($wynik);
+       
+       $lekarz=$wynikSet->current();
+       
+       if(!$lekarz){
+            throw new InvalidArgumentException(
+                    sprintf('Nastapił bład podczas pobierania danych z bazy danych lekarza o identifikatorze %s',$id)
+                    );
+        }
+        return $lekarz;
+        
+    }
+    
+    public function sprawdzPeselJson($pesel) {
+        
+        $sql=new Sql($this->adapter);
+        $select=$sql->select('lekarz');
+        $select=$select->where(['pesel'=>$pesel]);
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+       $wynik=$rezultat->execute();
+       
+       $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
+       $wynikSet->initialize($wynik);
+       
+       $lekarz=$wynikSet->current();
+       
+       if(!$lekarz){
+            //throw new InvalidArgumentException(
+              //      sprintf('Nastapił bład podczas pobierania danych z bazy danych lekarza o identifikatorze %s',$id)
+               //     );
+           return true;
+        }
+        
+        return false;
+    }
 
     
 }

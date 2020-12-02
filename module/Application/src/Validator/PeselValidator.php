@@ -45,7 +45,7 @@ class PeselValidator extends AbstractValidator {
 
 }
 
-protected function setPesel($pesel){
+public function setPesel($pesel){
         $this->pesel=$pesel;
     } 
 ////////////////////////////////////////////////   
