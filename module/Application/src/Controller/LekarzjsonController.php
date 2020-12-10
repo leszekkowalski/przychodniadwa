@@ -21,12 +21,13 @@ class LekarzjsonController extends AbstractController{
       if ($this->getRequest()->isPost()){ 
       
     $pesel = $this->params()->fromPost('pesel', 1);  
+    $idlekarz = $this->params()->fromPost('idlekarz', 0);  
       if($pesel==1){
           $this->redirect()->toRoute('lekarz');
       }
       
-      $wynik=$this->polaczenieDb->sprawdzPeselJson($pesel);
-      if($wynik){
+      $wynik=$this->polaczenieDb->sprawdzPeselJson($pesel,$idlekarz);
+      if(!$wynik){
           $odpowiedz='true';
       }else{
           $odpowiedz='false';

@@ -107,6 +107,9 @@ $file->setAttributes([
 ]);
 
 $hiddenId=$form->get('lekarz_fieldset')->get('idlekarz');
+$hiddenId->setAttributes([
+    'id'=>'idlekarz',   
+]);
 
 $submit=$form->get('submit');
 $submit->setAttributes([
@@ -272,6 +275,7 @@ echo $this->form()->openTag($form);
    uiColor: '#9AB8F3'
 });
     
+const check_pesel="http://localhost/przychodniadwa/check_pesel";
 
 		$( document ).ready( function () {
                     
@@ -295,6 +299,18 @@ echo $this->form()->openTag($form);
                                                 {
 						required: true,
                                                 pesel: true,
+                                                 remote: {
+                                                   url: check_pesel,
+                                                    type: "POST",
+                                                   data: {
+                                                    pesel: function() {
+                                                    return $( "#pesel" ).val();
+                                                                    },
+                                                    idlekarz: function() {
+                                                    return $( "#idlekarz" ).val();
+                                                                    },
+                                                         },     
+                                                        },
                                                  },
                                         "lekarz_fieldset[mail]":
                                                 {
@@ -331,6 +347,7 @@ echo $this->form()->openTag($form);
                                                    {
 						required: "Numer PESEL jest obowiązkowy",
                                                 pesel: "Wprowadź poprawny numer PESEL",
+                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny")
                                                     },
                                              "lekarz_fieldset[mail]":
                                                    {

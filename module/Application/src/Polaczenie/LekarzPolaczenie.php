@@ -198,11 +198,19 @@ private function fetchPaginatedResults()
         
     }
     
-    public function sprawdzPeselJson($pesel) {
+    public function sprawdzPeselJson($pesel,$idlekarz) {
         
         $sql=new Sql($this->adapter);
-        $select=$sql->select('lekarz');
-        $select=$select->where(['pesel'=>$pesel])->limit(1);
+       
+        if($idlekarz===0){
+             $select=$sql->select('lekarz');
+           $select=$select->where(['pesel'=>$pesel])->limit(1); 
+
+        }else{
+          $select=$sql->select('lekarz');
+          $select=$select->where(['pesel'=>$pesel,new \Laminas\Db\Sql\Predicate\NotIn('idlekarz',array( $idlekarz))])->limit(1) ; 
+        }
+        
         $rezultat=$sql->prepareStatementForSqlObject($select);
        $wynik=$rezultat->execute();
        
@@ -210,15 +218,16 @@ private function fetchPaginatedResults()
        $wynikSet->initialize($wynik);
        
        $lekarz=$wynikSet->current();
-       
-       if(!$lekarz){
+
+       if($lekarz){
             //throw new InvalidArgumentException(
               //      sprintf('Nastapił bład podczas pobierania danych z bazy danych lekarza o identifikatorze %s',$id)
                //     );
            return true;
+        }else{
+           return false; 
         }
         
-        return false;
     }
 
      public function sprawdzMailJson($mail) {
