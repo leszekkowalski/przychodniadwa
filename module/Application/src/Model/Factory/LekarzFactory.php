@@ -11,8 +11,8 @@ use Laminas\Db\Adapter\AdapterInterface;
 class LekarzFactory implements FactoryInterface {
     
     public function __invoke(ContainerInterface $container, $requestedName, mixed $options = null): object {
-        
-        return new Lekarz('', '', $container->get(AdapterInterface::class));
+        $adapter=$container->get(AdapterInterface::class);
+        return new Lekarz('', '');
         
     }
 

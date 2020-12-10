@@ -1,10 +1,9 @@
-<?=  $this->headScript()
-        ->prependFile(("//cdn.ckeditor.com/4.15.1/standard/ckeditor.js"))
-         ->prependFile($this->basePath('js/messages_pl.js'))
-          ->prependFile($this->basePath('js/additional-methods.js'))
-            ->prependFile($this->basePath('js/jquery.validate.min.js')) 
-        ;
-        
+<?php 
+
+$this->headScript()->appendFile('//cdn.ckeditor.com/4.15.1/standard/ckeditor.js', 'text/javascript');
+$this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));       
         
 $title = 'Dodaj Lekarza';
 $this->headTitle($title);
@@ -23,7 +22,6 @@ $imie->setAttributes([
    'aria-label'  => 'imie',    
     'class' => 'form-control',
     'placeholder'=>' imię ',
-  
 ]);
 
 $nazwisko=$form->get('lekarz_fieldset')->get('nazwisko');
@@ -228,7 +226,7 @@ $form->prepare();
     <?= $this->form()->closeTag();  ?>
 </div>
 <div class="error">
-    <span></span>
+    <span id="error"></span>
 </div>   
 <div style="text-align: center">
        <?= $this->partial('partial/pokazBledy.phtml',['bledy_formularza'=>$bledy_formularza]); ?>  
@@ -239,9 +237,9 @@ $form->prepare();
      
                 // Replace the <textarea id="editor1"> with a CKEditor 4
                 // instance, using default configuration.
-              CKEDITOR.replace( 'editor', {
-    language: 'pl',
-    uiColor: '#9AB8F3'
+           CKEDITOR.replace( 'editor', {
+  language: 'pl',
+   uiColor: '#9AB8F3'
 });
 </script>
 <script type="text/javascript">
@@ -270,9 +268,9 @@ function kontroladigit(value){
 function rozkodujPesel(pesel)
 {
     //pobranie daty
-    var rok     = parseInt(pesel.substring(0,2),10);
-    var miesiac = parseInt(pesel.substring(2,4),10)-1;
-    var dzien   = parseInt(pesel.substring(4,6),10);
+    let rok     = parseInt(pesel.substring(0,2),10);
+    let miesiac = parseInt(pesel.substring(2,4),10)-1;
+    let dzien   = parseInt(pesel.substring(4,6),10);
 
     if(miesiac >= 80)
     {
@@ -299,14 +297,14 @@ function rozkodujPesel(pesel)
         rok += 1900;
     }
 
-    var dataUrodzenia = new Date();
+    let dataUrodzenia = new Date();
     dataUrodzenia.setFullYear(rok, miesiac, dzien);
 
     // Weryfikacja numery PESEL
-    var wagi = [9,7,3,1,9,7,3,1,9,7];
-    var suma = 0;
+    let wagi = [9,7,3,1,9,7,3,1,9,7];
+    let suma = 0;
 
-    for(var i=0;i < wagi.length; i++)
+    for(let i=0;i < wagi.length; i++)
     {
         suma+=(parseInt(pesel.substring(i,i+1),10)*wagi[i]);
     }
@@ -332,10 +330,6 @@ function rozkodujPesel(pesel)
 }
 
 
- //jQuery.validator.setDefaults({
-  //      debug: true,
-   //     success: "valid"
-      //      });
      
 $( document ).ready( function () {
             
@@ -347,8 +341,8 @@ $.validator.methods.pesel = function( value, element )
 return this.optional( element ) || (rozkodujPesel(value).valid && kontroladigit(value)&& kontroladlugosci11(value)) ;  
 }
 
-//nadpisanie metody email 
-$.validator.methods.email = function( value, element ) 
+//nadpisanie metody email - po usunieciu '_moj' bedzie działał
+$.validator.methods.email_moj = function( value, element ) 
 {
   return this.optional( element ) || /[a-z]+@[a-z]+\.[a-z]+/.test( value );  
  }
@@ -359,7 +353,9 @@ return this.optional( element ) || /[a-z]+@[a-z]+\.[a-z]+/.test(value);
 }, 'Prosimy o wpisanie prawidłowego adresu mail.');
                    
 
-var check_mail="http://localhost/przychodniadwa/check_mail";
+const check_pesel="http://localhost/przychodniadwa/check_pesel";
+
+const check_mail="http://localhost/przychodniadwa/check_mail";
  ///////////////////////////////////////////////////// 
  // własna metoda walidacji 
 $.validator.addMethod("validateUserPesel", function(value, element)
@@ -397,7 +393,7 @@ $.validator.addMethod("validateUserPesel", function(value, element)
 
 // włąsna metoda na polskie znaki
 $.validator.addMethod( "polskieznaki", function( value, element ) {
-	return this.optional( element ) || /^[a-ząśżźćńęł]+$/i.test( value );
+	return this.optional( element ) || /^[a-ząśżźćńęłó ]+$/i.test( value );
 }, "Tylko polskie znaki" );
 
                    
@@ -425,7 +421,7 @@ $.validator.addMethod( "polskieznaki", function( value, element ) {
 						required: true,
                                                 pesel: true,
                                                 remote: {
-                                                   url: check_mail,
+                                                   url: check_pesel,
                                                     type: "POST",
                                                    data: {
                                                     pesel: function() {
@@ -444,7 +440,16 @@ $.validator.addMethod( "polskieznaki", function( value, element ) {
 					},
 					"lekarz_fieldset[mail]": {
 						required: true,
-						mojEmail: true
+                                                email: true,
+                                                remote: {
+                                                   url: check_mail,
+                                                    type: "POST",
+                                                   data: {
+                                                    mail: function() {
+                                                    return $( "#mail" ).val();
+                                                                    }
+                                                         }      
+                                                        }
 					},
                                         "lekarz_fieldset[opis]": {
 						required: true,
@@ -478,19 +483,17 @@ $.validator.addMethod( "polskieznaki", function( value, element ) {
 					},
                                         "lekarz_fieldset[mail]": {
 						required: "Pole mail jest wymagane",
-						mojEmail: "Please enter a valid email address"
+						mojEmail: "Please enter a valid email address",
+                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny")
 					},
                                          "lekarz_fieldset[opis]": {
 						required: "Pole mail jest wymagane",
 					},
-					//agree: "Please accept our policy"
+
 				},
-                              //  submitHandler: function (form) {
-                                //  form.submit();
-                               //         },
                                 
 				errorElement: "em",
-     
+                              
 				errorPlacement: function ( error, element ) {
 					// Add the `invalid-feedback` class to the error element
 					error.addClass( "invalid-feedback text-center" );
@@ -500,6 +503,7 @@ $.validator.addMethod( "polskieznaki", function( value, element ) {
 					} else {
 						error.insertAfter( element );
 					}
+                                                                     
                                     //    if ( element.prop( "type" ) === "textarea" ) {    
 					//error.insertAfter( element.next( "label" ) );
                                     //    } else {

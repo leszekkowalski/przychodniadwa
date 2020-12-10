@@ -8,12 +8,14 @@ use Laminas\Hydrator\HydratorInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use RuntimeException;
+use InvalidArgumentException;
 use Laminas\Db\Sql\Sql;
 use Laminas\Paginator\Adapter\DbSelect;
 use Laminas\Cache\StorageFactory;
 use Laminas\Paginator\Paginator;
 use Laminas\Db\Sql\Insert;
 use Application\Validator\PeselValidator;
+use Laminas\Db\Sql\Update;
 
 class LekarzPolaczenie{
     /**
@@ -49,7 +51,8 @@ public function __construct(AdapterInterface $adapter, HydratorInterface $hydrat
                     'name' => 'filesystem',
                     'options' => [
                         'cache_dir' => 'data/cache',
-                        'ttl' => 600
+                        'ttl' => 600,
+                     //  'writable'=>true,
                     ]
                 ],
                 'plugins' => ['serializer'],
@@ -176,7 +179,7 @@ private function fetchPaginatedResults()
       
        $sql=new Sql($this->adapter);
        $select=$sql->select('lekarz');
-       $select=$select->columns(['imie','nazwisko','pesel','plec','zdjecie','mail','specjalnosc','telefon','opis']);
+       $select=$select->columns(['idlekarz','imie','nazwisko','pesel','plec','zdjecie','mail','specjalnosc','telefon','opis']);
        $select=$select->where(['idlekarz'=>$id]);
        $rezultat=$sql->prepareStatementForSqlObject($select);
        $wynik=$rezultat->execute();
@@ -199,7 +202,7 @@ private function fetchPaginatedResults()
         
         $sql=new Sql($this->adapter);
         $select=$sql->select('lekarz');
-        $select=$select->where(['pesel'=>$pesel]);
+        $select=$select->where(['pesel'=>$pesel])->limit(1);
         $rezultat=$sql->prepareStatementForSqlObject($select);
        $wynik=$rezultat->execute();
        
@@ -218,5 +221,102 @@ private function fetchPaginatedResults()
         return false;
     }
 
+     public function sprawdzMailJson($mail) {
+        
+        $sql=new Sql($this->adapter);
+        $select=$sql->select('lekarz');
+        $select=$select->where(['mail'=>$mail])->limit(1);
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+       $wynik=$rezultat->execute();
+       
+       $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
+       $wynikSet->initialize($wynik);
+       
+       $lekarz=$wynikSet->current();
+       
+       if(!$lekarz){
+            //throw new InvalidArgumentException(
+              //      sprintf('Nastapił bład podczas pobierania danych z bazy danych lekarza o identifikatorze %s',$id)
+               //     );
+           return true;
+        }
+        
+        return false;
+    }
     
-}
+    public function updateLekarz(Lekarz $lekarz, $nowyLinkZdjecia=null): Lekarz{
+        
+         if (! $lekarz->getIdlekarz()) {
+        throw new RuntimeException('Nie można zaktualizować Lekarza. Błąd identyfikatora');
+    }
+    
+        $peselValidator=new PeselValidator();
+        $peselValidator->setPesel($lekarz->getPesel());
+        $plec=$peselValidator->getGender();
+        if(!$plec){
+            $plec=2;//wprowadzony bledny pesel - dla celów szkoleniowych
+        }
+    $lekarz->setPlec($plec);
+    $update = new Update('lekarz');
+    $update->set([
+            'imie' => $lekarz->getImie(),
+            'nazwisko' => $lekarz->getNazwisko(),
+            'pesel' => $lekarz->getPesel(),
+            'plec' => $lekarz->getPlec(),
+          'mail' => $lekarz->getMail(),
+            'specjalnosc' => $lekarz->getSpecjalnosc(),
+            'telefon' => $lekarz->getTelefon(),
+            'opis' => $lekarz->getOpis(),
+    ]);
+    
+   if($nowyLinkZdjecia){
+       $lekarz->setZdjecie($nowyLinkZdjecia);
+       $update->set([
+            'zdjecie' => $lekarz->getZdjecie(),
+    ]); 
+   }
+
+     $update->where(['idlekarz = ?' => $lekarz->getIdlekarz()]);
+
+    $sql = new Sql($this->adapter);
+    $statement = $sql->prepareStatementForSqlObject($update);
+    $result = $statement->execute();
+
+    if (! $result instanceof ResultInterface) {
+        throw new RuntimeException(
+            'Database error occurred during blog post update operation'
+        );
+    }
+
+    return $lekarz;   
+        
+        
+    }
+    
+    public function lekarzindexjson($ileNaStrone, $page) {
+        if($page==1){
+            $offset=0;
+        }else{
+            $offset=(int)(($page-1)*$ileNaStrone);
+        }
+        $sql=new Sql($this->adapter);
+        
+        $select=$sql->select('lekarz');
+        $select=$select->columns(['idlekarz','imie','nazwisko','pesel','zdjecie','mail','specjalnosc','telefon','opis']);
+        $select->limit($ileNaStrone)->offset($offset);
+
+       $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+        
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+        
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
+        $wynikSet->initialize($wynik);
+        return $wynikSet;
+        
+    }
+    
+} 

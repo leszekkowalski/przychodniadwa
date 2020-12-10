@@ -20,6 +20,7 @@ use Application\Model\Factory\LekarzFactory;
 use Application\Polaczenie\LekarzPolaczenie;
 use Application\Form\LekarzFieldset;
 use Application\Form\Factory\LekarzFieldsetFactory;
+use Application\Service;
 
 return [
     
@@ -30,7 +31,7 @@ return [
         'factories' => [
             Lekarz::class=> LekarzFactory::class,
             LekarzPolaczenie::class=> Polaczenie\Factory\LekarzPolaczenieFactory::class,
-       
+            Service\ZdjecieManager::class => InvokableFactory::class,
         ],
     ],
     
@@ -76,6 +77,18 @@ return [
                 ],
             ],
             ////////////////////////////////////////////
+             'check_pesel' => [
+                'type'    => 'Literal',
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/check_pesel',
+                    'defaults' => [
+                        'controller'    => Controller\LekarzjsonController::class,
+                        'action'        => 'dodajjsonpesel',
+                    ],
+                ],
+            ],
+            
              'check_mail' => [
                 'type'    => 'Literal',
                 'options' => [
@@ -83,12 +96,23 @@ return [
                     'route'    => '/check_mail',
                     'defaults' => [
                         'controller'    => Controller\LekarzjsonController::class,
-                        'action'        => 'dodajjson',
+                        'action'        => 'dodajjsonmail',
                     ],
                 ],
             ],
             
-            
+            ////////////////////////////////////////////////
+              'check_lekarz_index' => [
+                'type'    => 'Literal',
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/check_lekarz_index',
+                    'defaults' => [
+                        'controller'    => Controller\LekarzjsonController::class,
+                        'action'        => 'lekarzindexjson',
+                    ],
+                ],
+            ],
             
             ////////////////////////////////////////////////
             'lekarz' => [
@@ -118,6 +142,9 @@ return [
                                         ],
                                      ],
                                 ],
+                    ///////////////////////////////////////////////////
+                    
+                    ///////////////////////////////////////////////////
                 ],
             ],
             //////////////////////////////////////////////

@@ -19,9 +19,9 @@ class Telefon extends Element implements InputProviderInterface
     protected function getValidator()
     {
         if(null===$this->validator){
-            $validator=new Regex('/^\+{1}[ ]{1}\d{9,11}$/');
+            $validator=new Regex('/^\+{1}[0-9]{2}\s?\d{9}$/');
             $validator->setMessage(
-                'Proszę wstawić telefon w formacie +48 607345765',
+                'Proszę wstawić telefon w formacie +48607345765',
                 Regex::NOT_MATCH
             );
             $this->validator=$validator;

@@ -13,7 +13,8 @@ class LekarzFieldsetFactory implements FactoryInterface{
     
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): object {
         
-        return new LekarzFieldset($container->get(AdapterInterface::class));
+        $adapter=$container->get(AdapterInterface::class);
+        return new LekarzFieldset();
         
     }
     

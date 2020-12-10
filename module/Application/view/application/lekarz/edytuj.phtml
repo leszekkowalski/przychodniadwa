@@ -1,22 +1,133 @@
-<?=
+<?php 
+$this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods_PL.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
+$this->headScript()->appendFile('//cdn.ckeditor.com/4.15.1/standard/ckeditor.js', 'text/javascript');
 
-$this->headScript()
+$title = 'Edycja  Lekarza';
+$this->headTitle($title);
+
+$form=$this->form;
+//$form->setAttribute('action', $this->url('lekarz', ['action' => 'edytuj','id'=>$lekarz->getIdlekarz()]));
+$form->setAttribute('action', $this->url('lekarz', ['action' => 'edytuj','id'=>$lekarz->getIdlekarz()]));
+$form->setAttribute('method', 'POST');
+$form->setAttribute('id', 'dodaj_form_lekarz');
+$form->setAttribute('enctype', 'multipart/form-data');
+$form->setAttributes([
+    'class'=>"form-horizontal",
+]);
+
+$imie=$form->get('lekarz_fieldset')->get('imie');
+$imie->setAttributes([
+    'id'=>'imie',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj imię:',
+]);
+$imie->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    'for'=>'imie',
+    ]);
+
+$nazwisko=$form->get('lekarz_fieldset')->get('nazwisko');
+$nazwisko->setAttributes([
+    'id'=>'nazwisko',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj nazwisko:',
+]);
+$nazwisko->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$pesel=$form->get('lekarz_fieldset')->get('pesel');
+$pesel->setAttributes([
+    'id'=>'pesel',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj PESEL:',
+]);
+$pesel->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$mail=$form->get('lekarz_fieldset')->get('mail');
+$mail->setAttributes([
+    'id'=>'mail',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj mail:',
+]);
+$mail->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$mail2=$form->get('confirm_mail');
+$mail2->setAttributes([
+    'id'=>'mail2',   
+    'class' => 'form-control',
+    'placeholder'=>'Powtórz mail:',
+]);
+$mail2->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$specjalnosc=$form->get('lekarz_fieldset')->get('specjalnosc');;
+$specjalnosc->setAttributes([
+    'id'=>'specjalnosc',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj specjalność:',
+]);
+$specjalnosc->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$telefon=$form->get('lekarz_fieldset')->get('telefon');;
+$telefon->setAttributes([
+    'id'=>'telefon',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj specjalność:',
+]);
+$telefon->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$opis=$form->get('lekarz_fieldset')->get('opis');;
+$opis->setAttributes([
+    'id'=>'opis',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj specjalność:',
+]);
+$opis->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+
+
+$file=$form->get('file');
+$file->setAttributes([ 
+    'class' => 'form-control',
+]);
+
+$hiddenId=$form->get('lekarz_fieldset')->get('idlekarz');
+
+$submit=$form->get('submit');
+$submit->setAttributes([
+'class' => 'btn btn-primary',
+]);
+$submit->setValue('Edytuj Lekarza');
+
+
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
     
-          ->prependFile($this->basePath('js/additional-methods.min.js'))
-             ->prependFile($this->basePath('js/messages_pl.js'))
-            ->prependFile($this->basePath('js/jquery.validate.min.js')) 
-        ;
 ?>
-
-
 <div class="row">
+    
 	<div class="col-sm-8 offset-sm-2">
 		<div class="border-bottom mb-4 mt-4 pb-2">
 			<div class="alert alert-info" role="alert">
-				<h6>This demo shows how to integrate JQuery-validation and the Bootstrap 4 framework.</h4>
-				<ul>
-					<li><a href="https://getbootstrap.com/" class="alert-link">Bootstrap home project</a>.</li>
-				</ul>
+				<h4>Edycja lekarza: <?= $lekarz->getImie().' '.$lekarz->getNazwisko();   ?></h4>
+				
 			</div>
 		</div>
 
@@ -25,111 +136,210 @@ $this->headScript()
 				<h3 class="card-text">Wypełnij formularz i wyślij</h3>
 			</div>
 			<div class="card-body">
-				<form id="signupForm" method="post" class="form-horizontal" action="">
+				
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label" for="firstname">First name</label>
+						<?=  $this->formLabel($imie); ?>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" id="firstname" name="firstname" placeholder="First name" />
+						<?php
+                                                echo $this->formText($imie);
+                                                $imie->getMessages();
+                                               echo $this->formElementErrors()->render($imie, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
 
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label" for="lastname">Last name</label>
+						<?=  $this->formLabel($nazwisko); ?>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last name" />
+						<?php
+                                                echo $this->formText($nazwisko);
+                                                $nazwisko->getMessages();
+                                                echo $this->formElementErrors()->render($nazwisko, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
 
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label" for="username">Username</label>
+						<?=  $this->formLabel($pesel); ?>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" id="username" name="username" placeholder="Username" />
+						<?php
+                                                echo $this->formText($pesel);
+                                                $pesel->getMessages();
+                                                echo $this->formElementErrors()->render($pesel, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
 
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label" for="email">Email</label>
+						<?=  $this->formLabel($mail); ?>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" id="email" name="email" placeholder="Email" />
+						<?php
+                                                echo $this->formEmail($mail);
+                                                $mail->getMessages();
+                                                echo $this->formElementErrors()->render($mail, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
 
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label" for="password">Password</label>
+						<?=  $this->formLabel($mail2); ?>
 						<div class="col-sm-6">
-							<input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+						<?php
+                                                echo $this->formEmail($mail2);
+                                                $mail2->getMessages();
+                                                echo $this->formElementErrors()->render($mail2, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
 
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label" for="confirm_password">Confirm password</label>
+						<?=  $this->formLabel($specjalnosc); ?>
 						<div class="col-sm-6">
-							<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm password" />
+						<?php
+                                                echo $this->formText($specjalnosc);
+                                                $specjalnosc->getMessages();
+                                                echo $this->formElementErrors()->render($specjalnosc, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
 
 					<div class="form-group row">
-						<div class="col-sm-6 offset-sm-4">
-							<div class="form-check">
-								<input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input"/>
-								<label class="form-check-label">Please agree to our policy</label>
-							</div>
+						<?=  $this->formLabel($telefon); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formTel($telefon);
+                                                $telefon->getMessages();
+                                                echo $this->formElementErrors()->render($telefon, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
-
-					<div class="form-group row">
-						<div class="col-sm-9 offset-sm-4">
-							<button type="submit" class="btn btn-primary" name="signup" value="Sign up">Sign up</button>
+                            <div class="form-group row">
+						<?=  $this->formLabel($opis); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formTextarea($opis);
+                                                $opis->getMessages();
+                                                echo $this->formElementErrors()->render($opis, ['class' => 'text-danger']);
+                                                ?>
 						</div>
 					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+<div class="form-group row">
+    <div col-sm-4 col-form-label>
+         <div class="float-left">
+             <?php
+             
+           $link=$this->lekarz->getZdjecie();
+              if(!$link){
+                 $link='/public/img/Anonymous_male.jpg';
+              }
+              
+             ?>
+     <figure class="figure">
+   <img width="200" class="rounded mx-auto d-block img-thumbnail" alt="Nasi Lekarze" src="<?= $this->baseUrl.$link;?>"/> 
+  <figcaption class="figure-caption">W celu zmiany zdjęciu wybierz je z komputera.</figcaption>
+</figure>        
+             
+  
+    </div>
+    </div>
+    <div class="col-sm-6">
+        <?php
+        echo $this->formFile($file);
+        $file->getMessages();
+        echo $this->formElementErrors()->render($file, ['class' => 'text-danger']);
+        ?>
+    </div>
+    
+</div> 
+      
+	
 </div>
+ <div class="col-sm-12  btn btn-secondary btn-lg btn-block">
+<?=  $this->formHidden($hiddenId);  ?>    
+<?=  $this->formSubmit($submit);  ?>
+	</div>
+    </div>
+        </div>
+</div>
+  <?= $this->form()->closeTag();  ?>
 
 
 <script type="text/javascript">
-		$.validator.setDefaults( {
-			submitHandler: function () {
-				alert( "submitted!" );
-			}
-		} );
+                  // Replace the <textarea id="editor1"> with a CKEditor 4
+                // instance, using default configuration.
+   CKEDITOR.replace( 'opis', {
+  language: 'pl',
+   uiColor: '#9AB8F3'
+});
+    
 
 		$( document ).ready( function () {
-			$( "#signupForm" ).validate( {
+                    
+                    $( "input:blank" ).css( "background-color", "#bbbbff" );
+                    
+			$("#dodaj_form_lekarz").validate( {
 				rules: {
-					firstname: "required",
-					lastname: "required",
-					username: {
+					"lekarz_fieldset[imie]": 
+                                                {
+                                                    required: true,
+                                                    minlength: 2,
+                                                    polskieznaki: true,
+                                                },
+					"lekarz_fieldset[nazwisko]": 
+                                                {
+                                                    required: true,
+                                                    minlength: 2,
+                                                    polskieznaki: true,
+                                                },
+                                        "lekarz_fieldset[pesel]":
+                                                {
 						required: true,
-						minlength: 2
+                                                pesel: true,
+                                                 },
+                                        "lekarz_fieldset[mail]":
+                                                {
+						required: true,
+                                                email: true,
+                                                 },         
+						
+					confirm_mail:  {
+						required: true,
+                                                equalTo: "#mail",
+						
 					},
-					password: {
-						required: true,
-						minlength: 5
-					},
-					confirm_password: {
-						required: true,
-						minlength: 5,
-						equalTo: "#password"
+					 "lekarz_fieldset[specjalnosc]": {
+						polskieznaki: true,
 					},
 					email: {
 						required: true,
-						email: true
+						email: true,
 					},
-					agree: "required"
+					agree: "required",
 				},
 				messages: {
-					firstname: "Please enter your firstname",
-					lastname: "Please enter your lastname",
-					username: {
-						required: "Please enter a username",
-						minlength: "Your username must consist of at least 2 characters"
-					},
-					password: {
-						required: "Please provide a password",
-						minlength: "Your password must be at least 5 characters long"
+					"lekarz_fieldset[imie]": 
+                                                {
+                                                required: "Please enter a imię", 
+                                                minlength: "Your imie must consist of at least 2 characters"
+                                                },
+					"lekarz_fieldset[nazwisko]": 
+                                                 {
+                                                required: "Please enter a nazwisko", 
+                                                minlength: "Your imie must consist of at least 2 characters"
+                                                },
+					   "lekarz_fieldset[pesel]":
+                                                   {
+						required: "Numer PESEL jest obowiązkowy",
+                                                pesel: "Wprowadź poprawny numer PESEL",
+                                                    },
+                                             "lekarz_fieldset[mail]":
+                                                   {
+						required: "Mail jest obowiązkowy",
+                                                email: "Wprowadź poprawny format Maila",
+                                                    },        
+                                             "lekarz_fieldset[specjalnosc]": 
+                                                {
+						polskieznaki: "Wymagany polski format znaków",
 					},
 					confirm_password: {
 						required: "Please provide a password",

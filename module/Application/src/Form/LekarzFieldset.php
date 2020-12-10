@@ -19,18 +19,17 @@ use Laminas\Db\Adapter\AdapterInterface;
 
 class LekarzFieldset extends Fieldset  {
  
-    public $adapter;
+    //public $adapter;
     
-   public function __construct(AdapterInterface $adapter) {
+   public function __construct() {
        parent::__construct();
-       $this->adapter=$adapter; 
+      // $this->adapter=$adapter; 
    }
     
     public function init() {
         
         $this->setHydrator(new ReflectionHydrator());
-        $this->setObject(new Lekarz('','',$this->adapter));
-
+        $this->setObject(new Lekarz('',''));
         
         $this->add([
             'type' => Hidden::class,

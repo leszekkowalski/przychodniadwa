@@ -49,10 +49,10 @@ class Lekarz implements InputFilterAwareInterface{
     protected $adapterInterface;
 
 
-    public function __construct($imie=null,$nazwisko=null,AdapterInterface $adapter=null) {
+    public function __construct($imie=null,$nazwisko=null) {
         $this->imie=$imie;
         $this->nazwisko=$nazwisko;
-        $this->adapterInterface=$adapter;
+       $this->adapterInterface=$this->pobierzAdapter();
     }
    
    public function getIdlekarz(): int {
@@ -186,6 +186,18 @@ class Lekarz implements InputFilterAwareInterface{
         $this->pesel  = !empty($data['pesel']) ? $data['pesel'] : null;
     }
     
+     protected function pobierzAdapter() {
+        
+    $adapter = new \Laminas\Db\Adapter\Adapter([
+    'driver'   => 'Mysqli',
+    'database' => 'przychodnia',
+    'username' => USERNAME,
+    'password' => PASSWORD,
+]);
+
+       return $adapter;
+    }
+    
 
      public function getInputFilter(): InputFilterInterface {
         
@@ -215,7 +227,7 @@ class Lekarz implements InputFilterAwareInterface{
              ['name'=> \Laminas\Validator\NotEmpty::class],
                ['name'=> \Laminas\Validator\StringLength::class,
                 'options'=>[
-                   'min'=>3,
+                   'min'=>2,
                     'max'=>30,
                     'encoding'=>'UTF-8',
                 ],
@@ -251,7 +263,7 @@ class Lekarz implements InputFilterAwareInterface{
                     ],
                ['name'=> \Laminas\Validator\StringLength::class,
                 'options'=>[
-                    'min'=>3,
+                    'min'=>2,
                     'max'=>50,
                     'encoding'=>'UTF-8',
                            ]
@@ -275,6 +287,7 @@ class Lekarz implements InputFilterAwareInterface{
                         'table'   => 'lekarz',
                          'field'   => 'pesel',
                         'adapter' => $this->adapterInterface,
+                       // 'adapter' => $this->pobierzAdapter(),
                         'messages' => array(
                          \Laminas\Validator\Db\NoRecordExists::ERROR_RECORD_FOUND => 'Taki PESEL  już istnieje w bazie'
                      )
@@ -298,6 +311,7 @@ class Lekarz implements InputFilterAwareInterface{
                         'table'   => 'lekarz',
                          'field'   => 'pesel',
                          'adapter' => $this->adapterInterface,
+                      // 'adapter' => $this->pobierzAdapter(),
                        'exclude' => [
                               'field' => 'pesel',
                                'value' => $this->pesel,
@@ -329,7 +343,7 @@ class Lekarz implements InputFilterAwareInterface{
                         'table'   => 'lekarz',
                          'field'   => 'mail',
                         'adapter' => $this->adapterInterface,
-                       //
+                    //  'adapter' => $this->pobierzAdapter(),
                         'messages' => array(
                          \Laminas\Validator\Db\NoRecordExists::ERROR_RECORD_FOUND => 'Taki adres email już istnieje w bazie'
                      )
@@ -353,6 +367,7 @@ class Lekarz implements InputFilterAwareInterface{
                         'table'   => 'lekarz',
                          'field'   => 'mail',
                          'adapter' => $this->adapterInterface,
+                       //  'adapter' => $this->pobierzAdapter(),
                         'exclude' => [
                               'field' => 'mail',
                                'value' => $this->mail,
@@ -401,18 +416,12 @@ class Lekarz implements InputFilterAwareInterface{
                ['name'=> Filter\StripTags::class],
             ],
            'validators'=>[
-             //  ['name'=> \Laminas\Validator\StringLength::class,
-             //   'options'=>[
-              //      'min'=>11,
-              //      'max'=>13,
-               //     'encoding'=>'UTF-8',
-               // ],
-               //    ],
+             //  ['name'=> \Application\Form\Element\Telefon::class,],
                 ['name'=> \Laminas\Validator\Regex::class,
                     'options'=>[
-                        'pattern'=>"/^\+{1}[0-9]{2}[ ]{1}\d{9,11}$/",
+                        'pattern'=>"/^\+{1}[0-9]{2}\s?\d{9}$/",
                         'messages'=>[
-                        \Laminas\Validator\Regex::NOT_MATCH=>'Proszę wstawić telefon w formacie +48 607345765',
+                        \Laminas\Validator\Regex::NOT_MATCH=>'Proszę wstawić telefon w formacie +48607345765ee',
                         ]
                    ],
                     ],

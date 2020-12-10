@@ -10,7 +10,8 @@ use Laminas\View\Model\ViewModel;
 use Application\Polaczenie\LekarzPolaczenie;
 use Application\Model\Lekarz;
 use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
-
+use InvalidArgumentException;
+use Application\Service\ZdjecieManager;
 
 class LekarzController extends AbstractController{
     
@@ -18,12 +19,16 @@ class LekarzController extends AbstractController{
 
     protected $lekarzDodajForm;
     
+    protected $managerZdjecie;
+
+
     public $flashMessenger; 
     
- public function __construct(LekarzPolaczenie $lekarzDb, LekarzDodajForm $lekarzDodajForm ) {
+ public function __construct(LekarzPolaczenie $lekarzDb, LekarzDodajForm $lekarzDodajForm, ZdjecieManager $managerZdjecie ) {
      
      $this->lekarzDb=$lekarzDb;
      $this->lekarzDodajForm=$lekarzDodajForm;
+     $this->managerZdjecie=$managerZdjecie;
      $this->flashMessenger = new FlashMessenger();
  }   
   
@@ -32,7 +37,7 @@ class LekarzController extends AbstractController{
 
     $paginator=$this->lekarzDb->paginatorLekarz(true);
     
-$ileNaStrone=2;    
+$ileNaStrone=4;    
         
      // Set the current page to what has been passed in query string,
     // or to 1 if none is set, or the page is invalid:
@@ -48,13 +53,14 @@ $ileNaStrone=2;
             'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
             'page'=>$page,
+            'ileNaStrone'=>$ileNaStrone,
                 ]);
  }
  
  public function dodajAction() {
      
     $request   = $this->getRequest();
-    $imie=$this->lekarzDodajForm->get('lekarz_fieldset')->get('imie');
+    
     $viewModel = new ViewModel([
         'form' => $this->lekarzDodajForm,
         'flashMessenger'=> $this->flashMessenger,
@@ -89,20 +95,107 @@ $ileNaStrone=2;
  
  public function edytujAction() {
      
-     $id=(int)$this->params()->fromRoute('id',0);
+    $id=(int)$this->params()->fromRoute('id',0);
      if(!$id){
          $this->redirect()->toRoute('lekarz');
      }
      try{
          $lekarz=$this->lekarzDb->pobierzJedenLekarz($id);
-     } catch (\Exception $ex) {
-
-         throw $ex;
+     } catch (InvalidArgumentException $ex) {
+         
+        $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addErrorMessage('Błąd podczas poberania danych. Powiadom administratora !');
+        $this->redirect()->toRoute('lekarz');
      }
      
+     $this->lekarzDodajForm->bind($lekarz);
      
+     $view=new ViewModel(['form'=>$this->lekarzDodajForm,'baseUrl'=>$this->baseUrl,'lekarz'=>$lekarz]);
+     
+     $request=$this->getRequest();
+     if(!$request->isPost()){
+         return $view;
+     }
+     
+     $data= array_merge_recursive(
+                 $request->getPost()->toArray(),
+                 $request->getFiles()->toArray()
+                  );
+     
+     $this->lekarzDodajForm->setData($data);
+     
+     if(! $this->lekarzDodajForm->isValid()){
+         return $view;
+     }
+     
+     $nazwaPlikuStara=$data['file']['name'];
+     $nazwaPlikuStaraBaza=$lekarz->getZdjecie();
+     if(!$nazwaPlikuStara){
+         $lekarzPoWpisie=$this->lekarzDb->updateLekarz($lekarz);
+         
+         if($lekarzPoWpisie){ 
+          $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addSuccessMessage('Zaktualizowano lekarza: '.$lekarz->getImie().' '.$lekarz->getNazwisko());
+        $this->redirect()->toRoute('lekarz');   
+         }else{
+        $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addErrorMessage('Błąd podczas aktualizowania lekarza.');
+        $this->redirect()->toRoute('lekarz'); 
+             
+         }
+         
+   
+     }else{
+         
+
+        $nowaNazwa=$this->managerZdjecie->zmienNazwe($nazwaPlikuStara,$lekarz->getIdlekarz());
+        
+        if($nowaNazwa=='Błąd zmiany nazwy pliku'){
+           $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addErrorMessage('Błąd podczas pobierania danych. Bład zmiany nazwy pliku. Powiadom administratora !');
+        $this->redirect()->toRoute('lekarz'); 
+        }
+        
+        $this->managerZdjecie->setLinkZdjecie($nowaNazwa);
+        $szerokosc=(int)250;
+        $wynik=$this->managerZdjecie->zmniejszZdjecie($szerokosc);
+        if($wynik==0){
+            $wynik=$this->managerZdjecie->usunPlik();
+            if($wynik){
+               $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addErrorMessage('Błąd podczas pobierania danych. Bład zmiany rozmiaru pliku. Powiadom administratora !');
+        $this->redirect()->toRoute('lekarz');  
+            }
+        }
+        
+        
+        $lekarzPoWpisie=$this->lekarzDb->updateLekarz($lekarz,$nowaNazwa);
+         
+         if($lekarzPoWpisie){
+             
+          if($nowaNazwa!=$nazwaPlikuStaraBaza){
+              
+              if(isset($nazwaPlikuStaraBaza)){
+           if (file_exists($nazwaPlikuStaraBaza)) {
+                unlink($nazwaPlikuStaraBaza);
+           }
+         }   
+          }
+          $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addSuccessMessage('Zaktualizowano lekarza: '.$lekarz->getImie().' '.$lekarz->getNazwisko());
+        $this->redirect()->toRoute('lekarz'); 
+        
+         }else{
+             
+        $this->managerZdjecie->usunPlik();     
+        $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addErrorMessage('Błąd podczas aktualizowania lekarza.');
+        $this->redirect()->toRoute('lekarz'); 
+             
+         }   
+     }   
  }
- 
+ /////////////////////////////////////////////////////////////////////////////
  
  
 }
