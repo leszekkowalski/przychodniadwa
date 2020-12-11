@@ -208,7 +208,8 @@ private function fetchPaginatedResults()
 
         }else{
           $select=$sql->select('lekarz');
-          $select=$select->where(['pesel'=>$pesel,new \Laminas\Db\Sql\Predicate\NotIn('idlekarz',array( $idlekarz))])->limit(1) ; 
+          //$select=$select->where(['pesel'=>$pesel,new \Laminas\Db\Sql\Predicate\NotIn('idlekarz',array( $idlekarz))])->limit(1) ; 
+           $select=$select->where(['pesel'=>$pesel,new \Laminas\Db\Sql\Predicate\Operator('idlekarz', '!=', $idlekarz)])->limit(1) ;           
         }
         
         $rezultat=$sql->prepareStatementForSqlObject($select);
@@ -230,11 +231,16 @@ private function fetchPaginatedResults()
         
     }
 
-     public function sprawdzMailJson($mail) {
+     public function sprawdzMailJson($mail,$idlekarz) {
         
         $sql=new Sql($this->adapter);
         $select=$sql->select('lekarz');
+        if($idlekarz==0){
         $select=$select->where(['mail'=>$mail])->limit(1);
+        }else{
+        $select=$select->where(['mail'=>$mail, new \Laminas\Db\Sql\Predicate\Operator('idlekarz', '!=', $idlekarz)])->limit(1);   
+        }
+        
         $rezultat=$sql->prepareStatementForSqlObject($select);
        $wynik=$rezultat->execute();
        

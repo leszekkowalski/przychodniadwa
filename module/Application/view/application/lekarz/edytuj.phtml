@@ -276,6 +276,7 @@ echo $this->form()->openTag($form);
 });
     
 const check_pesel="http://localhost/przychodniadwa/check_pesel";
+const check_mail="http://localhost/przychodniadwa/check_mail";
 
 		$( document ).ready( function () {
                     
@@ -316,6 +317,18 @@ const check_pesel="http://localhost/przychodniadwa/check_pesel";
                                                 {
 						required: true,
                                                 email: true,
+                                                remote: {
+                                                   url: check_mail,
+                                                    type: "POST",
+                                                   data: {
+                                                    mail: function() {
+                                                    return $( "#mail" ).val();
+                                                                    },
+                                                    idlekarz: function() {
+                                                    return $( "#idlekarz" ).val();
+                                                                    },
+                                                         },     
+                                                        },
                                                  },         
 						
 					confirm_mail:  {
@@ -353,6 +366,7 @@ const check_pesel="http://localhost/przychodniadwa/check_pesel";
                                                    {
 						required: "Mail jest obowiązkowy",
                                                 email: "Wprowadź poprawny format Maila",
+                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny"),
                                                     },        
                                              "lekarz_fieldset[specjalnosc]": 
                                                 {

@@ -57,11 +57,12 @@ class LekarzjsonController extends AbstractController{
       if ($this->getRequest()->isPost()){ 
       
     $mail = $this->params()->fromPost('mail', 1);  
+    $idlekarz=$this->params()->fromPost('idlekarz',0);
       if($mail==1){
           $this->redirect()->toRoute('lekarz');
       }
       
-      $wynik=$this->polaczenieDb->sprawdzMailJson($mail);
+      $wynik=$this->polaczenieDb->sprawdzMailJson($mail,$idlekarz);
       if($wynik){
           $odpowiedz='true';
       }else{
