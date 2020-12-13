@@ -53,7 +53,6 @@ $ileNaStrone=4;
             'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
             'page'=>$page,
-            'ileNaStrone'=>$ileNaStrone,
                 ]);
  }
  

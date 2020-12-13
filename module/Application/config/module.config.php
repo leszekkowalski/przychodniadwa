@@ -32,6 +32,7 @@ return [
             Lekarz::class=> LekarzFactory::class,
             LekarzPolaczenie::class=> Polaczenie\Factory\LekarzPolaczenieFactory::class,
             Service\ZdjecieManager::class => InvokableFactory::class,
+            Polaczenie\UzytkownikPolaczenie::class=> Polaczenie\Factory\UzytkownikPolaczenieFactory::class,
         ],
     ],
     
@@ -40,6 +41,7 @@ return [
             Controller\IndexController::class => Controller\Factory\IndexControllerFactory::class,
             Controller\LekarzController::class=> Controller\Factory\LekarzControllerFactory::class,
             Controller\LekarzjsonController::class=> Controller\Factory\LekarzjsonControllerFactory::class,
+            Controller\UzytkownikController::class=> Controller\Factory\UzytkownikControllerFactory::class,
         ],
     ],
 
@@ -148,6 +150,27 @@ return [
                 ],
             ],
             //////////////////////////////////////////////
+              ////////////////////////////////////////////////
+            'uzytkownik' => [
+                'type'    => Segment::class,
+                'options' => [
+                     'route' => '/uzytkownik[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                        
+                    ],
+                    'defaults' => [
+                        'controller'    => Controller\UzytkownikController::class,
+                        'action'        => 'index',
+                    ],
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                 
+                ],
+            ],
+            
         ],
     ],
    

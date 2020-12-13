@@ -186,7 +186,7 @@ class Lekarz implements InputFilterAwareInterface{
         $this->pesel  = !empty($data['pesel']) ? $data['pesel'] : null;
     }
     
-     protected function pobierzAdapter() {
+     static function pobierzAdapter() {
         
     $adapter = new \Laminas\Db\Adapter\Adapter([
     'driver'   => 'Mysqli',
@@ -218,7 +218,7 @@ class Lekarz implements InputFilterAwareInterface{
              ////////////////////////////////////
         $inputFilter->add([
             'name'=>'imie',
-            'require'=>true,
+            'required'=>true,
             'filters'=>[
               ['name' => StringTrim::class] ,
                ['name'=> \Laminas\Filter\StripTags::class],
@@ -234,7 +234,7 @@ class Lekarz implements InputFilterAwareInterface{
                    ],
                 ['name'=> \Laminas\Validator\Regex::class,
                     'options'=>[
-                        'pattern'=>"/[a-zA-ZąśłżźńćęŚ ŻĆŁ]+$/",
+                        'pattern'=>"/[a-zA-ZęóśłżźćńÓŚŁŻŹŃ\s\'\-]+$/",
                         'messages'=>[
                         \Laminas\Validator\Regex::NOT_MATCH=>'Wpisałeś niedozwolone znaki',
                         ]
@@ -246,7 +246,7 @@ class Lekarz implements InputFilterAwareInterface{
         ///////////////////////////////////////// 
              $inputFilter->add([
             'name'=>'nazwisko',
-            'require'=>true,
+            'required'=>true,
             'filters'=>[
                ['name'=> \Laminas\Filter\StripTags::class] ,
                ['name'=> \Laminas\Filter\StringTrim::class] ,
@@ -255,7 +255,7 @@ class Lekarz implements InputFilterAwareInterface{
                 ['name'=> \Laminas\Validator\NotEmpty::class],
                 ['name'=> \Laminas\Validator\Regex::class,
                     'options'=>[
-                        'pattern'=>"/[a-zA-ZąśłżńźćęŚŻĆŁ -]+$/",
+                        'pattern'=>"/[a-zA-ZęóśłżźćńÓŚŁŻŹŃ\s\'\-]+$/",
                         'messages'=>[
                         \Laminas\Validator\Regex::NOT_MATCH=>'Wpisałeś niedozwolone znaki',
                         ]
@@ -276,7 +276,7 @@ class Lekarz implements InputFilterAwareInterface{
         if(!$this->pesel){
         $inputFilter->add([
             'name'=>'pesel',
-            'require'=>true,
+            'required'=>true,
             'filters'=>[
              ['name'=> \Laminas\Filter\StringTrim::class]   ,
             ],
@@ -300,7 +300,7 @@ class Lekarz implements InputFilterAwareInterface{
         }else{
            $inputFilter->add([
             'name'=>'pesel',
-            'require'=>true,
+            'required'=>true,
             'filters'=>[
             ['name'=> \Laminas\Filter\StringTrim::class]   ,
             ],

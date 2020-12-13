@@ -52,6 +52,7 @@ public function __construct(AdapterInterface $adapter, HydratorInterface $hydrat
                     'options' => [
                         'cache_dir' => 'data/cache',
                         'ttl' => 600,
+                        'namespace' => 'lekarz',
                      //  'writable'=>true,
                     ]
                 ],
@@ -123,9 +124,6 @@ private function fetchPaginatedResults()
         $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
         $wynikSet->initialize($wynik);
         
-        
-        
-
         // Create a new pagination adapter object:
         $paginatorAdapter = new DbSelect(
             // our configured select object:
