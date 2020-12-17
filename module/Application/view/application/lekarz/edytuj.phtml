@@ -333,17 +333,15 @@ const check_mail="http://localhost/przychodniadwa/check_mail";
 						
 					confirm_mail:  {
 						required: true,
+                                                email: true,
                                                 equalTo: "#mail",
 						
 					},
 					 "lekarz_fieldset[specjalnosc]": {
 						polskieznaki: true,
 					},
-					email: {
-						required: true,
-						email: true,
-					},
-					agree: "required",
+					
+				//	agree: "required",
 				},
 				messages: {
 					"lekarz_fieldset[imie]": 
@@ -366,19 +364,22 @@ const check_mail="http://localhost/przychodniadwa/check_mail";
                                                    {
 						required: "Mail jest obowiązkowy",
                                                 email: "Wprowadź poprawny format Maila",
-                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny"),
-                                                    },        
+                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny")
+                                                    },
+                                                    
+                                              confirm_mail:  {
+						required: "Wprowadzene ponownego maila jest obowiązkowe",
+                                                email: "Wprowadź poprawny format Maila",
+                                               equalTo: "Wprowadz identyczny adres maila" 
+						
+					},      
                                              "lekarz_fieldset[specjalnosc]": 
                                                 {
-						polskieznaki: "Wymagany polski format znaków",
-					},
-					confirm_password: {
-						required: "Please provide a password",
-						minlength: "Your password must be at least 5 characters long",
-						equalTo: "Please enter the same password as above"
-					},
-					email: "Please enter a valid email address",
-					agree: "Please accept our policy"
+						polskieznaki: "Wymagany polski format znaków"
+					}
+				
+					
+					//agree: "Please accept our policy"
 				},
 				errorElement: "em",
 				errorPlacement: function ( error, element ) {

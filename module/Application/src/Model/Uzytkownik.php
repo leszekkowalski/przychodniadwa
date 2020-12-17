@@ -30,6 +30,13 @@ protected $lekarz_idlekarz2;
  */
 
 protected $rola;
+/**
+ *
+ * @var type string
+ * pola 'imie' i 'nazwisko' z tabeli lekarz
+ */
+protected $lekarz_imie;
+protected $lekarz_nazwisko;
 
     public function __construct() {
         
@@ -107,6 +114,15 @@ protected $rola;
     public function getRola() {
         return $this->rola;
     }
+    
+    public function getLekarzImie() {
+        return $this->lekarz_imie;
+    }
+    
+    public function getLekarzNazwisko() {
+        return $this->lekarz_nazwisko;
+    }
+    
     
     public function getInputFilter(): InputFilterInterface {
         if ($this->inputFilter) {

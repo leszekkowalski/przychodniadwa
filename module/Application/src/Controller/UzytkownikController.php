@@ -20,7 +20,24 @@ class UzytkownikController extends AbstractController{
     
 public function indexAction() {
     
-    $uzytkownicy=$this->dbUzytkownik->paginatorUzytkownik();
+    $paginator=$this->dbUzytkownik->paginatorUzytkownik(false);
+    $array=$paginator->toArray();
+    $ileNaStrone=8;    
+     /**    
+    $page = (int) $this->params()->fromQuery('page', 1);
+    $page = ($page < 1) ? 1 : $page;
+    
+    $paginator->setCurrentPageNumber($page);
+    // Set the number of items per page to 2:
+    $paginator->setItemCountPerPage($ileNaStrone);   
+    */    
+        return new ViewModel([
+            'baseUrl'=>$this->baseUrl,
+            'paginator'=>$array,
+            'ileNaStrone'=>$ileNaStrone,
+            'page'=>$page,
+                ]);
+    
 }
  
  

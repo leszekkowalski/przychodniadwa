@@ -10,6 +10,7 @@ use Laminas\Db\Sql\Sql;
 use RuntimeException;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
+use Laminas\Paginator\Adapter\DbSelect;
 
 
 class UzytkownikPolaczenie {
@@ -57,9 +58,10 @@ class UzytkownikPolaczenie {
     $sql=new Sql($this->adapter);
       $select=$sql->select();
       $select->from('uzytkownik',array('iduzytkownik','imie','nazwisko','mail','status','lekarz_idlekarz2'));
-      $select->join('rola_has_uzytkownik','uzytkownik.iduzytkownik=rola_has_uzytkownik.uzytkownik_iduzytkownik');
+    //  $select->join('lekarz', 'uzytkownik.lekarz_idlekarz2=lekarz.idlekarz', array('lekarz_imie'=>'imie','lekarz_nazwisko'=>'nazwisko'),'inner');
+    //  $select->join('rola_has_uzytkownik','uzytkownik.iduzytkownik=rola_has_uzytkownik.uzytkownik_iduzytkownik');
      
-    $select->join('rola','rola_has_uzytkownik.rola_idrola=rola.idrola',array('rola'=>'name'),'inner');
+   // $select->join('rola','rola_has_uzytkownik.rola_idrola=rola.idrola',array('rola'=>'name'),'right');
     
       $rezultat=$sql->prepareStatementForSqlObject($select);
        $wynik=$rezultat->execute();
@@ -77,12 +79,13 @@ private function fetchPaginatedResults()
     {
         // Create a new Select object for the table:
         $sql=new Sql($this->adapter);
-        $select=$sql->select('uzytkownik');
+       //$select=$sql->select('uzytkownik');
        $select=$sql->select();
        $select->from('uzytkownik',array('iduzytkownik','imie','nazwisko','mail','status','lekarz_idlekarz2'));
-      $select->join('rola_has_uzytkownik','uzytkownik.iduzytkownik=rola_has_uzytkownik.uzytkownik_iduzytkownik');
-     
-    $select->join('rola','rola_has_uzytkownik.rola_idrola=rola.idrola',array('rola'=>'name'),'inner');
+     //  $select->join('lekarz', 'uzytkownik.lekarz_idlekarz2=lekarz.idlekarz', array('lekarz_imie'=>'imie','lekarz_nazwisko'=>'nazwisko'));
+     // $select->join('rola_has_uzytkownik','uzytkownik.iduzytkownik=rola_has_uzytkownik.uzytkownik_iduzytkownik');
+   // $select->join('rola','rola_has_uzytkownik.rola_idrola=rola.idrola',array('rola'=>'name'),'inner');
+   // $select->where->isNull('rola.name');
   
         $rezultat=$sql->prepareStatementForSqlObject($select);
        $wynik=$rezultat->execute();
