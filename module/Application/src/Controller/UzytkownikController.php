@@ -4,39 +4,53 @@ namespace Application\Controller;
 
 
 use Application\Polaczenie\UzytkownikPolaczenie;
+use Application\Polaczenie\LekarzPolaczenie;
 use Application\Model\Uzytkownik;
 use Laminas\View\Model\ViewModel;
+
 
 class UzytkownikController extends AbstractController{
     
     protected $dbUzytkownik;
+    protected $dblekarz;
 
-
-    public function __construct(UzytkownikPolaczenie $dbUzytkownik) {
+    public function __construct(UzytkownikPolaczenie $dbUzytkownik, LekarzPolaczenie $dblekarz) {
      
         $this->dbUzytkownik=$dbUzytkownik;
-        
+        $this->dblekarz=$dblekarz;
  }   
     
 public function indexAction() {
     
-    $paginator=$this->dbUzytkownik->paginatorUzytkownik(false);
-    $array=$paginator->toArray();
-    $ileNaStrone=8;    
-     /**    
+    $paginator=$this->dbUzytkownik->paginatorUzytkownik(true);
+    
+    //$uzytkownicyArray=$this->dbUzytkownik->findAllUzytkownicy();
+    $lekarzArrayId=$this->dblekarz->pobierzWszystkoLekarzId();
+    
+    
+    
+    $ileNaStrone=4;    
+    
+
+         
     $page = (int) $this->params()->fromQuery('page', 1);
     $page = ($page < 1) ? 1 : $page;
     
     $paginator->setCurrentPageNumber($page);
     // Set the number of items per page to 2:
     $paginator->setItemCountPerPage($ileNaStrone);   
-    */    
+        
         return new ViewModel([
             'baseUrl'=>$this->baseUrl,
-            'paginator'=>$array,
+            'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
+            'lekarzId'=>$lekarzArrayId,
             'page'=>$page,
                 ]);
+    
+}
+
+public function dodajAction() {
     
 }
  

@@ -11,6 +11,7 @@ use RuntimeException;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Cache;
 
 
 class UzytkownikPolaczenie {
@@ -113,17 +114,19 @@ private function fetchPaginatedResults()
     
     public function findAllUzytkownicy(){
         
+        $wynikPobrania=self::$cache->getItem('wynikSetArray');
         
+        if(!$wynikPobrania){
         $sql=new Sql($this->adapter);
         $select=$sql->select('uzytkownik');
         $rezultat=$sql->prepareStatementForSqlObject($select);
         $wynik=$rezultat->execute();
        // $uzytkownik=array();
-       // foreach ($wynik as $a=>$b){
+      //  foreach ($wynik as $a=>$b){
       //      echo 'Informacja o uzytkowniku nr'.($a+1)."\n";
-      //      foreach ($b as $key=>$value){
-       //        echo $uzytkownik[$a][$key]=$value." ".$key.'   '; 
-       //     }
+         //   foreach ($b as $key=>$value){
+          //     $uzytkownik[$a][$key]=$value; 
+          //  }
       //  }
         if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
             throw new RuntimeException(sprintf(
@@ -133,7 +136,21 @@ private function fetchPaginatedResults()
        
          $wynikSet = new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
         $wynikSet->initialize($wynik);
-        return $wynikSet;
+        $wynikSetArray=$wynikSet->toArray();
+        $wynikaSetArrrayId=array();
+        foreach ($wynikSetArray as $tablica){
+           $wynikaSetArrrayId[$tablica['iduzytkownik']] =$tablica;
+        }
+        
+        
+        self::$cache->setItem('wynikSetArray',$wynikSetArray);
+        }else{
+           $wynikSetArray=$wynikPobrania; 
+        }
+        
+        //var_dump($wynikPobrania);exit();
+        
+        return $wynikSetArray;
     }  
     
 }

@@ -8,7 +8,6 @@ use Application\Controller\AbstractController;
 use Application\Form\LekarzDodajForm;
 use Laminas\View\Model\ViewModel;
 use Application\Polaczenie\LekarzPolaczenie;
-use Application\Model\Lekarz;
 use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 use InvalidArgumentException;
 use Application\Service\ZdjecieManager;

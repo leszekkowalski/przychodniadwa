@@ -6,9 +6,8 @@
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/UzytkownikController.php</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/view/application/lekarz/index.phtml</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Polaczenie/UzytkownikPolaczenie.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Model/Uzytkownik.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/view/layout/layout.phtml</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/view/application/uzytkownik/index.phtml</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/LekarzController.php</file>
         </group>
     </open-files>
 </project-private>

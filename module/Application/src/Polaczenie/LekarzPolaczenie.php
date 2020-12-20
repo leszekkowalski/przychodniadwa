@@ -59,6 +59,7 @@ public function __construct(AdapterInterface $adapter, HydratorInterface $hydrat
                 'plugins' => ['serializer'],
             ]);
             Paginator::setCache(self::$cache);
+            
         }
              
 }  
@@ -70,7 +71,6 @@ public function pobierzWszystkoLekarz(){
         $select=$select->columns(['idlekarz','imie','nazwisko','plec','zdjecie','mail','specjalnosc','telefon','opis']);
         $rezultat=$sql->prepareStatementForSqlObject($select);
         $wynik=$rezultat->execute();
-        
         if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
             throw new RuntimeException(sprintf(
             'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
@@ -81,6 +81,40 @@ public function pobierzWszystkoLekarz(){
         return $wynikSet;
     
 }
+
+    public function pobierzWszystkoLekarzId(): array {
+    
+        $wynikSet=self::$cache->getItem('pobierzWszystkoLekarzId');
+        $wynikSetId=array();
+        if(!$wynikSet){
+        $sql=new Sql($this->adapter);
+        $select=$sql->select('lekarz');
+        $select=$select->columns(['idlekarz','imie','nazwisko']);
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
+        $wynikSet->initialize($wynik);
+        $wynikSetArray=$wynikSet->toArray();
+        
+        foreach ($wynikSetArray as $lekarz){
+            $wynikSetId[$lekarz['idlekarz']]['idlekarz']=$lekarz['idlekarz'];
+            $wynikSetId[$lekarz['idlekarz']]['imie']=$lekarz['imie'];
+            $wynikSetId[$lekarz['idlekarz']]['nazwisko']=$lekarz['nazwisko'];
+        }
+        self::$cache->setItem('pobierzWszystkoLekarzId',$wynikSetId);
+        }else{
+            
+         $wynikSetId=$wynikSet;   
+        }
+        
+        return $wynikSetId;
+    
+    }
+
 
 public function paginatorLekarz($paginated = false){
     
@@ -140,6 +174,9 @@ private function fetchPaginatedResults()
     
     public function wpiszLekarz(Lekarz $lekarz) : Lekarz {
         
+        $lekarzeId=$this->pobierzWszystkoLekarzId();
+       // $ids= array_keys($lekarzeId);
+        
         
         $peselValidator=new PeselValidator();
         $peselValidator->setPesel($lekarz->getPesel());
@@ -169,6 +206,13 @@ private function fetchPaginatedResults()
         $idLekarz=$wynik->getGeneratedValue();
         $lekarz->setPlec($plec);
         $lekarz->setIdlekarz($idLekarz);
+        
+        $lekarzeId[$idLekarz]['idlekarz']=$idLekarz;
+        $lekarzeId[$idLekarz]['imie']=$lekarz->getImie();
+        $lekarzeId[$idLekarz]['nazwisko']=$lekarz->getNazwisko();
+        self::$cache->replaceItem('pobierzWszystkoLekarzId',$lekarzeId);
+        
+        
         return $lekarz;
         
     }

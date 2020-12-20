@@ -1,6 +1,42 @@
 <?php
-//echo count($paginator);
-//foreach ($paginator as $uzytkownik){
-  //  echo $uzytkownik->getLekarzImie().' __ '.$uzytkownik->getNazwisko().'  ';
-//}
-echo $paginator[0]['imie'];
+$title = 'Zarządzaj - Użytkownicy Przychodni';
+$this->headTitle($title);
+
+
+  $licznik=1;
+  if($page==2){
+    $licznik=$ileNaStrone+1;
+  }
+  if($page>2){
+      $licznik=$page*$ileNaStrone-1;
+  }
+?>
+<div id="licznik" style="display: none;" title="<?= $ileNaStrone  ?>"><?= $licznik ?></div>
+<div class="card-deck" id="wpisz">
+ <div class="card">
+        <h2 class="card-header mx-auto">Zarządzaj Użytkownikami</h2>
+ <div>
+        <?= $this->partial('partial/flashMessenger.phtml'); ?>
+</div>
+        
+        
+        
+        
+</div>
+        
+</div>
+
+
+<div class="jumbotron" style="margin-top: 10px;margin-bottom: 5px;padding-top: 10px; padding-bottom: 1px;">
+<?= $this->paginationControl(
+    // The paginator object:
+    $this->paginator,
+    // The scrolling style:
+    'sliding',
+    // The partial to use to render the control:
+    'partial/paginator',
+    // The route to link to when a user clicks a control link:
+    ['route' => 'uzytkownik']
+) ?>
+
+</div>        
