@@ -8,7 +8,7 @@ $this->headTitle($title);
     $licznik=$ileNaStrone+1;
   }
   if($page>2){
-      $licznik=$page*$ileNaStrone-1;
+      $licznik=($page-1)*$ileNaStrone+1;
   }
 ?>
 <div id="licznik" style="display: none;" title="<?= $ileNaStrone  ?>"><?= $licznik ?></div>
@@ -18,10 +18,104 @@ $this->headTitle($title);
  <div>
         <?= $this->partial('partial/flashMessenger.phtml'); ?>
 </div>
+      
+<?php
+
+if(count($this->paginator)>0){
+?>
+
+<div class="table-responsive">
+  <table class="table table-hover text-center">
+    
+     <tr>
+        <th>L.p.</th>
+        <th>Email</th>
+        <th>Imię i nazwisko</th>
+        <th>Status</th>  
+        <th>Przypisany Lekarz</th> 
+        <th>Zarządzaj</th>        
+    </tr> 
+      <?php
+    
+     foreach ($this->paginator as $uzytkownik):
+      ?>
+      <tr>
+      <td><?= $licznik++ ?></td>
+        <td><?= $uzytkownik->getMail() ?></td>
+        <td><?= $uzytkownik->getImie().' '.$uzytkownik->getNazwisko() ?></td>
+        <td><?= $uzytkownik->getStatus() ?></td>
+      <?php
+      
+       if($uzytkownik->getLekarz()!=null)  {
+             $idl=$uzytkownik->getLekarz();
+          
+            $nazwa= $lekarzArrayId[$idl]['nazwisko'].' '.$lekarzArrayId[$idl]['imie'];
+              
+              ?>
+               <td>
+       <a style="color: red" href="<?= $this->url('uzytkownik', ['action' => 'pokaz', 'id' => $idl]) ?>" title="Pokaż widok lekarza" target="_blank">
+              <?php echo $nazwa; ?>
+             </a>
+       </td>
+              
+          <?php    
+          }else{  ?>
+          <td> 
+              
+          <a href="<?= $this->url('uzytkownik', ['action' => 'dodajlekarz', 'id' => $idl]) ?>" title="Przypisz lekarza do użytkownika">
+              <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
+  <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+              </svg><?php echo 'Przypisz lekarza' ?>
+             </a>
+          
+          
+          </td>
+        <?php  }
+
+      ?>
+      
+       <td>  
+       <a href="<?= $this->url('uzytkownik', ['action' => 'edytuj', 'id' => $uzytkownik->getIduzytkownik()]) ?>" title="Edytuj dane ">
+              <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
+  <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+              </svg>Edytuj
+             </a>
+           &nbsp;
+           <a href="<?= $this->url('uzytkownik', ['action' => 'usun', 'id' => $uzytkownik->getIduzytkownik()]) ?>" title="Usuń  ">
+              <svg class="bi bi-x-octagon-fill" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zm.394 4.708a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z"/>
+            </svg>Usuń
+             </a>
+       &nbsp;
+           <a href="<?= $this->url('uzytkownik', ['action' => 'zmien-haslo', 'id' => $uzytkownik->getIduzytkownik()]) ?>" title="Zmień hasło  ">
+              <svg class="bi bi-unlock-fill" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/>
+  <path fill-rule="evenodd" d="M8.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/>
+</svg>Zmień hasło
+             </a>
+       
+       </td>
+      </tr>
+      <?php
+      endforeach;
+      ?>
+  </table>
+</div>
+
+<?php
+}else{
+    ?>
+  <div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>Uwaga !</strong> Baza danych nie posiada jeszcze żadnego wpisu Uzytkownika.
+  </div> 
+<?php    
+}
+?>      
         
-        
-        
-        
+      
 </div>
         
 </div>

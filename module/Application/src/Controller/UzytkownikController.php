@@ -44,7 +44,7 @@ public function indexAction() {
             'baseUrl'=>$this->baseUrl,
             'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
-            'lekarzId'=>$lekarzArrayId,
+            'lekarzArrayId'=>$lekarzArrayId,
             'page'=>$page,
                 ]);
     

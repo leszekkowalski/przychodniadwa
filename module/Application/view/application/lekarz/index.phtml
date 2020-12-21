@@ -9,7 +9,7 @@ $this->headTitle($title);
     $licznik=$ileNaStrone+1;
   }
   if($page>2){
-      $licznik=$page*$ileNaStrone-1;
+      $licznik=($page-1)*$ileNaStrone+1;
   }
 ?>
 <div id="licznik" style="display: none;" title="<?= $ileNaStrone  ?>"><?= $licznik ?></div>
