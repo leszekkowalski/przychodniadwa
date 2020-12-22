@@ -12,7 +12,7 @@ use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Paginator\Adapter\DbSelect;
 use Application\Polaczenie\LekarzPolaczenie;
-
+use Laminas\Cache\Storage\StorageInterface;
 
 class UzytkownikPolaczenie {
     
@@ -22,32 +22,16 @@ class UzytkownikPolaczenie {
     
     protected $uzytkownikPrototype;
     
-    protected static $cache2;
+    protected  $cache;
 
 
-    public function __construct(AdapterInterface $adapter, HydratorInterface $hydrator, Uzytkownik $uzytkownikPrototype) {
+    public function __construct(AdapterInterface $adapter, HydratorInterface $hydrator, Uzytkownik $uzytkownikPrototype, StorageInterface $cache) {
      
         $this->adapter=$adapter;
         $this->hydrator=$hydrator;
         $this->uzytkownikPrototype=$uzytkownikPrototype;
-        /**  
-        if(empty(self::$cache2)){
-            self::$cache2= \Laminas\Cache\StorageFactory::factory([
-                 'adapter' => [
-                    'name' => 'filesystem',
-                    'options' => [
-                        'cache_dir' => 'data/cache/uzytkownik',
-                        'ttl' => 600,
-                        'namespace' => 'uzytkownik',
-                     //  'writable'=>true,
-                    ]
-                ],
-                'plugins' => ['serializer'],
-            ]);
-             Paginator::setCache(self::$cache2);
-        };
-         */
-        
+        $this->cache=$cache;
+       
     }
     
     public function paginatorUzytkownik($paginated = false){
@@ -115,7 +99,7 @@ private function fetchPaginatedResults()
     public function findAllUzytkownicy(){
         
        // $wynikPobrania=self::$cache->getItem('wynikSetArray');
-        $wynikPobrania= LekarzPolaczenie::$cache->getItem('wynikSetArray');
+        $wynikPobrania= $this->cache->getItem('wynikSetArray');
         
         if(!$wynikPobrania){
         $sql=new Sql($this->adapter);
@@ -144,7 +128,7 @@ private function fetchPaginatedResults()
         }
         
         
-        LekarzPolaczenie::$cache->setItem('wynikSetArray',$wynikSetArray);
+        $this->cache->setItem('wynikSetArray',$wynikSetArray);
         }else{
            $wynikSetArray=$wynikPobrania; 
         }

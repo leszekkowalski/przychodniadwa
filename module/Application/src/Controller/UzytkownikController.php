@@ -26,7 +26,7 @@ public function indexAction() {
     $paginator=$this->dbUzytkownik->paginatorUzytkownik(true);
 
     $lekarzArrayId=$this->dblekarz->pobierzWszystkoLekarzId();
-    
+    $d=$this->dbUzytkownik->findAllUzytkownicy();
     
     $ileNaStrone=4;    
     

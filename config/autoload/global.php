@@ -11,7 +11,7 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-
+use Laminas\Cache\Storage\Adapter\Filesystem;
 
 return array (
     'db' => array(
@@ -21,4 +21,31 @@ return array (
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
         )
     ),
+    
+    // Cache configuration.
+    'caches' => [
+        'KonfiguracjaPamieciCache' => [
+            'adapter' => [
+                'name'    => Filesystem::class,
+                'options' => [
+                    // Store cached data in this directory.
+                    'cache_dir' => './data/cache',
+                    // Store cached data for 1 hour.
+                    'ttl' => 60*60*1 ,
+                    'namespace' => 'przychodnia',
+                ],
+            ],
+            'plugins' => [
+                [
+                    'name' => 'serializer',
+                    'options' => [                        
+                    ],
+                ],
+            ],
+        ],
+    ],
+    //... 
+    
+    
+    
 );

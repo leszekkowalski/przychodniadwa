@@ -16,6 +16,8 @@ use Laminas\Paginator\Paginator;
 use Laminas\Db\Sql\Insert;
 use Application\Validator\PeselValidator;
 use Laminas\Db\Sql\Update;
+use Laminas\Cache\Storage\StorageInterface;
+
 
 class LekarzPolaczenie{
     /**
@@ -34,14 +36,15 @@ class LekarzPolaczenie{
      */
     private $lekarzPrototype;
     
-    public static $cache;
+    protected $cache;
 
-public function __construct(AdapterInterface $adapter, HydratorInterface $hydrator, Lekarz $lekarzPrototype) {
+public function __construct(AdapterInterface $adapter, HydratorInterface $hydrator, Lekarz $lekarzPrototype, StorageInterface $cache) {
     
         $this->adapter=$adapter;
         $this->hydrator=$hydrator;
         $this->lekarzPrototype=$lekarzPrototype;
-       
+       $this->cache=$cache;
+       /**
        if (empty(self::$cache)) { 
             // ustawiamy cache o typie plików tekstowych w katalogu data/cache oraz
             // stosujemy konwersję seliazierow'ą do przechowywania danych
@@ -61,7 +64,10 @@ public function __construct(AdapterInterface $adapter, HydratorInterface $hydrat
             Paginator::setCache(self::$cache);
             
         }
-             
+        */ 
+       // if(($this->cache)){
+            Paginator::setCache($this->cache);
+       // }
 }  
 
 public function pobierzWszystkoLekarz(){
@@ -84,7 +90,7 @@ public function pobierzWszystkoLekarz(){
 
     public function pobierzWszystkoLekarzId(): array {
     
-        $wynikSet= self::$cache->getItem('pobierzWszystkoLekarzId');
+        $wynikSet= $this->cache->getItem('pobierzWszystkoLekarzId');
         $wynikSetId=array();
         if(!$wynikSet){
         $sql=new Sql($this->adapter);
@@ -105,7 +111,7 @@ public function pobierzWszystkoLekarz(){
             $wynikSetId[$lekarz['idlekarz']]['imie']=$lekarz['imie'];
             $wynikSetId[$lekarz['idlekarz']]['nazwisko']=$lekarz['nazwisko'];
         }
-        self::$cache->setItem('pobierzWszystkoLekarzId',$wynikSetId);
+        $this->cache->setItem('pobierzWszystkoLekarzId',$wynikSetId);
         }else{
             
          $wynikSetId=$wynikSet;   
@@ -210,7 +216,7 @@ private function fetchPaginatedResults()
         $lekarzeId[$idLekarz]['idlekarz']=$idLekarz;
         $lekarzeId[$idLekarz]['imie']=$lekarz->getImie();
         $lekarzeId[$idLekarz]['nazwisko']=$lekarz->getNazwisko();
-        self::$cache->replaceItem('pobierzWszystkoLekarzId',$lekarzeId);
+        $this->cache->replaceItem('pobierzWszystkoLekarzId',$lekarzeId);
         
         
         return $lekarz;
