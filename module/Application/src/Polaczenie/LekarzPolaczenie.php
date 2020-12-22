@@ -34,7 +34,7 @@ class LekarzPolaczenie{
      */
     private $lekarzPrototype;
     
-    protected static $cache;
+    public static $cache;
 
 public function __construct(AdapterInterface $adapter, HydratorInterface $hydrator, Lekarz $lekarzPrototype) {
     
@@ -84,7 +84,7 @@ public function pobierzWszystkoLekarz(){
 
     public function pobierzWszystkoLekarzId(): array {
     
-        $wynikSet=self::$cache->getItem('pobierzWszystkoLekarzId');
+        $wynikSet= self::$cache->getItem('pobierzWszystkoLekarzId');
         $wynikSetId=array();
         if(!$wynikSet){
         $sql=new Sql($this->adapter);

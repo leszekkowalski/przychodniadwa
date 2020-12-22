@@ -9,6 +9,7 @@ use Application\Model\Uzytkownik;
 use Laminas\View\Model\ViewModel;
 
 
+
 class UzytkownikController extends AbstractController{
     
     protected $dbUzytkownik;
@@ -23,10 +24,8 @@ class UzytkownikController extends AbstractController{
 public function indexAction() {
     
     $paginator=$this->dbUzytkownik->paginatorUzytkownik(true);
-    
-    //$uzytkownicyArray=$this->dbUzytkownik->findAllUzytkownicy();
+
     $lekarzArrayId=$this->dblekarz->pobierzWszystkoLekarzId();
-    
     
     
     $ileNaStrone=4;    

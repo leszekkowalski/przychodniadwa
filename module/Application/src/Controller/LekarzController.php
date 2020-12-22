@@ -194,6 +194,26 @@ $ileNaStrone=4;
      }   
  }
  /////////////////////////////////////////////////////////////////////////////
- 
+ public function pokazAction() {
+     
+     $id=(int)$this->params()->fromRoute('id',0);
+     if(!$id){
+         $this->redirect()->toRoute('lekarz');
+     }
+     try{
+         $lekarz=$this->lekarzDb->pobierzJedenLekarz($id);
+     } catch (InvalidArgumentException $ex) {
+         
+        $flashMessenger=$this->flashMessenger;
+        $flashMessenger->addErrorMessage('Błąd podczas poberania danych. Powiadom administratora !');
+        $this->redirect()->toRoute('lekarz');
+     } 
+     
+      return new ViewModel([
+            'baseUrl'=>$this->baseUrl,
+            'lekarz'=>$lekarz,
+                ]);
+     
+ }
  
 }

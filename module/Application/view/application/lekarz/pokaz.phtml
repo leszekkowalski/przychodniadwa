@@ -1,0 +1,38 @@
+<div class="card-deck" id="pobierz">       
+    <div class="card">
+        <h2 class="card-header"><?= $lekarz->getImie().' '.$lekarz->getNazwisko();?></h2>
+        <div class="card-body">
+            <div class="border bg-light">
+   
+         <div style="float: left;margin-right: 5px">
+             <?php
+             
+            $link=$lekarz->getZdjecie();
+              if(!$link){
+                 $link='/public/img/Anonymous_male.jpg';
+              }
+              
+             ?>
+             
+            <img width="200" class="rounded mx-auto d-block img-thumbnail" alt="Nasi Lekarze" src="<?= $this->baseUrl.$link;?>"/> 
+        </div>
+        <div>
+            <span><?= $lekarz->getOpis(); ?></span></n>   
+        </div>
+         <div>
+             <span>Specjalność: <?= $lekarz->getSpecjalnosc(); ?> </span>     
+        </div>
+        <div>
+         <span>Telefon: <?= $lekarz->getTelefon(); ?> </span>   
+        </div>
+        <div>
+             <span>Mail: <?= $lekarz->getMail(); ?> </span>     
+        </div>     
+         
+    </div>
+            <a class="btn btn-primary" href="<?= $this->url('lekarz', ['action' => 'pokaz','id'=>$lekarz->getIdlekarz()]) ?>">Umów wizytę &raquo;</a>
+        </div>
+    </div>
+  
+       
+</div>

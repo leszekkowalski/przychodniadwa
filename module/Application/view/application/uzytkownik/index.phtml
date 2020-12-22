@@ -2,7 +2,6 @@
 $title = 'Zarządzaj - Użytkownicy Przychodni';
 $this->headTitle($title);
 
-
   $licznik=1;
   if($page==2){
     $licznik=$ileNaStrone+1;
@@ -15,6 +14,13 @@ $this->headTitle($title);
 <div class="card-deck" id="wpisz">
  <div class="card">
         <h2 class="card-header mx-auto">Zarządzaj Użytkownikami</h2>
+        
+    <div style="margin-top:10px;">     
+ <a href="<?= $this->url('uzytkownik', ['action' => 'dodaj']) ?>" title="Dodaj Użytkownika">
+<button type="button" class="btn btn-primary btn-lg btn-block">Dodaj Użytkownika</button>            
+ </a>        
+   </div>  
+        
  <div>
         <?= $this->partial('partial/flashMessenger.phtml'); ?>
 </div>
