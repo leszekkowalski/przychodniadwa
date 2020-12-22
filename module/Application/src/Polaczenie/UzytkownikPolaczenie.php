@@ -31,7 +31,24 @@ class UzytkownikPolaczenie {
         $this->hydrator=$hydrator;
         $this->uzytkownikPrototype=$uzytkownikPrototype;
         $this->cache=$cache;
-       
+        /**  
+        if(empty(self::$cache2)){
+            self::$cache2= \Laminas\Cache\StorageFactory::factory([
+                 'adapter' => [
+                    'name' => 'filesystem',
+                    'options' => [
+                        'cache_dir' => 'data/cache/uzytkownik',
+                        'ttl' => 600,
+                        'namespace' => 'uzytkownik',
+                     //  'writable'=>true,
+                    ]
+                ],
+                'plugins' => ['serializer'],
+            ]);
+             Paginator::setCache(self::$cache2);
+        };
+         */
+        
     }
     
     public function paginatorUzytkownik($paginated = false){
