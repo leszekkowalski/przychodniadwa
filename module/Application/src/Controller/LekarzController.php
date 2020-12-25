@@ -48,7 +48,7 @@ $ileNaStrone=4;
     $paginator->setItemCountPerPage($ileNaStrone);   
         
         return new ViewModel([
-            'baseUrl'=>$this->baseUrl,
+           // 'baseUrl'=>$this->baseUrl,
             'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
             'page'=>$page,
@@ -210,7 +210,7 @@ $ileNaStrone=4;
      } 
      
       return new ViewModel([
-            'baseUrl'=>$this->baseUrl,
+           // 'baseUrl'=>$this->baseUrl,
             'lekarz'=>$lekarz,
                 ]);
      

@@ -27,4 +27,5 @@ return [
     'Laminas\Validator',
     'Laminas\DeveloperTools',
     'Application',
+    'Autoryzacja',
 ];

@@ -40,7 +40,7 @@ public function indexAction() {
     $paginator->setItemCountPerPage($ileNaStrone);   
         
         return new ViewModel([
-            'baseUrl'=>$this->baseUrl,
+           // 'baseUrl'=>$this->baseUrl,
             'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
             'lekarzArrayId'=>$lekarzArrayId,

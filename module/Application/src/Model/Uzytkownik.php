@@ -10,6 +10,9 @@ use Application\Model\Lekarz;
 
 
 class Uzytkownik implements InputFilterAwareInterface{
+
+const STATUS_AKTYWNY=1;
+const STATUS_NIEAKTYWNY=0;
     
 public $inputFilter;
 
@@ -67,10 +70,10 @@ protected $lekarz_nazwisko;
        $this->mail=$mail; 
     }
     public function getStatus() {
-        if($this->status==1){
+        if($this::STATUS_AKTYWNY){
             return 'AKTYWNY';
         }else{
-            if($this->status==0){
+            if($this::STATUS_NIEAKTYWNY){
                 return 'NIE AKTYWNY';
             }else{
                 return 'NIEZNANY';

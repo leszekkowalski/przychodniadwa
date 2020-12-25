@@ -12,6 +12,7 @@
  * file.
  */
 use Laminas\Cache\Storage\Adapter\Filesystem;
+use Laminas\Session;
 
 return array (
     'db' => array(
@@ -45,7 +46,32 @@ return array (
         ],
     ],
     //... 
+   ////konfiguracja danych sesji... 
+    'session_manager' => [
+        'config' => [
+            'class' => Session\Config\SessionConfig::class,
+            'options' => [
+                'name' => 'przychodnia_leszka',
+                 ],
+             ],
+        'storage' => Session\Storage\SessionArrayStorage::class,
+        'validators' => [
+            Session\Validator\RemoteAddr::class,
+            Session\Validator\HttpUserAgent::class,
+        ],
+    ],
+     'session_storage' => [
+        'type' => Laminas\Session\Storage\SessionArrayStorage::class,
+    ],
+    'session_config'  => [
+         // Session cookie will expire in 1 hour.
+                'cookie_lifetime' => 60*60*1,     
+                // Session data will be stored on server maximum for 30 days.
+                'gc_maxlifetime'     => 60*60*24*30,     
+    ],
     
-    
-    
+     'session_containers' => [
+      Laminas\Session\Container::class, 
+    ],
+   ////////////////////////koniec konfiguraja dla Sesji 
 );

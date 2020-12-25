@@ -11,6 +11,11 @@ declare(strict_types=1);
 namespace Application;
 
 use Laminas\Mvc\MvcEvent;
+use Laminas\Session\SessionManager;
+use Laminas\Mvc\ModuleRouteListener;
+use Laminas\Session\Container;
+use Laminas\Session\Validator;
+use Laminas\Session\Config\SessionConfig;
 
 class Module
 {
@@ -23,6 +28,16 @@ class Module
         //rejestruje metodę  dla eventu render
         $app=$e->getApplication();
         $app->getEventManager()->attach('render', [$this, 'ustawLayout'], 100);
+        
+        $eventManager        = $e->getApplication()->getEventManager();
+        $moduleRouteListener = new ModuleRouteListener();
+        $moduleRouteListener->attach($eventManager);
+        $this->SesjaNaBootstrap($e);
+        
+        // The following line instantiates the SessionManager and automatically
+        // makes the SessionManager the 'default' one.
+        
+        
     }
     
     public function ustawLayout(MvcEvent $e){
@@ -44,4 +59,111 @@ class Module
        //ustawiam nową strategie dla Laminas/View
        $view->getEventManager()->attach($jsonStrategy,100);
     }
+    
+    public function SesjaNaBootstrap(MvcEvent $e){
+        
+         $session = $e->getApplication()
+            ->getServiceManager()
+            ->get(SessionManager::class);
+        $session->start();
+
+        $container = new Container('initialized');
+
+        if (isset($container->init)) {
+            return;
+        }
+
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $request        = $serviceManager->get('Request');
+
+        $session->regenerateId(true);
+        $container->init          = 1;
+        $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
+        $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
+
+        $config = $serviceManager->get('Config');
+        if (! isset($config['session'])) {
+            return;
+        }
+
+        $sessionConfig = $config['session'];
+
+        if (! isset($sessionConfig['validators'])) {
+            return;
+        }
+
+        $chain   = $session->getValidatorChain();
+        
+        foreach ($sessionConfig['validators'] as $validator) {
+            switch ($validator) {
+                case Validator\HttpUserAgent::class:
+                    $validator = new $validator($container->httpUserAgent);
+                    break;
+                case Validator\RemoteAddr::class:
+                    $validator  = new $validator($container->remoteAddr);
+                    break;
+                default:
+                    $validator = new $validator();
+                    break;
+            }
+
+            $chain->attach('session.validate', array($validator, 'isValid'));
+        }
+        
+    }
+    
+    public function getServiceConfig()
+    {
+        return [
+            'factories' => [
+                SessionManager::class => function ($container) {
+                    $config = $container->get('config');
+                    if (! isset($config['session'])) {
+                        $sessionManager = new SessionManager();
+                        Container::setDefaultManager($sessionManager);
+                        return $sessionManager;
+                    }
+
+                    $session = $config['session'];
+
+                    $sessionConfig = null;
+                    if (isset($session['config'])) {
+                        $class = isset($session['config']['class'])
+                            ?  $session['config']['class']
+                            : SessionConfig::class;
+
+                        $options = isset($session['config']['options'])
+                            ?  $session['config']['options']
+                            : [];
+
+                        $sessionConfig = new $class();
+                        $sessionConfig->setOptions($options);
+                    }
+
+                    $sessionStorage = null;
+                    if (isset($session['storage'])) {
+                        $class = $session['storage'];
+                        $sessionStorage = new $class();
+                    }
+
+                    $sessionSaveHandler = null;
+                    if (isset($session['save_handler'])) {
+                        // class should be fetched from service manager
+                        // since it will require constructor arguments
+                        $sessionSaveHandler = $container->get($session['save_handler']);
+                    }
+
+                    $sessionManager = new SessionManager(
+                        $sessionConfig,
+                        $sessionStorage,
+                        $sessionSaveHandler
+                    );
+
+                    Container::setDefaultManager($sessionManager);
+                    return $sessionManager;
+                },
+            ],
+        ];
+    }
+    
 }
