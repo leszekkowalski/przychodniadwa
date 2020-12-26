@@ -6,7 +6,8 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'controllers' => [
         'factories' => [
-        Controller\Autoryzacja::class=> InvokableFactory::class,
+            Controller\AutoryzacjaController::class=> InvokableFactory::class,
+            Controller\RejestracjaController::class=> InvokableFactory::class,
         ],
     ],
     
@@ -20,7 +21,7 @@ return [
                     // Change this to something specific to your module
                     'route'    => '/autoryzacja',
                     'defaults' => [
-                        'controller'    => Controller\Autoryzacja::class,
+                        'controller'    => Controller\AutoryzacjaController::class,
                         'action'        => 'index',
                     ],
                 ],
@@ -30,6 +31,19 @@ return [
                     // route defined above here.
                 ],
             ],
+            ////////////////////////////////////
+              'rejestruj' => [
+                'type'    => 'Literal',
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/rejestruj',
+                    'defaults' => [
+                        'controller'    => Controller\RejestracjaController::class,
+                        'action'        => 'index',
+                    ],
+                ],
+            ],
+          ////////////////////////////////////////////////////////////////////  
         ],
     ],
     'view_manager' => [

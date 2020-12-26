@@ -210,7 +210,7 @@ $ileNaStrone=4;
      } 
      
       return new ViewModel([
-           // 'baseUrl'=>$this->baseUrl,
+            'baseUrl'=>$this->baseUrl,
             'lekarz'=>$lekarz,
                 ]);
      

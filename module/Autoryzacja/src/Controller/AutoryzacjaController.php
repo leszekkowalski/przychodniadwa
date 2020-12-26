@@ -8,10 +8,11 @@
 namespace Autoryzacja\Controller;
 
 use Application\Controller\AbstractController;
+use Laminas\View\Model\ViewModel;
 
 
 
-class Autoryzacja extends AbstractController
+class AutoryzacjaController extends AbstractController
 {
     public function indexAction()
     {
