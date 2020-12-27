@@ -13,6 +13,7 @@ class Uzytkownik implements InputFilterAwareInterface{
 
 const STATUS_AKTYWNY=1;
 const STATUS_NIEAKTYWNY=0;
+const STATUS_NIEOKRESLONY=2;
     
 public $inputFilter;
 
@@ -69,11 +70,15 @@ protected $lekarz_nazwisko;
     public function setMail($mail) {
        $this->mail=$mail; 
     }
+    
+    public function getStatusId() {
+        return $this->status;
+    }
     public function getStatus() {
-        if($this::STATUS_AKTYWNY){
+        if($this->getStatusId()==1){
             return 'AKTYWNY';
         }else{
-            if($this::STATUS_NIEAKTYWNY){
+            if($this->getStatusId()==0){
                 return 'NIE AKTYWNY';
             }else{
                 return 'NIEZNANY';

@@ -153,7 +153,34 @@ private function fetchPaginatedResults()
         //var_dump($wynikPobrania);exit();
         
         return $wynikSetArray;
-    }  
+    } 
+    
+    public function uzytkownikindexjson($ileNaStrone,$page) {
+        
+        if($page==1){
+            $offset=0;
+        }else{
+            $offset=(int)(($page-1)*$ileNaStrone);
+        }
+        $sql=new Sql($this->adapter);
+        
+        $select=$sql->select('uzytkownik');
+        $select=$select->columns(['iduzytkownik','imie','nazwisko','mail','status','lekarz_idlekarz2']);
+        $select->limit($ileNaStrone)->offset($offset);
+
+       $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+        
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+        
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
+        $wynikSet->initialize($wynik);
+        return $wynikSet;
+    }
+    
     
 }
 

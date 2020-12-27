@@ -115,6 +115,19 @@ return [
                     ],
                 ],
             ],
+            ////////////////////////////////////////////////
+             ////////////////////////////////////////////////
+              'check_uzytkownik_index' => [
+                'type'    => Literal::class,
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/check_uzytkownik_index',
+                    'defaults' => [
+                        'controller'    => Controller\LekarzjsonController::class,
+                        'action'        => 'uzytkownikindexjson',
+                    ],
+                ],
+            ],
             
             ////////////////////////////////////////////////
             'lekarz' => [
@@ -167,8 +180,9 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                 
+                     
                 ],
+                           
             ],
             
         ],
