@@ -28,7 +28,10 @@
         "laminas/laminas-mvc-plugin-flashmessenger": "^1.2",
         "laminas/laminas-json": "^3.1",
         "james-heinrich/phpthumb": "^1.7",
-        "masterexploder/phpthumb": "^2.1"
+        "masterexploder/phpthumb": "^2.1",
+        "laminas/laminas-authentication": "^2.7",
+        "laminas/laminas-crypt": "^3.3",
+        "laminas/laminas-uri": "^2.8"
     },
     "autoload": {
         "psr-4": {

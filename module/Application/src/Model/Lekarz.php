@@ -49,9 +49,8 @@ class Lekarz implements InputFilterAwareInterface{
     protected $adapterInterface;
 
 
-    public function __construct($imie=null,$nazwisko=null) {
-        $this->imie=$imie;
-        $this->nazwisko=$nazwisko;
+    public function __construct() {
+       
        $this->adapterInterface=$this->pobierzAdapter();
     }
    

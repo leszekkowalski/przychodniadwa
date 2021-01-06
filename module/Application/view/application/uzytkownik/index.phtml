@@ -10,8 +10,8 @@ $this->headTitle($title);
       $licznik=($page-1)*$ileNaStrone+1;
   }
 ?>
-<div id="licznik" style="display: none;" title="<?= $ileNaStrone  ?>"><?= $licznik ?></div>
-<div class="card-deck" id="wpisz">
+<div id="licznik" style="display: none;" title="<?= $ileNaStrone  ?>" opis="<?= $this->baseUrl  ?>"><?= $licznik ?></div>
+<div class="card-deck">
  <div class="card">
         <h2 class="card-header mx-auto">Zarządzaj Użytkownikami</h2>
         
@@ -59,7 +59,7 @@ if(count($this->paginator)>0){
               
               ?>
                <td>
-       <a style="color: red" href="<?= $this->url('uzytkownik', ['action' => 'pokaz', 'id' => $idl]) ?>" title="Pokaż widok lekarza" target="_blank">
+       <a style="color: red" href="<?= $this->url('lekarz', ['action' => 'pokaz', 'id' => $idl]) ?>" title="Pokaż widok lekarza" target="_blank">
               <?php echo $nazwa; ?>
              </a>
        </td>
@@ -68,7 +68,7 @@ if(count($this->paginator)>0){
           }else{  ?>
           <td> 
               
-          <a href="<?= $this->url('uzytkownik', ['action' => 'dodajlekarz', 'id' => $idl]) ?>" title="Przypisz lekarza do użytkownika">
+          <a href="<?= $this->url('uzytkownik', ['action' => 'dodajlekarz', 'id' => $uzytkownik->getIduzytkownik()]) ?>" title="Przypisz lekarza do użytkownika">
               <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
   <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -148,6 +148,7 @@ if(count($this->paginator)>0){
 
 let page=null;
 let url=window.location.href;
+
 let koncowka=url.lastIndexOf("?page=");
 
 if(koncowka===-1){
@@ -159,8 +160,9 @@ if(koncowka===-1){
 
 let licznik=document.getElementById("licznik").innerText;
 let ileNaStrone=document.getElementById("licznik").attributes.title.value;
-
-//console.log(ileNaStrone);
+//const baseUrl=document.getElementById("licznik").attributes.opis.value;
+const baseUrl=$('#licznik').attr('opis');
+//console.log(baseUrl2);
 
 $(document).ready(function(){
     
@@ -192,23 +194,23 @@ $("#sortujUzytkownikPoNazwisku").on("click", function(event){
       
       if((data[i]['idlekarz'])==0){
  
-       wpisz+=('<td><a href="/przychodniadwa/uzytkownik/dodaj-lekarz/'+data[i]['iduzytkownik']+'" title="Przypisz lekarza do użytkownika">');
+       wpisz+=('<td><a href="'+baseUrl+'/uzytkownik/dodajlekarz/'+data[i]['iduzytkownik']+'" title="Przypisz lekarza do użytkownika">');
        wpisz+=('<svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/><path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></svg>Przypisz lekarza</a></td>'); 
           
     }else{
         
          let idl=data[i]['idlekarz'];
-        wpisz+=('<td><a style="color: red" href="/przychodniadwa/lekarz/pokaz/'+idl+'" title="Pokaż widok uzytkownika" target="_blank">'+data[i]['imie_nazwisko_lekarz']+'</a></td>');  
+        wpisz+=('<td><a style="color: red" href="'+baseUrl+'/lekarz/pokaz/'+idl+'" title="Pokaż widok uzytkownika" target="_blank">'+data[i]['imie_nazwisko_lekarz']+'</a></td>');  
        
        }
        
-        wpisz+=('<td><a href="/przychodniadwa/uzytkownik/edytuj/'+data[i]['iduzytkownik']+'"title="Edytuj dane ">');
+        wpisz+=('<td><a href="'+baseUrl+'/uzytkownik/edytuj/'+data[i]['iduzytkownik']+'"title="Edytuj dane ">');
         wpisz+=('<svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/><path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></svg>Edytuj</a>');
         wpisz+=(' ');   
-        wpisz+=('<a href="/przychodniadwa/uzytkownik/usun/'+data[i]['iduzytkownik']+'"title="Usuń">');
+        wpisz+=('<a href="'+baseUrl+'/uzytkownik/usun/'+data[i]['iduzytkownik']+'"title="Usuń">');
         wpisz+=('<svg class="bi bi-x-octagon-fill" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zm.394 4.708a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z"/></svg>Usuń</a>');
        wpisz+=(' ');
-        wpisz+=('<a href="/przychodniadwa/uzytkownik/zmien-haslo/'+data[i]['iduzytkownik']+'"title="Zmień hasło  ">');
+        wpisz+=('<a href="'+baseUrl+'/uzytkownik/zmien-haslo/'+data[i]['iduzytkownik']+'"title="Zmień hasło  ">');
          wpisz+=('<svg class="bi bi-unlock-fill" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/><path fill-rule="evenodd" d="M8.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/></svg>Zmień hasło</a></td></tr>');
              
         $('#sortuj').append(wpisz);

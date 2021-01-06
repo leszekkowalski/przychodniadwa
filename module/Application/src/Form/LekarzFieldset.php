@@ -29,7 +29,7 @@ class LekarzFieldset extends Fieldset  {
     public function init() {
         
         $this->setHydrator(new ReflectionHydrator());
-        $this->setObject(new Lekarz('',''));
+        $this->setObject(new Lekarz());
         
         $this->add([
             'type' => Hidden::class,

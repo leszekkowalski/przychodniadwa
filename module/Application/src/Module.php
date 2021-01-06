@@ -16,6 +16,9 @@ use Laminas\Mvc\ModuleRouteListener;
 use Laminas\Session\Container;
 use Laminas\Session\Validator;
 use Laminas\Session\Config\SessionConfig;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Autoryzacja\Service\LogowanieAuth;
+use Autoryzacja\Controller\AutoryzacjaController;
 
 class Module
 {
@@ -28,8 +31,19 @@ class Module
         //rejestruje metodę  dla eventu render
         $app=$e->getApplication();
         $app->getEventManager()->attach('render', [$this, 'ustawLayout'], 100);
-        
+        //pobieram event manager
         $eventManager        = $e->getApplication()->getEventManager();
+        $sharedEventManager=$eventManager->getSharedManager();
+        // rejestruje metodę słuchacza i podpinam do AbstractActionController
+        // w celu działania dla całej aplikacji, na wszystkich stronach
+        $sharedEventManager->attach(
+                AbstractActionController::class, 
+                MvcEvent::EVENT_DISPATCH,
+                [$this,'onDispatch2' ],
+                100
+                );
+        
+        
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         $this->SesjaNaBootstrap($e);
@@ -39,7 +53,14 @@ class Module
         
         
     }
-    
+    /**
+     * 
+     * @param MvcEvent $e
+     * @return type
+     * funkcja ustawia odpowiednią strategię wyswietlania.
+     * Jeśli w nazwie kontrollera znajduje się napis 'json' - ustawia strategię wyswietlania na ViewJsonStrategy
+     * w pozostałych przpadkach bedzie zwykła strategia wyswietlania
+     */
     public function ustawLayout(MvcEvent $e){
         
        $przechwyt=$e->getRouteMatch(); 
@@ -59,7 +80,12 @@ class Module
        //ustawiam nową strategie dla Laminas/View
        $view->getEventManager()->attach($jsonStrategy,100);
     }
-    
+    /**
+     * 
+     * @param MvcEvent $e
+     * @return type
+     * metoda inicjalizuje i ustawia sesję dla całej aplikacji
+     */
     public function SesjaNaBootstrap(MvcEvent $e){
         
          $session = $e->getApplication()
@@ -111,7 +137,11 @@ class Module
         }
         
     }
-    
+    /**
+     * 
+     * @return type
+     * Metoda ustawia fabryke dla sesji oraz konfiguruje jego elementy
+     */
     public function getServiceConfig()
     {
         return [
@@ -164,6 +194,53 @@ class Module
                 },
             ],
         ];
+    }
+    // Metoda detektora zdarzeń dla zdarzenia „onDispatch”. Słuchamy wysyłki
+     //zdarzenie, aby wywołać filtr dostępu. Filtr dostępu pozwala określić, czy
+    // bieżący odwiedzający może oglądać stronę lub nie. Jeśli on / ona
+    // nie jest uwierzytelniony i nie ma dostępu do strony, przekierowujemy użytkownika
+    // do strony logowania.
+    public function onDispatch2(MvcEvent $event)
+    {
+     $controller=$event->getTarget();
+     
+        //pobieram kontroller i akcie z HTTP, który został wysłany
+     $controllerName=$event->getRouteMatch()->getParam('controller', null);
+      $actionName=$event->getRouteMatch()->getParam('action',null);
+        // zmieniam  dash-style action na  camel-case.
+       $actionName= str_replace('-', '', lcfirst(ucwords($actionName,'-'))) ;
+       
+        // Pobieram instancję  LogowanieAuth service.
+       $logowanieAuth=$event->getApplication()->getServiceManager()->get(LogowanieAuth::class);
+       
+       // realizujemy sprawdzenie kontroli dostepu dla wszystkich Controllerów, z wyjatkiem 
+       // AutoryzacjaController 
+       // (aby uniknąć nieskończonego przekierowania)
+       
+       if($controllerName!=AutoryzacjaController::class 
+               && !$logowanieAuth->kontrolaDostepu($controllerName, $actionName)
+         )
+       {
+        //Zapamietujemy adres URL z którego uzytkownik próbuje uzyskac dostep.
+        //Potem przekierowyjemy go do niej po poprawnym logowaniu
+        $uri = $event->getApplication()->getRequest()->getUri();  
+        
+        //Robimy adres URL realtywny(usuwamy user,schema,host and port)
+        //unikamy przekierowania do innej domeny przez złozliwego uzytkownika
+        //powstaje adres wzgledny
+            $uri->setScheme(null)
+                ->setHost(null)
+                ->setPort(null)
+                ->setUserInfo(null);
+          $redirectUrl = $uri->toString();
+          
+        // przekierowujemy uzytkownika do strony logowania.
+            return $controller->redirect()->toRoute('login', [], 
+                    ['query'=>['redirectUrl'=>$redirectUrl]]);  
+          
+       }
+        
+         
     }
     
 }

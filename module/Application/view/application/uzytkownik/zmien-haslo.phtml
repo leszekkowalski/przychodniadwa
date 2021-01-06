@@ -1,1 +1,60 @@
+<?php
+$this->headTitle('Zmiana Hasła');
 
+$haslo=$form->get('haslo');
+$haslo->setAttributes([
+    'class' => 'form-control mb-3',
+    'placeholder'  => 'Wpisz nowe hasło:',
+]);  
+
+$haslo2=$form->get('confirm_haslo');
+$haslo2->setAttributes([
+    'class' => 'form-control mb-3',
+    'placeholder'  => 'Wpisz ponownie hasło:',
+]);
+
+$scrf=$form->get('csrf');
+
+$submit=$form->get('submit')->setAttributes([
+    'class'=>'btn btn-large btn-primary'
+    ]);
+
+
+$form->prepare();
+?>
+
+<div class="row mt-4 ">
+    <div class="col-md-offset-4 col-md-4 mx-auto bg-info pt-3 pb-3" >
+         
+ <?= $this->form()->openTag($form); ?>
+
+<div>
+        <?= $this->partial('partial/flashMessenger.phtml'); ?>
+</div>
+        <div class="text-center text-danger">
+        <h3><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
+  <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+</svg> Zmiana hasła:</h3> 
+        </div>
+        
+          
+            <div class="alert alert-warning" role="alert">
+               dla Użytkownika:  <?= $imie_nazwisko ?> 
+               
+            </div>
+            
+
+        <?php // $this->formLabel($haslo); ?>  
+        <?= $this->formPassword($haslo); ?>
+        <?= $this->formElementErrors()->render($haslo, ['class' => 'help-block']) ?>
+           <?php // $this->formLabel($haslo2); ?>  
+        <?= $this->formPassword($haslo2); ?>
+        <?= $this->formElementErrors()->render($haslo2, ['class' => 'help-block']) ?>
+        <?= $this->formSubmit($submit); ?>
+        
+        <?= $this->formHidden($scrf); ?>
+
+        <?= $this->form()->closeTag(); ?>
+          
+    </div>
+</div>

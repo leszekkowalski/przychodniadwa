@@ -24,8 +24,7 @@ class AbstractController extends AbstractActionController  {
     public function setEventManager(EventManagerInterface $events) {
         
       parent::setEventManager($events);
-        
-        
+          
       $events->attach('dispatch', function ($e) {
           
       $controllerClass = $e->getRouteMatch()->getParam('controller', 'index');
@@ -34,12 +33,11 @@ class AbstractController extends AbstractActionController  {
        //przekazuje baseUrl do szablonu layout.phtml
     $e->getViewModel()->setVariable('baseUrl', $this->getRequest()->getBasePath());      
       
-    $userSession = new Session\Container('uzytkownik');    
+    $userSession = new Session\Container('uzytkownik');  
+    
       if ($userSession->details) {
       $e->getViewModel()->setVariable('uzytkownik', $userSession->details);   
-      }
-   
-                    
+      }           
         }, 100);
         
     

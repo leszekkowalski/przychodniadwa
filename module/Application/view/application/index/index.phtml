@@ -30,9 +30,12 @@ $this->headTitle($title);
 </div>
 </div>
 
-
+<div>
+        <?= $this->partial('partial/flashMessenger.phtml'); ?>
+</div>
 
 <div class="card-deck" id="pobierz">
+       
 <?php  foreach ($this->paginator as $lekarz): ?>
             
     <div class="card">

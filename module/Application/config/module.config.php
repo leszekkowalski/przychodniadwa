@@ -52,6 +52,7 @@ return [
         'factories' => [
             Telefon::class => InvokableFactory::class,
             LekarzFieldset::class=> LekarzFieldsetFactory::class,
+            Form\ZmienHasloForm::class=> InvokableFactory::class,
         ],
     ],
     
@@ -64,6 +65,16 @@ return [
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
+                    ],
+                ],
+            ],
+             'pokaz' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/pokaz',
+                    'defaults' => [
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'pokaz',
                     ],
                 ],
             ],
@@ -216,5 +227,34 @@ data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
         'message_separator_string' => '</li><li>',
     ],
 ],
+    
+ // klucz 'filtr_dostepu' jest stosowany dla uzytkowników w celu zastrzeżenia lub dostepu (wspólnnie np.
+  // z kontrola dostepu przy pomocy seseji) do pewnych lub wszystkich akcji, w tym dla niezautoryzowanych
+    'filtr_dostepu'=>[
+  // 'filtr_dostepu' moze pracować w trybie 'zastrzezony' (ten tryb jest rekomendowany) lub 'pozwalajacy'
+   //W trybie 'zastrzezony' wszystkie akcje kontrolera musza być wpisane w kluczu 'filtr_dostepu' - jesli nie jest 
+  //wpisany dostep do niego jest niemozliwy bez zalogowania sie.
+ //W trybie 'pozwalajacym' jest odwrotnie, jeśli nie jest jawnie wpisany w klucz 'filtr_dostepu'
+  //dostep do niego bedzie dla każdego 
+        'options'=>[
+           'tryb' =>'zastrzezony'
+         //'tryb'=>'pozwalajacy'   
+        ],
+        'controllers'=>[
+            Controller\IndexController::class=>[
+            //dostep jest dla kazdego
+            ['actions' => ['index'], 'allow' => '*'],
+        //dostep tylko dla zalogowanych
+            ['actions' => ['pokaz'], 'allow' => '@']        
+            ] ,
+            Controller\LekarzController::class=>[
+                ['actions'=>['index','dodaj','edytuj','pokaz'],'allow'=>'@'],
+            ],
+            Controller\UzytkownikController::class=>[
+                  ['actions' => ['pokaz'], 'allow' => '*'],
+                  ['actions'=>['index','dodaj','dodajlekarz','zmienHaslo','edytuj','usun'],'allow'=>'@'],  
+            ],
+        ],
+    ],
     
 ];

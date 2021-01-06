@@ -48,7 +48,7 @@ $ileNaStrone=4;
     $paginator->setItemCountPerPage($ileNaStrone);   
         
         return new ViewModel([
-           // 'baseUrl'=>$this->baseUrl,
+           'baseUrl'=>$this->baseUrl,
             'paginator'=>$paginator,
             'ileNaStrone'=>$ileNaStrone,
             'page'=>$page,
@@ -69,7 +69,6 @@ $ileNaStrone=4;
        
         return $viewModel;
     }
-    
     $this->lekarzDodajForm->setData($request->getPost());
 
     if (! $this->lekarzDodajForm->isValid()) {   

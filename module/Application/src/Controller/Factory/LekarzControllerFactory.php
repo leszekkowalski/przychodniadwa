@@ -17,7 +17,6 @@ class LekarzControllerFactory implements FactoryInterface{
         $formManager = $container->get('FormElementManager');
         $managerZdjecie=$container->get(\Application\Service\ZdjecieManager::class);
         return new LekarzController($lekarzDb,$formManager->get(LekarzDodajForm::class),$managerZdjecie);
-        
     }
 
 }

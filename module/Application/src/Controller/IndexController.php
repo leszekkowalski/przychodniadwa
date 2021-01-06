@@ -13,7 +13,7 @@ namespace Application\Controller;
 use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use Application\Polaczenie\LekarzPolaczenie;
-use Application\Model\Lekarz;
+use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 
 
 class IndexController extends AbstractController
@@ -45,5 +45,8 @@ class IndexController extends AbstractController
             'baseUrl'=>$this->baseUrl,
             'paginator'=>$paginator,
                 ]);
+    }
+    public function pokazAction() {
+       
     }
 }

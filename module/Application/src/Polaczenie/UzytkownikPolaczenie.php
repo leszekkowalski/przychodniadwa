@@ -11,8 +11,8 @@ use RuntimeException;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Paginator\Adapter\DbSelect;
-use Application\Polaczenie\LekarzPolaczenie;
 use Laminas\Cache\Storage\StorageInterface;
+use Laminas\Db\Sql\Update;
 
 class UzytkownikPolaczenie {
     
@@ -179,6 +179,83 @@ private function fetchPaginatedResults()
         $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
         $wynikSet->initialize($wynik);
         return $wynikSet;
+    }
+    
+     public function znajdzJedenPoMailUzytkownik(string $mail)
+     {
+        
+        $select=new \Laminas\Db\Sql\Select('uzytkownik');
+        $select=$select->columns(['iduzytkownik','imie','nazwisko','mail','haslo','status','lekarz_idlekarz2']);
+        $select->where(['mail'=>$mail]);
+        $select->limit(1);
+        
+        $sql=new Sql($this->adapter);
+        
+        $rezultat = $sql->prepareStatementForSqlObject($select);
+        $wynik    = $rezultat->execute();
+        
+         if (! $wynik instanceof ResultInterface) {
+        throw new RuntimeException(
+            'Błąd bazy danych podczas pobrania Uzytkownika'
+        );
+    }
+        
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
+        $wynikSet->initialize($wynik);
+        $odbior=$wynikSet->current();
+    
+        return $odbior;
+          
+    }
+    
+    public function znajdzJedenPoIdUzytkownik(int $id): Uzytkownik
+     {
+        
+        $select=new \Laminas\Db\Sql\Select('uzytkownik');
+        $select=$select->columns(['iduzytkownik','imie','nazwisko','mail','status','lekarz_idlekarz2']);
+        $select->where(['iduzytkownik'=>$id]);
+        $select->limit(1);
+        
+        $sql=new Sql($this->adapter);
+        
+        $rezultat = $sql->prepareStatementForSqlObject($select);
+        $wynik    = $rezultat->execute();
+        
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
+        $wynikSet->initialize($wynik);
+        $odbior=$wynikSet->current();
+    
+        return $odbior;
+          
+    }
+    
+    public function zmienHasloUzytkownik(string $haslo, int $id) : bool
+    {
+        if((!(is_int($id))) || (!(is_string($haslo))))
+        {
+            throw new RuntimeException('Nie mozna zaktualizowac danych. Brak hasła lub identifikatora');
+        }
+        
+        $update=new Update('uzytkownik');
+        $update->set([
+            'data_powstania'=> date("Y-m-d H:i:s"),
+            'haslo'=>$haslo
+        ]);
+        $update->where(['iduzytkownik'=>$id]);
+        
+        $sql=new Sql($this->adapter);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        
+        $result = $statement->execute();
+
+        if (! $result instanceof ResultInterface) {
+        throw new RuntimeException(
+            'Błąd bazy danych podczas aktualizacji Uzytkownika'
+        );
+    }
+
+    return true;
+        
     }
     
     
