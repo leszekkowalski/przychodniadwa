@@ -7,7 +7,7 @@
 <html lang="pl">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle('Przychodnia Leszka')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle('Przychodnia')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -99,14 +99,22 @@
   </div>
   </div>
 </nav>
-       
+              
         <div class="container">
+          <?= $this->partial('partial/loguj_wyloguj.phtml'); ?>
+            
             <?= $this->content ?>
+            
             <hr>
             <footer>
                 <p>&copy; <?= date('Y') ?> <a href="<?= $this->url('home') ?>">Przychodnia</a> LS Company S.A..</p>
             </footer>
         </div>
      
+        
+        
+        <?= $this->inlineScript()
+          
+                ?>
     </body>
 </html>

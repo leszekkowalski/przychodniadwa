@@ -1,0 +1,16 @@
+<div class="fixed-top">
+          <div class="float-right badge bg-light p-2">
+
+                    <?php 
+                    
+                   if ($this->uzytkownik){
+                       echo 'Jestes zalogowany jako - '.$this->escapeHtml($this->uzytkownik->getImie().' '.$this->uzytkownik->getNazwisko());?><br>
+                        <a href="<?= $this->url('login',['action' => 'wyloguj']) ?>">Wyloguj się !</a><?php
+                   }else{
+                       ?>
+                      <a href="<?= $this->url('login') ?>">Zaloguj się !</a>
+                       <?php
+                   }
+                    ?>
+          </div>
+</div>
