@@ -1,1 +1,185 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods_PL.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
 
+
+$title = 'Rejestracja';
+$this->headTitle(($title));
+
+//$form=$this->form;
+//$form->setAttribute('action', $this->url('rejestruj'));
+//$form->setAttribute('action', $this->url('rejestruj', ['action' => 'index']));
+$form->setAttribute('id', 'rejestruj');
+$form->setAttributes([
+    'class'=>"form-horizontal",
+]);
+
+$imie=$form->get('imie_nazwisko_fieldset')->get('imie');
+$imie->setAttributes([
+    'id'=>'imie',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj imię:',
+]);
+$imie->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    'for'=>'imie',
+    ]);
+
+$nazwisko=$form->get('imie_nazwisko_fieldset')->get('nazwisko');
+$nazwisko->setAttributes([
+    'id'=>'nazwisko',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj nazwisko:',
+]);
+$nazwisko->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$mail=$form->get('mail_haslo_csrf_fieldset')->get('mail');
+$mail->setAttributes([
+    'id'=>'mail',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj ades mail:',
+]);
+$mail->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$haslo=$form->get('mail_haslo_csrf_fieldset')->get('haslo');
+$haslo->setAttributes([
+    'id'=>'haslo',   
+    'class' => 'form-control',
+    'placeholder'=>'Podaj hasło:',
+]);
+$haslo->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$haslo2=$form->get('powtorz_haslo');
+$haslo2->setAttributes([
+    'id'=>'haslo2',   
+    'class' => 'form-control',
+    'placeholder'=>'Powtórz hasło:',
+]);
+$haslo2->setLabelAttributes([
+       'class'=> 'col-sm-4 col-form-label',
+    ]);
+
+$csrf=$form->get('mail_haslo_csrf_fieldset')->get('csrf_uzytkownik_loguj');;
+
+$captcha=$form->get('captcha');;
+
+
+
+
+$hiddenIduzytkownik=$form->get('imie_nazwisko_fieldset')->get('iduzytkownik');
+$hiddenIduzytkownik->setAttributes([
+    'id'=>'iduzytkownik',   
+]);
+
+$submit=$form->get('submit');
+$submit->setAttributes([
+'class' => 'btn btn-primary',
+]);
+
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+    
+?>
+<div class="row">
+    
+	<div class="col-sm-8 offset-sm-2">
+		<div class="border-bottom mt-4 pb-2 text-center">
+			<div class="alert alert-info" role="alert">
+				<h4><img src="https://img.icons8.com/carbon-copy/100/000000/anonymous-mask.png"/>Zarejestruj się w systemie Przychodnia</h4>
+                                <div class="text-danger ">
+				<?= isset($messages) ? ('W formularzu występują błędy. Popraw je !!') : null ?>
+                                </div>
+			</div>
+		</div>
+
+		<div class="card">
+			
+			<div class="card-body">
+				
+					<div class="form-group row">
+						<?=  $this->formLabel($imie); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formText($imie);
+                                                $imie->getMessages();
+                                               echo $this->formElementErrors()->render($imie, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($nazwisko); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formText($nazwisko);
+                                                $nazwisko->getMessages();
+                                                echo $this->formElementErrors()->render($nazwisko, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($mail); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formEmail($mail);
+                                                $mail->getMessages();
+                                                echo $this->formElementErrors()->render($mail, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($haslo); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formPassword($haslo);
+                                                $haslo->getMessages();
+                                                echo $this->formElementErrors()->render($haslo, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($haslo2); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formPassword($haslo2);
+                                                $haslo2->getMessages();
+                                                echo $this->formElementErrors()->render($haslo2, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($captcha); ?>
+						<div class="col-sm-6 ml-5">
+						<?php
+                                                echo $this->formCaptcha($captcha);
+                                                $captcha->getMessages();
+                                                echo $this->formElementErrors()->render($captcha, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+                            
+                            <div class="col-sm-12  btn btn-secondary btn-lg btn-block">
+                                <?=  $this->formHidden($hiddenIduzytkownik);  ?>   
+                                <?=  $this->formHidden($csrf);  ?>     
+                                <?=  $this->formSubmit($submit);  ?>
+                            </div>
+    
+                        </div>
+                </div>
+        </div>
+</div>
+  <?= $this->form()->closeTag();  ?>

@@ -86,7 +86,7 @@ return [
         'controllers'=>[
             Controller\RejestracjaController::class=>[
             //dostep jest dla kazdego
-          //  [],
+          ['actions' => ['index'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
         //dostep tylko dla zalogowanych
             ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@']        
             ] ,

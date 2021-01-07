@@ -6,3 +6,4 @@ data/cache/*
 phpunit.xml
 .phpunit.result.cache
 public/upload/*
+public/img/*
