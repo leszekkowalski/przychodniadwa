@@ -11,6 +11,7 @@ class RejestrujForm extends Form implements InputFilterProviderInterface
     const TIME=300;
     
     public function __construct($name='rejestruj_form',$parametry) {
+        
         parent::__construct($name,$parametry);
         
         $this->add([
@@ -21,6 +22,7 @@ class RejestrujForm extends Form implements InputFilterProviderInterface
         $this->add([
             'name'=>'mail_haslo_csrf_fieldset',
             'type'=> LoginFieldset::class,
+            'options'=>$parametry,
         ]);
         $this->add([
             'name'=>'powtorz_haslo',

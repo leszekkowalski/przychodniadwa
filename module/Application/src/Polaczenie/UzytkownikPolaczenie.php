@@ -13,6 +13,7 @@ use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Paginator\Adapter\DbSelect;
 use Laminas\Cache\Storage\StorageInterface;
 use Laminas\Db\Sql\Update;
+use Laminas\Db\Sql\Insert;
 
 class UzytkownikPolaczenie {
     
@@ -255,6 +256,41 @@ private function fetchPaginatedResults()
     }
 
     return true;
+        
+    }
+    
+        public function wpiszUzytkownikPorejestracji(Uzytkownik $uzytkownik) : Uzytkownik
+        {
+        
+       // $lekarzeId=$this->pobierzWszystkoLekarzId();
+       // $ids= array_keys($lekarzeId);
+        
+        $wpisz=new Insert('uzytkownik');
+        $wpisz->values([
+            'imie'=>$uzytkownik->getImie(),
+            'nazwisko'=>$uzytkownik->getNazwisko(),
+            'mail'=>$uzytkownik->getMail(),
+            'status'=>$uzytkownik->getStatusId(),
+            'data_powstania'=>$uzytkownik->getDataPowstania(),
+            'haslo'=>$uzytkownik->getHaslo(),
+        ]);
+        
+        $sql=new Sql($this->adapter);
+        $statement=$sql->prepareStatementForSqlObject($wpisz);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            throw new RuntimeException('Błąd bazy danych podczas wprowadzenia danych Lekarza.');
+        }
+        $idUzytkownik=$wynik->getGeneratedValue();
+        $uzytkownik->setIduzytkownik($idUzytkownik);
+        
+       // $lekarzeId[$idLekarz]['idlekarz']=$idLekarz;
+       // $lekarzeId[$idLekarz]['imie']=$lekarz->getImie();
+       // $lekarzeId[$idLekarz]['nazwisko']=$lekarz->getNazwisko();
+       // $this->cache->replaceItem('pobierzWszystkoLekarzId',$lekarzeId);
+        
+        return $uzytkownik;
         
     }
     

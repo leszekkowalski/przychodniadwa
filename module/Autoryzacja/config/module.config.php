@@ -25,7 +25,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\AutoryzacjaController::class=> Controller\Factory\AutoryzacjaControllerFactory::class,
-            Controller\RejestracjaController::class=> InvokableFactory::class,
+            Controller\RejestracjaController::class=> Controller\Factory\RejestracjaControllerFactory::class,
         ],
     ],
     

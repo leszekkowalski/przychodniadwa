@@ -46,8 +46,21 @@ protected $lekarz_nazwisko;
         
     }
     
+    public function exchangeArray($row) {
+    $this->iduzytkownik = (!empty($row['iduzytkownik'])) ? $row['iduzytkownik'] : null;
+    $this->imie = (!empty($row['imie'])) ? $row['imie'] : null;
+    $this->nazwisko = (!empty($row['nazwisko'])) ? $row['nazwisko'] : null;
+    $this->mail = (!empty($row['mail'])) ? $row['mail'] : null;
+    $this->status = (!empty($row['status'])) ? $row['status'] : 2;
+    $this->data_powstania = (!empty($row['data_powstania'])) ? $row['data_powstania'] : null;
+    $this->haslo = (!empty($row['haslo'])) ? $row['haslo'] : null;  
+    $this->pwd_sol = (!empty($row['pwd_sol'])) ? $row['pwd_sol'] : null;
+    $this->pwd_sol_data = (!empty($row['pwd_sol_data'])) ? $row['pwd_sol_data'] : null;
+    $this->lekarz_idlekarz2 = (!empty($row['lekarz_idlekarz2'])) ? $row['lekarz_idlekarz2'] : null;  
+    }
+    
     public function getIduzytkownik() {
-        return $this->iduzytkownik;
+        return (int) $this->iduzytkownik;
     }
     public function setIduzytkownik($iduzytkownik) {
         $this->iduzytkownik=$iduzytkownik;

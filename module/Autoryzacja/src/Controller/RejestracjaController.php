@@ -8,15 +8,18 @@ use Laminas\Session;
 use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 use Autoryzacja\Form\RejestrujForm;
 use Application\Model\Lekarz;
+use Application\Polaczenie\UzytkownikPolaczenie;
 
 class RejestracjaController extends AbstractController{
    
 public $fleshMessager;  
+public $polaczenieUzytkownik;
     
     
-  public function __construct() 
+  public function __construct(UzytkownikPolaczenie $db) 
   {
       $this->fleshMessager=new FlashMessenger();
+      $this->polaczenieUzytkownik=$db;
   }
     
   public function indexAction()
@@ -37,6 +40,25 @@ public $fleshMessager;
           
           if($form->isValid())
           {
+             
+             $dane=$form->getData();  
+             $uzytkownik=new \Application\Model\Uzytkownik();
+             $hydrator=new \Autoryzacja\Hydrator\RejestrujFormHydrator();
+             $uzytkownik->exchangeArray($hydrator->hydrate(null,$dane));
+             
+             $uzytkownik=$this->polaczenieUzytkownik->wpiszUzytkownikPorejestracji($uzytkownik);
+             
+             $fleshMessager=$this->fleshMessager;
+             
+            if(is_int($uzytkownik->getIduzytkownik())){
+                
+                $fleshMessager->addSuccessMessage('Zostałeś zarejestrowany. Możesz sie zalogowac na swoje konto');
+        return $this->redirect()->toRoute('login'); 
+            }else{
+           $fleshMessager->addErrorMessage('Nastapił błąd. Spróbuj ponownie za 10 minut lub powiadom mailem administratora');
+        return $this->redirect()->toRoute('rejestruj'); 
+            }
+            
               
           }else{
               return ['messages'=> $form->getMessages(),'form'=>$form];
