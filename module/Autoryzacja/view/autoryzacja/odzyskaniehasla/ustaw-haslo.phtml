@@ -1,19 +1,21 @@
 <?php
-$this->headTitle('Logowanie');
 
-$mail=$form->get('login_fieldset')->get('mail');
-$mail->setAttributes([
-    'class' => 'form-control',
-    'placeholder'  => 'Wpisz swojego maila:',
-]);  
+$this->headTitle('Ustaw Hasło');
 
-$haslo=$form->get('login_fieldset')->get('haslo');
+$haslo=$form->get('haslo');
 $haslo->setAttributes([
     'class' => 'form-control',
     'placeholder'  => 'Wpisz swoje hasło:',
 ]);
 
-$scrf=$form->get('login_fieldset')->get('csrf_uzytkownik_loguj');
+$haslo2=$form->get('powtorz_haslo');
+$haslo2->setAttributes([
+    'class' => 'form-control',
+    'placeholder'  => 'Wpisz ponownie swoje hasło:',
+]);
+
+
+$scrf=$form->get('csrf');
 
 $submit=$form->get('submit')->setAttributes([
     'class'=>'btn btn-large btn-primary'
@@ -34,43 +36,22 @@ $form->prepare();
         <div class="text-center text-danger">
         <h3><svg class="bi bi-shield-lock-fill" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" d="M5.187 1.025C6.23.749 7.337.5 8 .5c.662 0 1.77.249 2.813.525a61.09 61.09 0 0 1 2.772.815c.528.168.926.623 1.003 1.184.573 4.197-.756 7.307-2.367 9.365a11.191 11.191 0 0 1-2.418 2.3 6.942 6.942 0 0 1-1.007.586c-.27.124-.558.225-.796.225s-.526-.101-.796-.225a6.908 6.908 0 0 1-1.007-.586 11.192 11.192 0 0 1-2.417-2.3C2.167 10.331.839 7.221 1.412 3.024A1.454 1.454 0 0 1 2.415 1.84a61.11 61.11 0 0 1 2.772-.815zm3.328 6.884a1.5 1.5 0 1 0-1.06-.011.5.5 0 0 0-.044.136l-.333 2a.5.5 0 0 0 .493.582h.835a.5.5 0 0 0 .493-.585l-.347-2a.5.5 0 0 0-.037-.122z"/>
-</svg> Logowanie</h3> 
+</svg> Ustawianie Hasła</h3> 
         </div>
         
-<?php
-if($wyloguj==='tak'){
-    $napis='Wylogowano z systemu poprawnie.';
-}else{
-    $napis='Niepoprawny login i/lub hasło.';
-}
-?>
-        
-            <?php if ($isLoginError || ($wyloguj==='tak')): ?>
-              <div class="alert alert-info" role="alert">
-                <?= $napis  ?>
-                </div>   
-            <?php endif; ?>
-        
-            <?php    if($isLoginError): ?>
-         <div class="alert alert-warning" role="alert">
-                <a href="<?= $this->url('odzyskaj-haslo') ?>">Zapomniałeś hasło !</a>
-            </div>  
-             <?php   endif; ?> 
-               
 
-        <?= $this->formLabel($mail); ?>  
-        <?= $this->formElement($mail); ?>
         
            <?= $this->formLabel($haslo); ?>  
         <?= $this->formPassword($haslo); ?>
         <br/>
+           <?= $this->formLabel($haslo2); ?>  
+        <?= $this->formPassword($haslo2); ?>
+          <br/>
         <?= $this->formSubmit($submit); ?>
         
-        <?= $this->formHidden($form->get('redirect_url')); ?>
         <?= $this->formHidden($scrf); ?>
 
         <?= $this->form()->closeTag(); ?>
           
     </div>
 </div>
-

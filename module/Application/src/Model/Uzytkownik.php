@@ -25,7 +25,7 @@ protected $status;
 protected $data_powstania;
 protected $haslo;
 protected $pwd_sol;
-protected $pwd_sol_data;
+protected $pwd_sol_date;
 protected $lekarz_idlekarz2;
 /**
  *
@@ -120,10 +120,10 @@ protected $lekarz_nazwisko;
         $this->pwd_sol=$pwdsol;
     }
     public function getPwdSolData() {
-        return $this->pwd_sol_data;
+        return $this->pwd_sol_date;
     }
-    public function setPwdSolData(\DateTime $data) {
-        $this->pwd_sol_data=$data;
+    public function setPwdSolData($data) {
+        $this->pwd_sol_date=$data;
     }
     public function getLekarz() {
         return $this->lekarz_idlekarz2;

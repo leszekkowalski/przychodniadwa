@@ -56,7 +56,7 @@ class RejestrujForm extends Form implements InputFilterProviderInterface
                 ]),
             ]
         ]);
-         
+                
           $this->add([
             'name' => 'submit',
             'type' => 'submit',
@@ -87,7 +87,7 @@ class RejestrujForm extends Form implements InputFilterProviderInterface
                         ]
                     ]
                 ]
-            ]
+            ],
         ]; 
         
     }

@@ -1,0 +1,66 @@
+<?php
+$this->headTitle('Odzyskaj Hasło');
+
+$mail=$form->get('mail');
+$mail->setAttributes([
+    'class' => 'form-control',
+    'placeholder'  => 'Wpisz swojego maila:',
+]);  
+
+$captcha=$form->get('captcha');
+$captcha->setAttributes([
+    'class'=>'mx-auto'
+    ]);
+$scrf=$form->get('csrf');
+
+$submit=$form->get('submit')->setAttributes([
+    'class'=>'btn btn-large btn-primary btn-block mt-3'
+    ]);
+
+
+$form->prepare();
+?>
+
+<div class="row mt-4 ">
+    <div class="col-md-offset-4 col-md-4 mx-auto bg-info pt-3 pb-3" >
+         
+ <?= $this->form()->openTag($form); ?>
+
+<div>
+        <?= $this->partial('partial/flashMessenger.phtml'); ?>
+</div>
+        <div class="text-center text-danger">
+        <h3><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16">
+  <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/>
+</svg> Odzyskiwanie dostępu</h3> 
+        </div>
+ <?php  
+
+ ?>
+            <?php if ($this->isLoginError): ?>
+              <div class="alert alert-info" role="alert">
+                <?= 'Wpisano niepoprawne dane'  ?>
+                </div>   
+            <?php endif; ?>                      
+
+        <?= $this->formLabel($mail); ?>  
+        <?= $this->formElement($mail); ?>
+        
+        <?= $this->formLabel($captcha); ?>  
+        <div class="text-center">
+        <?php
+        echo $this->formCaptcha($captcha);
+        $captcha->getMessages();
+        echo $this->formElementErrors()->render($captcha, ['class' => 'text-danger']);
+        ?>
+        </div>
+        <?= $this->formHidden($scrf); ?>
+        <?= $this->formSubmit($submit); ?>
+        
+
+        <?= $this->form()->closeTag(); ?>
+          
+    </div>
+</div>
+
+

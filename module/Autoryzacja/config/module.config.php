@@ -3,6 +3,7 @@ namespace Autoryzacja;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Router\Http\Segment;
+use Laminas\Router\Http\Literal;
 use Autoryzacja\Service\Factory\AutoryzacjaAdapterFactory;
 use Autoryzacja\Service\AutoryzacjaAdapter;
 use Autoryzacja\Service\Factory\AutoryzacjaServiceFactory;
@@ -26,6 +27,7 @@ return [
         'factories' => [
             Controller\AutoryzacjaController::class=> Controller\Factory\AutoryzacjaControllerFactory::class,
             Controller\RejestracjaController::class=> Controller\Factory\RejestracjaControllerFactory::class,
+            Controller\OdzyskaniehaslaController::class=> Controller\Factory\OdzyskaniehaslaControllerFactory::class,
         ],
     ],
     
@@ -62,7 +64,32 @@ return [
                 ],
             ],
           ////////////////////////////////////////////////////////////////////  
-              
+             ////////////////////////////////////
+              'odzyskaj-haslo' => [
+                'type'    => Literal::class,
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/odzyskaj-haslo',
+                    'defaults' => [
+                        'controller'    => Controller\OdzyskaniehaslaController::class,
+                        'action'        => 'odzyskaj',
+                    ],
+                ],
+            ],
+          //////////////////////////////////////////////////////////////////// 
+          ////////////////////////////////////
+              'ustaw-haslo' => [
+                'type'    => Literal::class,
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/ustaw-haslo',
+                    'defaults' => [
+                        'controller'    => Controller\OdzyskaniehaslaController::class,
+                        'action'        => 'ustawHaslo',
+                    ],
+                ],
+            ],
+          ////////////////////////////////////////////////////////////////////     
         ],
     ],
     'view_manager' => [
@@ -89,9 +116,15 @@ return [
           ['actions' => ['index'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
         //dostep tylko dla zalogowanych
             ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@']        
+            ],
+             Controller\OdzyskaniehaslaController::class=>[
+            //dostep jest dla kazdego
+          ['actions' => ['odzyskaj','ustawHaslo'], 'allow' => '*'] ,//strona odzyskania hasła
+        //dostep tylko dla zalogowanych
+           // ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@']        
             ] ,
-           
-        ],
+          ],   
+        
     ],
     
     

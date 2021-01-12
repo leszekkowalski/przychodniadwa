@@ -184,9 +184,9 @@ private function fetchPaginatedResults()
     
      public function znajdzJedenPoMailUzytkownik(string $mail)
      {
-        
+       
         $select=new \Laminas\Db\Sql\Select('uzytkownik');
-        $select=$select->columns(['iduzytkownik','imie','nazwisko','mail','haslo','status','lekarz_idlekarz2']);
+        $select=$select->columns(['iduzytkownik','imie','nazwisko','mail','haslo','status','pwd_sol','pwd_sol_date','lekarz_idlekarz2']);
         $select->where(['mail'=>$mail]);
         $select->limit(1);
         
@@ -200,16 +200,43 @@ private function fetchPaginatedResults()
             'Błąd bazy danych podczas pobrania Uzytkownika'
         );
     }
-        
+  
         $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
         $wynikSet->initialize($wynik);
         $odbior=$wynikSet->current();
-    
+
         return $odbior;
           
     }
     
-    public function znajdzJedenPoIdUzytkownik(int $id): Uzytkownik
+      public function znajdzJedenPoMailPwd_solUzytkownik(string $mail)
+     {
+       
+        $select=new \Laminas\Db\Sql\Select('uzytkownik');
+        $select=$select->columns(['pwd_sol','pwd_sol_date']);
+        $select->where(['mail'=>$mail]);
+        $select->limit(1);
+        
+        $sql=new Sql($this->adapter);
+        
+        $rezultat = $sql->prepareStatementForSqlObject($select);
+        $wynik    = $rezultat->execute();
+        
+         if (! $wynik instanceof ResultInterface) {
+        throw new RuntimeException(
+            'Błąd bazy danych podczas pobrania Uzytkownika'
+        );
+    }
+  
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
+        $wynikSet->initialize($wynik);
+        $odbior=$wynikSet->current();
+
+        return $odbior;
+          
+    }
+    
+    public function znajdzJedenPoIdUzytkownik(int $id)
      {
         
         $select=new \Laminas\Db\Sql\Select('uzytkownik');
@@ -294,6 +321,46 @@ private function fetchPaginatedResults()
         
     }
     
+    public function wpiszPwd_sol_pwd_sol_date(Uzytkownik $uzytkownik) : Uzytkownik
+    {
+       
+        $wpisz=new Update('uzytkownik');
+        $wpisz->set([
+            'pwd_sol'=>$uzytkownik->getPwdSol(),
+            'pwd_sol_date'=>$uzytkownik->getPwdSolData(),
+        ]);
+        $wpisz->where(['iduzytkownik'=>$uzytkownik->getIduzytkownik()]);
+        
+        $sql=new Sql($this->adapter);
+        $statement=$sql->prepareStatementForSqlObject($wpisz);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            throw new RuntimeException('Błąd bazy danych podczas wprowadzenia danych Lekarza.');
+        }
+        return $uzytkownik;
+    }
     
+    public function wpiszResetHaslo($noweHaslo,$idUzytkownik)
+    {
+       
+        $wpisz=new Update('uzytkownik');
+        $wpisz->set([
+            'data_powstania'=>date("Y-m-d H:i:s"),
+            'haslo'=>$noweHaslo,
+            'pwd_sol'=>null,
+            'pwd_sol_date'=>null,
+        ]);
+        $wpisz->where(['iduzytkownik'=>$idUzytkownik]);
+        
+        $sql=new Sql($this->adapter);
+        $statement=$sql->prepareStatementForSqlObject($wpisz);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            throw new RuntimeException('Błąd bazy danych podczas wprowadzenia danych Lekarza.');
+        }
+        return true;
+    }
 }
 

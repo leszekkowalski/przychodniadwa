@@ -66,6 +66,7 @@ class Module
        $przechwyt=$e->getRouteMatch(); 
        $controller= strtolower($przechwyt->getParam('controller'));
        //jeśli w kontrolerze znajduje sie string 'json' ustawiam strategie na JSONStrategy
+      
        if(strpos('json', $controller)!==false){
            $strategia='ViewJsonStrategy';
        }else{

@@ -33,6 +33,7 @@ return [
             LekarzPolaczenie::class=> Polaczenie\Factory\LekarzPolaczenieFactory::class,
             Service\ZdjecieManager::class => InvokableFactory::class,
             Polaczenie\UzytkownikPolaczenie::class=> Polaczenie\Factory\UzytkownikPolaczenieFactory::class,
+            Service\UzytkownikManager::class=> Service\Factory\UzytkownikManagerFactory::class,
         ],
     ],
     
