@@ -290,5 +290,35 @@ class LekarzjsonController extends AbstractController{
     }
     return $tablica; 
  }
+ 
+   public function openjsonmailAction() {
+     
+  if($this->params()->fromRoute('action')=='openjsonmail'){
+     
+      if ($this->getRequest()->isPost()){ 
+      
+    $mail = $this->params()->fromPost('mail', 1);  
+    
+      $wynik=$this->polaczenieUzytkownikDb->sprawdzOpenMailJson($mail);
+      
+      if($wynik){
+          $odpowiedz='true';
+      }else{
+          $odpowiedz='false';
+      }
+        $viewModel = new JsonModel();
+       $viewModel->setVariable('items', $odpowiedz);
+        return $viewModel;
+      }else{
+            $this->redirect()->toRoute('home');
+      }
+  }else{
+        $this->redirect()->toRoute('home');
+  }
+     
+ }
+ 
+ 
+ 
 }
 

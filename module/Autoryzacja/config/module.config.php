@@ -89,7 +89,19 @@ return [
                     ],
                 ],
             ],
-          ////////////////////////////////////////////////////////////////////     
+          //////////////////////////////////////////////////////////////////// 
+            'open_mail' => [
+                'type'    => Literal::class,
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/open_mail',
+                    'defaults' => [
+                        'controller'    => \Application\Controller\LekarzjsonController::class,
+                        'action'        => 'openjsonmail',
+                    ],
+                ],
+            ],   
+            ////////////////////////////////////////////////
         ],
     ],
     'view_manager' => [

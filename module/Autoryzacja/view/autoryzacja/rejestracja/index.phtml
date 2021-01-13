@@ -1,6 +1,6 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
-$this->headScript()->appendFile($this->basePath('js/additional-methods_PL.js', 'text/javascript'));
+//$this->headScript()->appendFile($this->basePath('js/additional-methods_PL.js', 'text/javascript'));
 $this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
 $this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
 
@@ -70,6 +70,9 @@ $haslo2->setLabelAttributes([
 $csrf=$form->get('mail_haslo_csrf_fieldset')->get('csrf_uzytkownik_loguj');;
 
 $captcha=$form->get('captcha');
+$captcha->setAttributes([
+    'id'=>'captchaform',   
+]);
 
 
 
@@ -185,3 +188,130 @@ echo $this->form()->openTag($form);
         </div>
 </div>
   <?= $this->form()->closeTag();  ?>
+<script type="text/javascript">
+
+$( document ).ready( function () {
+            
+$( "input:blank" ).css( "background-color", "#bbbbff" );
+ // $( "input:filled" ).css( "background-color", "red" );
+
+
+
+const check_open_mail="http://localhost/przychodniadwa/open_mail";
+ ///////////////////////////////////////////////////// 
+
+
+// włąsna metoda na polskie znaki
+$.validator.addMethod( "polskieznaki", function( value, element ) {
+	return this.optional( element ) || /^[a-ząśżźćńęłó ]+$/i.test( value );
+}, "Tylko polskie znaki.." );
+
+                   
+/////////////////////////////////////////////////////////////////////////                    
+
+			$( "#rejestruj" ).validate( {
+                              // This global normalizer will trim the value of all elements
+                                // before validatng them.
+                                normalizer: function( value ) {
+                                return $.trim( value );
+                                 },
+				rules: {
+					//firstname: "required",
+					"imie_nazwisko_fieldset[nazwisko]": { 
+                                          required: true,
+					   minlength: 3,
+                                           polskieznaki: true,
+                                        },
+					"imie_nazwisko_fieldset[imie]": {
+						required: true,
+						minlength: 3,
+                                                polskieznaki: true,
+					},
+
+					"mail_haslo_csrf_fieldset[mail]": {
+						required: true,
+                                                email: true,
+                                                remote: {
+                                                   url: check_open_mail,
+                                                    type: "POST",
+                                                   data: {
+                                                    mail: function() {
+                                                    return $("#mail").val();
+                                                                    }
+                                                         }      
+                                                        }
+					},
+                                        "mail_haslo_csrf_fieldset[haslo]": {
+						required: true,
+						minlength: 5,
+					},
+                                        "powtorz_haslo": {
+                                            required: true,
+                                            minlength: 5,
+                                            equalTo: "#haslo",
+                                        },
+                                       
+
+				},
+				messages: {
+					//firstname: "Please enter your firstname",
+					"imie_nazwisko_fieldset[nazwisko]": {
+						required: "Prosimy o wprowadzenie swojego nazwiska",
+						minlength: "Your username must consist of at least 3 characters",
+                                                polskieznaki: "Akceptujemy tylko polskie znaki"
+					},
+					"imie_nazwisko_fieldset[imie]": {
+						required: "Please enter a username",
+						minlength: "Your username must consist of at least 3 characters",
+                                                polskieznaki: "Tylko polskie znaki"
+					},
+
+                                        "mail_haslo_csrf_fieldset[mail]": {
+						required: "Pole mail jest wymagane",
+						email: "Please enter a valid email address",
+                                                remote: jQuery.validator.format("{0} jest już używany. Zmień na inny")
+					},
+                                        "mail_haslo_csrf_fieldset[haslo]": {
+						required: "Podanie hasła jest obowiązkowe",
+						minlength: "Hasło musi skąłdac się z co najmniej 5 znaków",
+					},   
+                                        "powtorz_haslo": {
+						required: "Podanie ponownie hasła jest obowiązkowe",
+						minlength: "Hasło musi składać  się z co najmniej 5 znaków",
+                                                equalTo: "Hasła muszą byc identyczne",
+					}, 
+                                        
+
+				},
+                                
+				errorElement: "em",
+                              
+				errorPlacement: function ( error, element ) {
+					// Add the `invalid-feedback` class to the error element
+					error.addClass( "invalid-feedback text-center" );
+
+					if ( element.prop( "type" ) === "checkbox" ) {
+						error.insertAfter( element.next( "label" ) );
+					} else {
+						error.insertAfter( element );
+					}
+                                                                     
+                                    //    if ( element.prop( "type" ) === "textarea" ) {    
+					//error.insertAfter( element.next( "label" ) );
+                                    //    } else {
+				//	error.insertAfter( element );
+                                 //           }
+				},
+				highlight: function ( element, errorClass, validClass ) {
+					$( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+				},
+				unhighlight: function (element, errorClass, validClass) {
+					$( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+				},
+                                
+			} );
+
+                       
+		} );
+
+	</script>

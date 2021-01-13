@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/UzytkownikController.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Service/UzytkownikManager.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Polaczenie/UzytkownikPolaczenie.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Autoryzacja/src/Controller/OdzyskaniehaslaController.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Autoryzacja/src/Form/ResetujHasloForm.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Model/Uzytkownik.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Autoryzacja/view/autoryzacja/rejestracja/index.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/config/module.config.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/LekarzjsonController.php</file>
         </group>
     </open-files>
 </project-private>

@@ -114,8 +114,7 @@ return [
                     ],
                 ],
             ],
-            
-            ////////////////////////////////////////////////
+           //////////////////////////////////////////////////////////////
               'check_lekarz_index' => [
                 'type'    => 'Literal',
                 'options' => [
@@ -254,6 +253,10 @@ data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
             Controller\UzytkownikController::class=>[
                   ['actions' => ['pokaz'], 'allow' => '*'],
                   ['actions'=>['index','dodaj','dodajlekarz','zmienHaslo','edytuj','usun'],'allow'=>'@'],  
+            ],
+            Controller\LekarzjsonController::class=>[
+                  ['actions' => ['openjsonmail'], 'allow' => '*'],
+                  ['actions'=>['dodajjsonmail','dodajjsonpesel','lekarzindexjson','uzytkownikindexjson'],'allow'=>'@'],  
             ],
         ],
     ],

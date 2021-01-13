@@ -362,5 +362,32 @@ private function fetchPaginatedResults()
         }
         return true;
     }
+    
+    public function sprawdzOpenMailJson($mail) {
+        
+        $sql=new Sql($this->adapter);
+        $select=$sql->select('uzytkownik');
+        
+        $select=$select->where(['mail'=>$mail])->limit(1);   
+        
+        
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+       $wynik=$rezultat->execute();
+       
+       $wynikSet=new HydratingResultSet($this->hydrator, $this->uzytkownikPrototype);
+       $wynikSet->initialize($wynik);
+       
+       $uzytkownik=$wynikSet->current();
+       
+       if(!$uzytkownik){
+            //throw new InvalidArgumentException(
+              //      sprintf('Nastapił bład podczas pobierania danych z bazy danych lekarza o identifikatorze %s',$id)
+               //     );
+           return true;
+        }
+        
+        return false;
+    }
+    
 }
 
