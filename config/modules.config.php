@@ -29,4 +29,5 @@ return [
     'Laminas\DeveloperTools',
     'Application',
     'Autoryzacja',
+    'Moj_rbac',
 ];

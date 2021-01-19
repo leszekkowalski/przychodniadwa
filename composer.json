@@ -33,12 +33,14 @@
         "laminas/laminas-crypt": "^3.3",
         "laminas/laminas-uri": "^2.8",
         "laminas/laminas-captcha": "^2.9",
-        "laminas/laminas-mail": "^2.12"
+        "laminas/laminas-mail": "^2.12",
+        "laminas/laminas-escaper": "^2.7"
     },
     "autoload": {
         "psr-4": {
             "Application\\": "module/Application/src/",
-             "Autoryzacja\\": "module/Autoryzacja/src/"
+             "Autoryzacja\\": "module/Autoryzacja/src/",
+              "Moj_rbac\\":   "module/Moj_rbac/src/"
         }
     },
     "autoload-dev": {

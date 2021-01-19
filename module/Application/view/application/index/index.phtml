@@ -58,7 +58,7 @@ $this->headTitle($title);
             <img width="200" class="rounded mx-auto d-block img-thumbnail" alt="Nasi Lekarze" src="<?= $this->baseUrl.$link;?>"/> 
         </div>
         <div>
-            <span><?= $lekarz->getOpis(); ?></span></n>   
+            <span><?= $this->escapeHtml($lekarz->getOpis()); ?></span></n>   
         </div>
          <div>
              <span>Specjalność: <?= $lekarz->getSpecjalnosc(); ?> </span>     

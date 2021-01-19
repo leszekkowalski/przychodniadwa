@@ -139,8 +139,8 @@ class AutoryzacjaController extends AbstractController
             // echo $redirectUrl;             exit();
                     
                     if(empty($redirectUrl)) {
-                  return $this->redirect()->toRoute('home'); 
-            //  return $this->redirect()->toRoute('rejestruj', ['action' => 'loginprogressuzytkownik']);     
+                //  return $this->redirect()->toRoute('home'); 
+              return $this->redirect()->toRoute('rejestruj', ['action' => 'loginprogressuzytkownik']);     
                     } else {
                       $this->redirect()->toUrl($redirectUrl);
                    

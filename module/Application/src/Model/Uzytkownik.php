@@ -7,6 +7,8 @@ use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Filter;
 use Application\Model\Lekarz;
+use Laminas\Stdlib\ArrayObject;
+use Moj_rbac\Model\Rola;
 
 
 class Uzytkownik implements InputFilterAwareInterface{
@@ -29,21 +31,16 @@ protected $pwd_sol_date;
 protected $lekarz_idlekarz2;
 /**
  *
- * @var type string
- * pole 'name' z tabeli rola
+ * @var type arrayObject
+ * 
  */
 
-protected $rola;
-/**
- *
- * @var type string
- * pola 'imie' i 'nazwisko' z tabeli lekarz
- */
-protected $lekarz_imie;
-protected $lekarz_nazwisko;
+protected $role;
 
-    public function __construct() {
-        
+
+    public function __construct()
+    {
+       $this->role=new ArrayObject(); 
     }
     
     public function exchangeArray($row) {
@@ -132,16 +129,24 @@ protected $lekarz_nazwisko;
         $this->lekarz_idlekarz2=$idlekarz;
     }
     
-    public function getRola() {
-        return $this->rola;
+    public function getRole() {
+        return $this->role;
     }
     
-    public function getLekarzImie() {
-        return $this->lekarz_imie;
+   public function addRole(Rola $rola)
+    {
+        $this->role->append($rola);
+       //$this->role[$rola->getUzytkownik_iduzytkownik()]=$rola;
     }
     
-    public function getLekarzNazwisko() {
-        return $this->lekarz_nazwisko;
+    public function getRoleJakoNapis() 
+    {
+        $role=$this->role;
+       $napis=null;
+        foreach ( $role as $rola){
+            $napis=$napis.$rola->getName().', ';
+        } 
+        return $napis;
     }
     
     

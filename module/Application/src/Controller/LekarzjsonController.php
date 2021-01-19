@@ -214,6 +214,8 @@ class LekarzjsonController extends AbstractController{
        
        $lekarzeArrayId=$this->polaczenieDb->pobierzWszystkoLekarzId();
        
+       $roleArrayId=$this->polaczenieUzytkownikDb->pobierzRoleUzytkownika();
+       
         $jsonData = array(); 
       $idx = 0; 
       foreach($uzytkownicyPosortowani as $sampledata) { 
@@ -225,13 +227,24 @@ class LekarzjsonController extends AbstractController{
            $imie_i_nazwisko_lekarz='';
            $idlekarz=0;
           }
+          
+         if(isset($roleArrayId[$sampledata->getIduzytkownik()])) 
+         {
+           $rola=$roleArrayId[$sampledata->getIduzytkownik()]['name'];  
+         }else{
+             $rola='';
+         }
+          
+          
+          
          $temp = array( 
             'iduzytkownik'=>$sampledata->getIduzytkownik(), 
             'imie_i_nazwisko' => $sampledata->getImie().' '.$sampledata->getNazwisko(), 
             'mail' => $sampledata->getMail(),
             'status'=>$sampledata->getStatus(),
             'imie_nazwisko_lekarz'=>$imie_i_nazwisko_lekarz,
-            'idlekarz'=>$idlekarz, 
+            'idlekarz'=>$idlekarz,
+             'rola'=>$rola,
             
          ); 
         

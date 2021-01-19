@@ -1,0 +1,31 @@
+<?php
+
+echo ('<h1>Foo</h1>');
+
+$ro='Lekarz';
+
+$RolaObject=new \Moj_rbac\Model\Rola();
+$RolaObject->setName($ro);
+$RolaObject->setIdrola(22);
+$RolaObject->setOpis('Opis dla roli Lekarz');
+
+$RolaObject2=new \Moj_rbac\Model\Rola();
+$RolaObject2->setName('Użytkownik');
+$RolaObject2->setIdrola(23);
+$RolaObject2->setOpis('Opis dla roli Uzytkownik');
+
+$uzytkownik=new \Application\Model\Uzytkownik();
+$uzytkownik->addRole($RolaObject);
+$uzytkownik->addRole($RolaObject2);
+
+//print_r($uzytkownik);
+
+$role=$uzytkownik->getRole();
+       $w= $role->offsetExists(25);
+if($w) {
+   // echo 'ok';
+}else{
+  // echo  'nie ma';
+}
+
+$uzytkownik->getRoleJakoNapis();

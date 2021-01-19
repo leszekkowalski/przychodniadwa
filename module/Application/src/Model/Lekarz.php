@@ -153,12 +153,12 @@ class Lekarz implements InputFilterAwareInterface{
      }
       
       public function setOpis($param) {
-       $this->opis=(htmlspecialchars($param));
+       $this->opis=$param;
        // $this->opis=$this->escaper->escapeHtml($param);
     }
        
      public function getOpis() : string {
-         return htmlspecialchars_decode($this->opis);
+         return $this->opis;
      }
 
      public function getArrayCopy()

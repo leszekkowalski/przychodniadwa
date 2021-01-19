@@ -43,13 +43,22 @@ if(count($this->paginator)>0){
     </tr> 
       <?php
     
-     foreach ($this->paginator as $uzytkownik):
+     foreach ($this->paginator as $uzytkownik):         
       ?>
       <tr>
       <td><?= $licznik++ ?></td>
         <td><?= $uzytkownik->getMail() ?></td>
         <td><?= $uzytkownik->getImie().' '.$uzytkownik->getNazwisko() ?></td>
-        <td><?= $uzytkownik->getStatus() ?></td>
+        <td><?= $uzytkownik->getStatus() ?>
+            </br>
+        <?php
+        
+        if(isset($roleArrayId[$uzytkownik->getIduzytkownik()])){
+            echo 'Rola - '.$roleArrayId[$uzytkownik->getIduzytkownik()]['name'];
+        }
+        
+        ?>
+        </td>
       <?php
       
        if($uzytkownik->getLekarz()!=null)  {
@@ -192,7 +201,7 @@ $("#sortujUzytkownikPoNazwisku").on("click", function(event){
      // console.log(ile);
        for(let i = 0; i < count; i++) { 
            
-    let wpisz=("<tr><td>"+licznik+"</td><td>"+data[i]['mail']+"</td><td>"+data[i]['imie_i_nazwisko']+"</td><td>"+data[i]['status']+"</td>");
+    let wpisz=("<tr><td>"+licznik+"</td><td>"+data[i]['mail']+"</td><td>"+data[i]['imie_i_nazwisko']+"</td><td>"+data[i]['status']+"</br>"+data[i]['rola']+"</td>");
       
       if((data[i]['idlekarz'])==0){
  

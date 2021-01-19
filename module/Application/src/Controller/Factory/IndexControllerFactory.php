@@ -5,7 +5,6 @@ namespace Application\Controller\Factory;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Application\Controller\IndexController;
-use Laminas\Db\Adapter\AdapterInterface;
 use Application\Polaczenie\LekarzPolaczenie;
 
 class IndexControllerFactory implements FactoryInterface{

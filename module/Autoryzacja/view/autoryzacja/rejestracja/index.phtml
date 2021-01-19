@@ -87,7 +87,6 @@ $submit->setAttributes([
 'class' => 'btn btn-primary',
 ]);
 
-
 $form->prepare();
 
 echo $this->form()->openTag($form);
@@ -171,6 +170,9 @@ echo $this->form()->openTag($form);
 						<div class="col-sm-6 ml-5">
 						<?php
                                                 echo $this->formCaptcha($captcha);
+                                                ?>
+                                                <p class="help-block">Wpisz tekst widoczny na obrazku.</p>
+                                               <?php
                                                 $captcha->getMessages();
                                                 echo $this->formElementErrors()->render($captcha, ['class' => 'text-danger']);
                                                 ?>
@@ -188,6 +190,8 @@ echo $this->form()->openTag($form);
         </div>
 </div>
   <?= $this->form()->closeTag();  ?>
+
+
 <script type="text/javascript">
 
 $( document ).ready( function () {
@@ -216,7 +220,7 @@ $.validator.addMethod( "polskieznaki", function( value, element ) {
                                 return $.trim( value );
                                  },
 				rules: {
-					//firstname: "required",
+
 					"imie_nazwisko_fieldset[nazwisko]": { 
                                           required: true,
 					   minlength: 3,
