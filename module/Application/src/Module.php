@@ -62,9 +62,9 @@ class Module
      * w pozostałych przpadkach bedzie zwykła strategia wyswietlania
      */
     public function ustawLayout(MvcEvent $e){
-        
-       $przechwyt=$e->getRouteMatch(); 
-       $controller= strtolower($przechwyt->getParam('controller'));
+                  
+         $przechwyt=$e->getRouteMatch(); 
+      $controller= strtolower($przechwyt->getParam('controller'));        
        //jeśli w kontrolerze znajduje sie string 'json' ustawiam strategie na JSONStrategy
       
        if(strpos('json', $controller)!==false){

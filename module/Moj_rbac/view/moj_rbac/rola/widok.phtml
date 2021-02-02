@@ -1,0 +1,90 @@
+<?php
+$title = 'Role i Uprawnienia';
+$this->headTitle($title);
+?>
+
+<h2>Widok Roli:</h2>
+
+<a href="<?= $this->url('rola', ['action' => 'edytuj','id'=>$rola->getIdrola()])  ?>" class="btn btn-secondary active" role="button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-toggle-off" viewBox="0 0 16 16">
+  <path d="M11 4a4 4 0 0 1 0 8H8a4.992 4.992 0 0 0 2-4 4.992 4.992 0 0 0-2-4h3zm-6 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM0 8a5 5 0 0 0 5 5h6a5 5 0 0 0 0-10H5a5 5 0 0 0-5 5z"/>
+</svg> Edytuj Rolę</a>
+
+
+<table class="table-striped">
+    
+    <tr>
+        <td>ID:</td>
+        <td><?= $rola->getIdrola()  ?></td>
+    </tr>
+    <tr>
+        <td>NAZWA:</td>
+        <td><?= $rola->getName()   ?></td>
+    </tr>
+    <tr>
+        <td>OPIS:</td>
+        <td><?= $rola->getOpis()   ?></td>
+    </tr>
+</table>
+<br />
+<h2>Uprawnienia: </h2>
+<a href="<?= $this->url('rola', ['action' => 'edytuj','id'=>$rola->getIdrola()])  ?>" class="btn btn-secondary active" role="button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-toggles" viewBox="0 0 16 16">
+  <path d="M4.5 9a3.5 3.5 0 1 0 0 7h7a3.5 3.5 0 1 0 0-7h-7zm7 6a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm-7-14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm2.45 0A3.49 3.49 0 0 1 8 3.5 3.49 3.49 0 0 1 6.95 6h4.55a2.5 2.5 0 0 0 0-5H6.95zM4.5 0h7a3.5 3.5 0 1 1 0 7h-7a3.5 3.5 0 1 1 0-7z"/>
+</svg> Edytuj Uprawnienia:</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr class="text-center">
+      <th scope="col">Nazwa:</th>
+      <th scope="col">Opis:</th>
+    </tr>
+  </thead>
+    
+   <?php   
+   $wybrany='<input type="checkbox" name="" value="ON" checked="checked" disabled="disabled" />  ';
+   $pusty='<input type="checkbox" name="" value="ON" disabled="disabled" />  ';
+   
+  // print_r($uprawnieniaAll);
+  
+  // print_r($rolaUprawnienia);
+  
+   ?>
+    <?php foreach ($uprawnieniaAll as $uprawnienie) :   ?>
+   <?php 
+   $wskaznik=0;
+   ?>
+    <tr>
+        <td>
+            <?php
+           
+    foreach ($rolaUprawnienia as $jednaRolaUprawnienie)
+    {             
+        if($uprawnienie['iduprawnienia']===$jednaRolaUprawnienie['iduprawnienia'] )
+         
+           {
+                 if($wskaznik===0)
+                  {
+                    echo  $wybrany.' - '.$uprawnienie['name'].' <br />';  $wskaznik=1;  
+                    echo $tablicaIdrola[$jednaRolaUprawnienie['idrola']]['dziedziczony'];
+                   }         
+            }
+    }
+            if(!$wskaznik){
+                echo $pusty.' - '.$uprawnienie['name'] ; 
+            }
+     ?>
+        </td>
+      <td>
+            <?= $uprawnienie['opis']  ?>
+      </td>
+    </tr>
+    
+    
+    
+    <?php    endforeach; ?>
+   
+</table>
+
+
+

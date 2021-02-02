@@ -13,10 +13,12 @@ class RbacPolaczenieFactory implements FactoryInterface {
     
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): object {
         
-        
+         $cache = $container->get('KonfiguracjaPamieciCache'); //konfiguracja w pliku global.php
+         
         return new RbacPolaczenie(
                 $container->get(AdapterInterface::class),
                 new ReflectionHydrator(),
+                $cache,
                 );  
     }
 

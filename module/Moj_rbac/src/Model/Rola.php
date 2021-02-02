@@ -7,7 +7,7 @@ use Laminas\Stdlib\ArrayObject;
 
 class Rola 
 {
-   static public $tablicaRol=['Użytkownik','Lekarz','Zarządca','Administrator','Super Administrator'];
+   static public $tablicaRol=['Testowa','Użytkownik','Lekarz','Zarządca','Administrator','Super Administrator'];
     /**
      *
      * @var type int  
@@ -42,6 +42,26 @@ class Rola
    $this->dzieckoRola=new ArrayObject();
    $this->uprawnienia=new ArrayObject();
   }
+  
+  
+  public function getArrayCopy()
+    {
+       return [
+           'uzytkownik_iduzytkownik'=>$this->uzytkownik_iduzytkownik,
+           'idrola'=> $this->idrola,
+           'name' => $this->name,
+           'opis' => $this->opis,
+       ];
+    }
+    
+     public function exchangeArray($data)
+     {
+         $this->uzytkownik_iduzytkownik = (isset($data['uzytkownik_iduzytkownik'])) ? $data['uzytkownik_iduzytkownik'] : null;
+         $this->idrola = (isset($data['idrola'])) ? $data['idrola'] : null;
+         $this->name = (isset($data['name'])) ? $data['name'] : null;
+         $this->opis = (isset($data['opis'])) ? $data['opis'] : null;
+     }
+  
   
   public function getUzytkownik_iduzytkownik() {
       
@@ -83,6 +103,9 @@ class Rola
        $this->opis=$opis;
    }
 
+   public function dodajDzieckoRola(Rola $rola) {
+       $this->dzieckoRola->append($rola);
+   }
 
 }
 

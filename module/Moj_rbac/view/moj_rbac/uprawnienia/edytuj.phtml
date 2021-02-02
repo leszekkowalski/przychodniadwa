@@ -1,0 +1,95 @@
+<?php
+$title = 'Edycja Uprawnienia';
+$this->headTitle(($title));
+
+$form->setAttribute('id', 'edytujUprawnienie');
+$form->setAttributes([
+    'class'=>"form-horizontal",
+]);
+
+$name=$form->get('name');
+$name->setAttributes([
+    'id'=>'name',   
+    'class' => 'form-control',
+]);
+$name->setLabelAttributes([
+    'class'=> 'col-sm-4 col-form-label',
+    'for'=>'name',
+    ]);
+
+$idrola=$form->get('iduprawnienia');
+
+$opis=$form->get('opis');
+$opis->setAttributes([
+    'id'=>'opis',   
+    'class' => 'form-control',
+]);
+$opis->setLabelAttributes([
+    'class'=> 'col-sm-4 col-form-label',
+    'for'=>'opis',
+    ]);
+
+
+
+$submit=$form->get('submit');
+$csrf=$form->get('csrf');
+
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+?>
+<div class="row">
+    
+	<div class="col-sm-8 offset-sm-2">
+		<div class="border-bottom mt-4 pb-2 text-center">
+			<div class="alert alert-info" role="alert">
+				<h4><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+</svg>  Edytuj Uprawnienie w systemie !</h4>
+                                <div class="text-danger ">
+				<?= isset($messages) ? ('W formularzu występują błędy. Popraw je !!') : null ?>
+                                </div>
+			</div>
+		</div>
+
+            <?= $this->partial('partial/flashMessenger.phtml'); ?>
+            
+		<div class="card">
+			
+			<div class="card-body">
+				
+					<div class="form-group row">
+						<?=  $this->formLabel($name); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formText($name);
+                                                $name->getMessages();
+                                               echo $this->formElementErrors()->render($name, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($opis); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formTextarea($opis);
+                                                $opis->getMessages();
+                                                echo $this->formElementErrors()->render($opis, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+                            
+                            <div class="col-sm-12  btn btn-secondary btn-lg btn-block">
+                                <?=  $this->formHidden($form->get('iduprawnienia'));  ?>   
+                                <?=  $this->formHidden($csrf);  ?>     
+                                <?=  $this->formSubmit($submit);  ?>
+                            </div>
+    
+                        </div>
+                </div>
+        </div>
+</div>
+  <?= $this->form()->closeTag();  ?>

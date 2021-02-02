@@ -1,0 +1,199 @@
+<?php
+$title = 'Edycja Roli';
+$this->headTitle(($title));
+
+$form->setAttribute('id', 'edytujRole');
+$form->setAttributes([
+    'class'=>"form-horizontal",
+]);
+
+$name=$form->get('name');
+//$name->setLabel('Wpisz nazwę roli:');
+$name->setAttributes([
+    'id'=>'name',   
+    'class' => 'form-control',
+]);
+$name->setLabelAttributes([
+    'class'=> 'col-sm-4 col-form-label',
+    'for'=>'name',
+    ]);
+
+$idrola=$form->get('idrola');
+
+$opis=$form->get('opis');
+$opis->setAttributes([
+    'id'=>'opis',   
+    'class' => 'form-control',
+]);
+$opis->setLabelAttributes([
+    'class'=> 'col-sm-4 col-form-label',
+    'for'=>'opis',
+    ]);
+
+$checkbox=$form->get('checkbox');
+$checkbox->setAttributes([
+    'id'=>'kontrolka_checkbox',   
+    'class' => 'form-control',
+]);
+$checkbox->setLabelAttributes([
+    'class'=> 'col-sm-4 col-form-label',
+    'for'=>'checkbox',
+    ]);
+
+$multi_checkbox=$form->get('multi_checkbox');
+
+$multi_checkbox->setAttributes([
+  //  'id'=>'multi_checkbox',   
+    'class' => 'form-control multi_checkbox',
+   // 'disabled'=>'disabled',
+]);
+$multi_checkbox->setLabelAttributes([
+    'class'=> 'col-sm-4 col-form-label',
+    'for'=>'multi_checkbox',
+    ]);
+
+
+$multi_checkbox->setValueOptions($tablicaOpcji);
+
+$submit=$form->get('submit');
+$csrf=$form->get('csrf');
+
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+?>
+<div class="row">
+    
+	<div class="col-sm-8 offset-sm-2">
+		<div class="border-bottom mt-4 pb-2 text-center">
+			<div class="alert alert-info" role="alert">
+				<h4><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+</svg>  Edytuj Rolę w systemie !</h4>
+                                <div class="text-danger ">
+				<?= isset($messages) ? ('W formularzu występują błędy. Popraw je !!') : null ?>
+                                </div>
+			</div>
+		</div>
+
+            <?= $this->partial('partial/flashMessenger.phtml'); ?>
+            
+		<div class="card">
+			
+			<div class="card-body">
+				
+					<div class="form-group row">
+						<?=  $this->formLabel($name); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formText($name);
+                                                $name->getMessages();
+                                               echo $this->formElementErrors()->render($name, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<?=  $this->formLabel($opis); ?>
+						<div class="col-sm-6">
+						<?php
+                                                echo $this->formTextarea($opis);
+                                                $opis->getMessages();
+                                                echo $this->formElementErrors()->render($opis, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+                            <div class="form-group row bg-success">
+						<?=  $this->formLabel($checkbox); ?>
+						<div class="col-sm-8 input-group text-center">
+						<?php
+                                                echo $this->formCheckbox($checkbox);
+                                                $opis->getMessages();
+                                                echo $this->formElementErrors()->render($checkbox, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+         <?php 'd-none'  ?>
+                            <div class="form-group row">
+						<?=  $this->formLabel($multi_checkbox); ?>
+						<div class="col-sm-8 input-group text-center">
+						<?php
+                                                echo $this->formMultiCheckbox($multi_checkbox);
+                                                $opis->getMessages();
+                                                echo $this->formElementErrors()->render($multi_checkbox, ['class' => 'text-danger']);
+                                                ?>
+						</div>
+					</div>
+
+                            
+                            <div class="col-sm-12  btn btn-secondary btn-lg btn-block">
+                                <?=  $this->formHidden($form->get('idrola'));  ?>   
+                                <?=  $this->formHidden($csrf);  ?>     
+                                <?=  $this->formSubmit($submit);  ?>
+                            </div>
+    
+                        </div>
+                </div>
+        </div>
+</div>
+  <?= $this->form()->closeTag();  ?>
+
+
+<script type="text/javascript">
+ 
+ $(document).ready(function(){
+     
+        $( ".multi_checkbox" ).prop({disabled: true}); 
+  
+        $("#kontrolka_checkbox").click(function(){
+            
+            if($(this).prop("checked") == true){
+                
+             $( ".multi_checkbox" ).prop({disabled: true});    
+                
+            }
+            else if($(this).prop("checked") == false){
+                
+            $( ".multi_checkbox" ).prop({disabled: false}); 
+                
+            }
+        });
+  
+  
+   
+   /**
+   let pojedynczyCheckbox = document.getElementById("kontrolka_checkbox");
+   let multiCheckbox = document.getElementsByClassName("multi_checkbox");
+   
+    pojedynczyCheckbox.addEventListener("change", function(event)
+    {
+        
+      let i;    
+       
+  if (event.target.checked)
+  {
+    //drinkSelect.disabled = false;
+   for (i = 0; i < multiCheckbox.length; i++)
+   {
+  multiCheckbox[i].style.display = "none"; 
+    }
+  } 
+  else
+  { 
+   for (i = 0; i < multiCheckbox.length; i++)
+   {
+  multiCheckbox[i].style.display = "block"; 
+   }
+   // drinkSelect.disabled = false;
+  }
+    }, false);
+     
+    */
+          
+ });
+    
+</script>
+
+
