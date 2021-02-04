@@ -179,7 +179,7 @@ class RolaForm extends Form implements \Laminas\InputFilter\InputFilterProviderI
              // ['name'=> Filter\ToNull::class],
             ],  
               'validators'=>[
-           
+                //  ['name'=> \Laminas\I18n\Validator\IsInt::class],
             ],     
            ],
             

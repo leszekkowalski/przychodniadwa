@@ -95,6 +95,7 @@ class RolaController extends AbstractController
         
       
         $dane=$form->getData();
+       // print_r($dane); exit();
         
        $wynik=$this->roleManager->updateRola($this->polaczenieRbac, $dane, $rola);
         

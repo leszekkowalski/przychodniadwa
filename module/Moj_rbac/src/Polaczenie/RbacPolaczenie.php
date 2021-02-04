@@ -65,7 +65,6 @@ class RbacPolaczenie
             'name'=>$dane['name'],
             'opis'=>$dane['opis'],
         ]);
-        
         $sql=new Sql($this->polaczenieRbac);
         $statement=$sql->prepareStatementForSqlObject($wpisz);
         $wynik=$statement->execute();
@@ -236,6 +235,8 @@ class RbacPolaczenie
     
     public function aktualizujRola_zRola_hierarchia( $dane , Rola $rola) 
     {
+        
+        
         $delete=new Delete('rola_hierarchia');
         $delete->where(['rodzic_rola_id'=>$rola->getIdrola()]);
         
@@ -249,6 +250,7 @@ class RbacPolaczenie
                 'Błąd bazy danych podczas usuwania danych !!'
             );
         }
+        
         
         $insert=new Insert('rola_hierarchia');
         $tablicaDanych = array();
@@ -489,9 +491,72 @@ $rezultat=$sql->prepareStatementForSqlObject($select);
  
 }
 
+public function usunWszystkieUprawnieniaJednejRoli(Rola $rola): bool
+{
+  if(!$rola->getIdrola()){
+            throw new RuntimeException('Nie mozna usunąć Roli. Błąd w pobraniu identyfikatra !');
+        }
+        
+        $delete=new Delete('rola_has_uprawnienia');
+        $delete->where(['rola_idrola=?'=>$rola->getIdrola()]);
+        
+        $sql=new Sql($this->polaczenieRbac);
+        $statement=$sql->prepareStatementForSqlObject($delete);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            return false;
+        }
+        return true;   
+}
+
+public function pobierzIdUprawnieniaPoNazwieUprawnien(array $tablicaNazwUprawnien)
+{
+ $sql=new Sql($this->polaczenieRbac);
+        $select=$sql->select('uprawnienia');
+        $select->columns(['iduprawnienia']);
+        $select->where(new \Laminas\Db\Sql\Predicate\In('name',$tablicaNazwUprawnien));
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult())
+        {
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+        $wynikSet=[];
+        foreach ($wynik as $pojedynczyRow)
+        {
+            $wynikSet[]=$pojedynczyRow['iduprawnienia'];
+        }
+        
+        
+        return $wynikSet;
+    
+}
+
+public function wpiszUprawnieniaDlaRoli(array $tablica, Rola $rola): bool
+{
+   $wpisz=new Insert('rola_has_uprawnienia');
+   $sql=new Sql($this->polaczenieRbac);
+   foreach ($tablica as $pojUprawnienieId)
+   {
+        $wpisz->values([
+            'rola_idrola'=>$rola->getIdrola(),
+            'uprawnienia_iduprawnienia'=>$pojUprawnienieId,
+        ]);
+        $statement=$sql->prepareStatementForSqlObject($wpisz);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            throw new RuntimeException('Błąd bazy danych podczas wprowadzenia danych Lekarza.');
+        }
+        
+   }
+
+       return true;
+}
+
 
 }
-    
-
     
 

@@ -93,7 +93,7 @@ return [
             ],
             Controller\UprawnieniaController::class=>[
             //dostep jest dla kazdego
-          ['actions' => ['index','dodaj','edytuj','usun'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
+          ['actions' => ['index','dodaj','edytuj','usun','widok'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
         //dostep tylko dla zalogowanych
           //  []        
             ],

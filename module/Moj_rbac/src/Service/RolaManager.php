@@ -71,7 +71,7 @@ class RolaManager
                   'attributes' => [
                 //    'id' => $pojRola->getName(),
                       'id'=>'multi_checkbox',
-                    'data-fruit' => 'apple',
+                   // 'data-fruit' => 'apple',
                 ],
                 'label_attributes' => [
                     'id' => $label_attributes,
@@ -85,13 +85,17 @@ class RolaManager
     
     public function updateRola(RbacPolaczenie $polaczenie, array $dane, Rola $rola)
     {
-      
+              
        $transakcja=$polaczenie->getAdapter();
        $transakcja->getDriver()->getConnection()->beginTransaction(); 
        
        try{
            if($dane['checkbox']==='Tak'){
                $rola=$polaczenie->aktualizujRola_bezRola_hierarchia($dane, $rola);
+               
+               $transakcja->getDriver()->getConnection()->commit();
+       
+                return 1;    
            }
        } catch (Exception $ex) {
             $transakcja->getDriver()->getConnection()->rollback();
@@ -100,9 +104,16 @@ class RolaManager
         
        
        try{
-           if($dane['checkbox']==='Nie' && is_array($dane['multi_checkbox'])){
+           if($dane['checkbox']==='Nie'){
+               
+              // if(is_array($dane['multi_checkbox']))
+              // {
                 $rola=$polaczenie->aktualizujRola_bezRola_hierarchia($dane, $rola);
-                $polaczenie->aktualizujRola_zRola_hierarchia($dane['multi_checkbox'],$rola);
+                $polaczenie->aktualizujRola_zRola_hierarchia($dane['multi_checkbox'],$rola); 
+             // }else{
+              //  $rola=$polaczenie->aktualizujRola_bezRola_hierarchia($dane, $rola); 
+             //  }
+                              
            }else{
              $rola=$polaczenie->aktualizujRola_bezRola_hierarchia($dane, $rola);  
            }
@@ -154,6 +165,52 @@ class RolaManager
        }  
        
        return $tablica;
+    }
+    
+    public function updateUprawnieniaDlaRola
+            (RbacPolaczenie $polaczenieRbac, 
+            Rola $rolaGlowna,
+            array $dane)
+    {
+       $transakcja=$polaczenieRbac->getAdapter();
+       $transakcja->getDriver()->getConnection()->beginTransaction(); 
+        
+        $wynik=$polaczenieRbac->usunWszystkieUprawnieniaJednejRoli($rolaGlowna);
+       
+        $tablicaNazwUprawnien=[];
+        
+        if($wynik)
+        {
+          foreach ($dane as $nazwaUprawnienia=>$value)
+        {
+            if($value)
+            {
+                $tablicaNazwUprawnien[]=$nazwaUprawnienia;
+            }
+        }
+        
+        $tablicaIdUprawnien=$polaczenieRbac->pobierzIdUprawnieniaPoNazwieUprawnien($tablicaNazwUprawnien);
+      
+        if($tablicaIdUprawnien)
+        {
+         
+          $wynik=$polaczenieRbac->wpiszUprawnieniaDlaRoli($tablicaIdUprawnien, $rolaGlowna); 
+            if(!$wynik)
+            {
+               $transakcja->getDriver()->getConnection()->rollback();
+               return -1;
+            }
+            
+        }
+
+            $transakcja->getDriver()->getConnection()->commit();
+            return 1;  
+        }else{
+             $transakcja->getDriver()->getConnection()->rollback();
+             return -1;
+        }
+       
+       
     }
     
 }

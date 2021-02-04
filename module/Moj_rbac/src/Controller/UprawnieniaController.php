@@ -8,6 +8,7 @@ use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 use Moj_rbac\Form\UprawnienieForm;
 use Moj_rbac\Model\Uprawnienie;
+use Moj_rbac\Service\RolaManager;
 
 
 class UprawnieniaController extends AbstractController
@@ -17,10 +18,13 @@ class UprawnieniaController extends AbstractController
     
     public $fleshMessager;
     
-    public function __construct(RbacPolaczenie $pol) 
+    protected $roleManager;
+    
+    public function __construct(RbacPolaczenie $pol, RolaManager $roleManager) 
     {
        $this->polaczenieRbac=$pol; 
        $this->fleshMessager=new FlashMessenger();
+       $this->roleManager=$roleManager;
     }
  
     public function indexAction()
@@ -155,6 +159,145 @@ class UprawnieniaController extends AbstractController
            $this->fleshMessager->addErrorMessage('Nie usunieto Uprawnienia !!. Wystapił bład. Powiadom administratora');
             return $this->redirect()->toRoute('uprawnienia');  
         }  
+    }
+    
+    public function widokAction() 
+    {
+     $idRola=$this->params()->fromRoute('id', 0);
+       if(!$idRola)
+       {
+          $this->fleshMessager->addErrorMessage('Wystapił bład. Brak parametru. Powiadom administratora');
+          return $this->redirect()->toRoute('rola');  
+       } 
+       try{
+        $rolaGlowna=$this->polaczenieRbac->pobierzRole($idRola);
+       } catch (Exception $ex) {
+           $this->fleshMessager->addErrorMessage('Wystapił bład pobrania. Powiadom administratora');
+           return $this->redirect()->toRoute('rola');
+       }
+       
+       $tablicaIdrola=array();
+       $tablicaIdrola[$idRola]['idrola']=$idRola;
+       $tablicaIdrola[$idRola]['dziedziczony']='[własny]';
+       
+        $tablicaIdrola=$this->roleManager->wyliczRoleDzieci($idRola, $tablicaIdrola, $this->polaczenieRbac);
+       
+       $tablicaDoZapytania=array();
+       foreach ($tablicaIdrola as $rola)
+       {
+           $tablicaDoZapytania[]=$rola['idrola'];
+       }
+       
+       $uprawnieniaRol=$this->polaczenieRbac->pobierzRola_Uprawnienia_tablica($tablicaDoZapytania);
+
+      
+       
+      $uprawnieniaAll=$this->polaczenieRbac->pobierzWszystkieUprawnienia();
+       
+      
+      $form=new \Moj_rbac\Form\EdytujUprawnieniaForm();
+      
+      foreach ($uprawnieniaAll as $uprawnienie)
+      {
+         
+          $wskaznik=0;
+          if($uprawnieniaRol){
+          foreach ($uprawnieniaRol as $jednoUprawnienie)
+          {
+               if($uprawnienie['iduprawnienia']===$jednoUprawnienie['iduprawnienia'] )
+               {
+                  if($wskaznik==0) 
+                  {
+                  $name=$uprawnienie['name'];
+                  $label=$name.' - '.$tablicaIdrola[$jednoUprawnienie['idrola']]['dziedziczony'];
+                  if($tablicaIdrola[$jednoUprawnienie['idrola']]['dziedziczony']==='[dziedziczony]')
+                  {
+                      $disabled=true;
+                  }else{
+                      $disabled=false;
+                  }
+                    $form->addUprawnienieRola($name, $label, $disabled); 
+                    $wskaznik=1;
+                  }
+               }
+               
+               if(!$wskaznik)
+               {
+               $name=$uprawnienie['name'];
+                $label=$name;
+                $disabled=false;
+                $form->addUprawnienieRola($name, $label, $disabled); 
+               }   
+          }
+          }else{
+              $name=$uprawnienie['name'];
+                $label=$name;
+                $disabled=false;
+                $form->addUprawnienieRola($name, $label, $disabled); 
+          }
+      }
+
+      //////////////////koniec tworzenia formularza
+      
+        if($this->request->isPost()){
+            
+          $data=$this->params()->fromPost();
+          $form->setData($data) ; 
+        
+          if($form->isValid())
+          {
+            $dane=$form->getData(); 
+
+            $wynik=$this->roleManager->updateUprawnieniaDlaRola($this->polaczenieRbac,$rolaGlowna,$dane['uprawnienie']);
+            
+            if($wynik==1){
+                $napis='Uprawnienia dla Roli "'.$rolaGlowna->getName().'" zostału zaktualizowane';
+                $this->fleshMessager->addErrorMessage($napis);
+                return $this->redirect()->toRoute('rola');
+            }else{
+           $this->fleshMessager->addErrorMessage('Wystapił bład !!. Powiadom administratora');
+           return $this->redirect()->toRoute('rola');
+            }           
+          }
+            
+        }else{
+            $data=[];
+        
+            foreach ($uprawnieniaAll as $uprawnienie){
+                 $wskaznik=0;
+                 
+                 foreach ($uprawnieniaRol as $jednaRolaUprawnienie)
+                 {
+                     if($uprawnienie['iduprawnienia']===$jednaRolaUprawnienie['iduprawnienia'] )
+                     {
+                 if($wskaznik===0)
+                  {
+                     if($tablicaIdrola[$jednaRolaUprawnienie['idrola']]['dziedziczony']==='[dziedziczony]'
+                             ||  $tablicaIdrola[$jednaRolaUprawnienie['idrola']]['dziedziczony']==='[własny]')
+                     {
+                      $data['uprawnienie'][$uprawnienie['name']]=1;  $wskaznik=1; 
+                     }
+
+                   }         
+                     }
+                 }
+                
+            }
+            
+            $form->setData($data); 
+        }
+      
+      $bledy=$form->getMessages();
+
+      return new ViewModel([
+          'form'=>$form,
+           'rola' => $rolaGlowna,
+        'uprawnieniaAll'=>$uprawnieniaAll,
+          'uprawnieniaRol'=>$uprawnieniaRol,
+          'tablicaIdrola'=>$tablicaIdrola,
+          'bledy'=>$bledy,
+            ]);
+   
     }
 }
 
