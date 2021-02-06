@@ -34,7 +34,8 @@
         "laminas/laminas-uri": "^2.8",
         "laminas/laminas-captcha": "^2.9",
         "laminas/laminas-mail": "^2.12",
-        "laminas/laminas-escaper": "^2.7"
+        "laminas/laminas-escaper": "^2.7",
+        "laminas/laminas-permissions-rbac": "^3.0"
     },
     "autoload": {
         "psr-4": {

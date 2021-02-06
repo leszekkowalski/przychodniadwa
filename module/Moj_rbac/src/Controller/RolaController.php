@@ -60,7 +60,7 @@ class RolaController extends AbstractController
        {
            if($pojedynczaRola->getIdrola()==$id)
            {
-               $rola=$pojedynczaRola;
+               $rola=$pojedynczaRola;break;
            }
        }
        

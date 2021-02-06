@@ -103,7 +103,8 @@ class Rola
        $this->opis=$opis;
    }
 
-   public function setDzieckoRola(Rola $rola) {
+   public function addDziecko(Rola $rola)
+   {
       // $this->dzieckoRola->append($rola);
       // $this->dzieckoRola[$rola->getIdrola()]->append($rola);
        $this->dzieckoRola->offsetSet($rola->getIdrola(), $rola);
@@ -114,7 +115,23 @@ class Rola
        return $this->dzieckoRola;
    }
    
+   public function hasDziecko(Rola $rola) 
+   {
+      if($this->dzieckoRola->offsetExists($rola->getIdrola()))
+      {
+           return true;
+      }
+           return false;     
+   }
+   
+   public function usunDzieciRola()
+   {
+       $this->dzieckoRola=new ArrayObject();
+   }
   
-
+   public function getUprawnienia() 
+   {
+       return $this->uprawnienia;
+   }
 }
 
