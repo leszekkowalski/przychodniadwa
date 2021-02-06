@@ -57,7 +57,6 @@ public function indexAction() {
             'ileNaStrone'=>$ileNaStrone,
             'lekarzArrayId'=>$lekarzArrayId,
             'roleArrayId'=>$roleArrayId,
-            'roleObject'=>$roleObject,
             'page'=>$page,
                 ]);
     
