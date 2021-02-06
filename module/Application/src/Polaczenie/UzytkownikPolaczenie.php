@@ -390,7 +390,7 @@ private function fetchPaginatedResults()
     }
     
     
-    public function pobierzRoleUzytkownika()
+    public function pobierzRoleUzytkownikaJakoArray()
     {
        $wynikPobrania= $this->cache->getItem('roleArrayId');
         
@@ -434,6 +434,38 @@ private function fetchPaginatedResults()
     return $wynikSetRoleArrrayId;
       
     }
+    
+    public function pobierzRoleUzytkownikaJakoObiekty()
+    {
+        
+     $sql=new Sql($this->adapter);
+     $select=$sql->select();
+     $select->from('rola');
+     $select->columns(['idrola','name','opis']);
+     $select->join('rola_has_uzytkownik', 'rola.idrola=rola_has_uzytkownik.rola_idrola',array('uzytkownik_iduzytkownik'));
+    // $select->join('uprawnienia', 'rola_has_uprawnienia.uprawnienia_iduprawnienia=uprawnienia.iduprawnienia', array('iduprawnienia','name','opis'));
+    //$select->where(['rola_has_uzytkownik.uzytkownik_iduzytkownik=?'=>$idUzytkownik]);
+     
+     $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+      
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+          //  return [];
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+
+        $resultSet = new HydratingResultSet(
+        $this->hydrator,
+        new \Moj_rbac\Model\Rola(),
+    );
+        
+        $resultSet->initialize($wynik);
+  
+    return $resultSet;
+      
+    }
+    
     
 }
 

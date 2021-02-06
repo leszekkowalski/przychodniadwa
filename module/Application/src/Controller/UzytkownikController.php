@@ -38,9 +38,8 @@ public function indexAction() {
     $paginator=$this->dbUzytkownik->paginatorUzytkownik(true);
 
     $lekarzArrayId=$this->dblekarz->pobierzWszystkoLekarzId();
-   // $d=$this->dbUzytkownik->findAllUzytkownicy();
-   $roleArrayId=$this->dbUzytkownik->pobierzRoleUzytkownika();
-   
+  
+   $roleArrayId=$this->dbUzytkownik->pobierzRoleUzytkownikaJakoArray();     
     $ileNaStrone=4;    
     
     
@@ -58,6 +57,7 @@ public function indexAction() {
             'ileNaStrone'=>$ileNaStrone,
             'lekarzArrayId'=>$lekarzArrayId,
             'roleArrayId'=>$roleArrayId,
+            'roleObject'=>$roleObject,
             'page'=>$page,
                 ]);
     

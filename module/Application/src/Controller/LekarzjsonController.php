@@ -214,7 +214,7 @@ class LekarzjsonController extends AbstractController{
        
        $lekarzeArrayId=$this->polaczenieDb->pobierzWszystkoLekarzId();
        
-       $roleArrayId=$this->polaczenieUzytkownikDb->pobierzRoleUzytkownika();
+       $roleArrayId=$this->polaczenieUzytkownikDb->pobierzRoleUzytkownikaJakoArray();
        
         $jsonData = array(); 
       $idx = 0; 

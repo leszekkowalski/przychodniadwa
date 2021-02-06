@@ -135,8 +135,7 @@ protected $role;
     
    public function addRole(Rola $rola)
     {
-        $this->role->append($rola);
-       //$this->role[$rola->getUzytkownik_iduzytkownik()]=$rola;
+     $this->role->offsetSet($rola->getIdrola(), $rola);
     }
     
     public function getRoleJakoNapis() 

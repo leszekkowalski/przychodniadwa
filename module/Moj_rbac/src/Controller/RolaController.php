@@ -242,4 +242,9 @@ class RolaController extends AbstractController
         return $view;
       
     }
+    
+    public function testAction() 
+    {
+        
+    }
 }

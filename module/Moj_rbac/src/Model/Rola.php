@@ -103,9 +103,18 @@ class Rola
        $this->opis=$opis;
    }
 
-   public function dodajDzieckoRola(Rola $rola) {
-       $this->dzieckoRola->append($rola);
+   public function setDzieckoRola(Rola $rola) {
+      // $this->dzieckoRola->append($rola);
+      // $this->dzieckoRola[$rola->getIdrola()]->append($rola);
+       $this->dzieckoRola->offsetSet($rola->getIdrola(), $rola);
    }
+   
+   public function getDzieciRola()
+   {
+       return $this->dzieckoRola;
+   }
+   
+  
 
 }
 

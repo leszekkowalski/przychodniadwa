@@ -1,0 +1,47 @@
+<?php
+use Laminas\Stdlib\ArrayObject;
+
+
+$rola1=new \Moj_rbac\Model\Rola();
+$rola1->setIdrola(23);
+$rola1->setName('Testowa');
+$rola1->setOpis('ddddddddddddddddddddddd');
+
+$rola2=new \Moj_rbac\Model\Rola();
+$rola2->setIdrola(24);
+$rola2->setName('Administrator');
+$rola2->setOpis('ddddddddddddddddddddddd');
+
+$rola3=new \Moj_rbac\Model\Rola();
+$rola3->setIdrola(233);
+$rola3->setName('Lekarz');
+$rola3->setOpis('ddddddddddddddddddddddd dddd');
+
+
+$rola2->setDzieckoRola($rola1);
+$rola2->setDzieckoRola($rola3);
+
+
+$dzieciRola=$rola2->getDzieciRola();
+
+$rola5=$dzieciRola->offsetGet(23);
+
+$uzytkownik=new Application\Model\Uzytkownik();
+$uzytkownik->setIduzytkownik(1);
+$uzytkownik->setImie('Leszek');
+$uzytkownik->addRole($rola2);
+//$uzytkownik->addRole($rola3);
+
+$arrayObject=new ArrayObject();
+
+$arrayObject->offsetSet($rola1->getIdrola(), $rola1);
+$arrayObject->offsetSet($rola2->getIdrola(), $rola2);
+$arrayObject->offsetSet($rola3->getIdrola(), $rola3);
+
+$iterator=$arrayObject->getIterator();
+
+while($iterator->valid())
+{
+    echo $iterator->key();
+    $iterator->next();
+}
