@@ -9,6 +9,7 @@ use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 use Moj_rbac\Form\UprawnienieForm;
 use Moj_rbac\Model\Uprawnienie;
 use Moj_rbac\Service\RolaManager;
+use Moj_rbac\Service\RbacManager;
 
 
 class UprawnieniaController extends AbstractController
@@ -20,11 +21,15 @@ class UprawnieniaController extends AbstractController
     
     protected $roleManager;
     
-    public function __construct(RbacPolaczenie $pol, RolaManager $roleManager) 
+    protected $rbacManager;
+
+
+    public function __construct(RbacPolaczenie $pol, RolaManager $roleManager,RbacManager $rbac) 
     {
        $this->polaczenieRbac=$pol; 
        $this->fleshMessager=new FlashMessenger();
        $this->roleManager=$roleManager;
+       $this->rbacManager=$rbac;
     }
  
     public function indexAction()
@@ -59,13 +64,14 @@ class UprawnieniaController extends AbstractController
 
         try {
             $obiektUprawnienie = $this->polaczenieRbac->wpiszUprawnienie($uprawnienie);
+            
         } catch (\Exception $ex) {
             
             $napis='Bład. Nie wpisano Uprawnienia o nazwie "'.$obiektUprawnienie->getName().'". Powiadom administratora';
             $this->fleshMessager->addErrorMessage($napis);
           return $this->redirect()->toRoute('uprawnienia');
         }
-                
+        $this->rbacManager->init(true);       
         $napis='OK. Wpisano Uprawnienie o nazwie "'.$obiektUprawnienie->getName().'".';
          $this->fleshMessager->addSuccessMessage($napis);
         return $this->redirect()->toRoute('uprawnienia', );
@@ -108,7 +114,7 @@ class UprawnieniaController extends AbstractController
        }
        
        $uprawnienie=$this->polaczenieRbac->edytujUprawnienie($uprawnienie);
-       
+       $this->rbacManager->init(true);
        $napis='OK. Uprawnienie "'.$uprawnienie->getName().'" zostało zaktualizowane';
        
         $this->fleshMessager->addSuccessMessage($napis);
@@ -152,6 +158,7 @@ class UprawnieniaController extends AbstractController
         $wynik=$this->polaczenieRbac->usunUprawnienie($uprawnienie);
         
         if($wynik){
+            $this->rbacManager->init(true);
             $napis='OK. Uprawnienie '.$uprawnienie->getName().' została usunięta';
              $this->fleshMessager->addSuccessMessage($napis);
             return $this->redirect()->toRoute('uprawnienia'); 
@@ -251,6 +258,7 @@ class UprawnieniaController extends AbstractController
             $wynik=$this->roleManager->updateUprawnieniaDlaRola($this->polaczenieRbac,$rolaGlowna,$dane['uprawnienie']);
             
             if($wynik==1){
+                $this->rbacManager->init(true);
                 $napis='Uprawnienia dla Roli "'.$rolaGlowna->getName().'" zostału zaktualizowane';
                 $this->fleshMessager->addErrorMessage($napis);
                 return $this->redirect()->toRoute('rola');

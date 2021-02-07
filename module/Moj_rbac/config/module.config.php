@@ -20,11 +20,16 @@ return [
         ],
         'factories' => [
             Polaczenie\RbacPolaczenie::class=> Polaczenie\Factory\RbacPolaczenieFactory::class,
+             Service\RbacManager::class=> Service\Factory\RbacManagerFactory::class,
+            Service\KontrolaUprawnienIndywidualnychRbac::class=> Service\Factory\KontrolaUprawnienIndywidualnychRbacFactory::class,
             Service\RolaManager::class=> InvokableFactory::class,
         ],
     ],
     
-    
+    //klucz do konfiguracji RbacManager
+    'rbac_manager' => [
+        'assertions' => [Service\KontrolaUprawnienIndywidualnychRbac::class],
+    ],
     
     
     'router' => [

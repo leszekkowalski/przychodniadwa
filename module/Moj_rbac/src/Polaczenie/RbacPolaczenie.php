@@ -42,6 +42,7 @@ class RbacPolaczenie
       $sql=new Sql($this->polaczenieRbac);
         $select=$sql->select('rola');
         $select->columns(['idrola','name','opis']);
+        $select->order(['idrola'=>'ASC']);
         $rezultat=$sql->prepareStatementForSqlObject($select);
         $wynik=$rezultat->execute();
         if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult())
@@ -116,7 +117,7 @@ class RbacPolaczenie
         {
             foreach ($roleDzieci as $jednaRola)
             {
-                $rola->dodajDzieckoRola($jednaRola);
+                $rola->addDziecko($jednaRola);
             }
         }
         return $rola;
@@ -554,6 +555,54 @@ public function wpiszUprawnieniaDlaRoli(array $tablica, Rola $rola): bool
    }
 
        return true;
+}
+
+public function pobierzWszystkieRola_hierarchia()
+{
+  $sql=new Sql($this->polaczenieRbac);
+        $select=$sql->select('rola_hierarchia');
+        $select->columns(['rodzic_rola_id','dziecko_rola_id']);
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult())
+        {
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+        
+        $wynikSet=[];
+        $i=0;
+        foreach ($wynik as $pojRow)
+        {
+            $wynikSet[$i]['rodzic_rola_id']=$pojRow['rodzic_rola_id'];
+            $wynikSet[$i++]['dziecko_rola_id']=$pojRow['dziecko_rola_id'];
+        }
+        return $wynikSet;   
+}
+
+public function pobierzRoleJakoDzieci_z_rola_hierarchia(Rola $rola)
+{
+    $sql=new Sql($this->polaczenieRbac);
+  
+  $select=$sql->select();
+  $select->from('rola',array('idrola','name','opis'));
+  $select->join('rola_hierarchia', 'rola.idrola=rola_hierarchia.dziecko_rola_id');
+  //$select->join('uprawnienia', 'rola_has_uprawnienia.uprawnienia_iduprawnienia=uprawnienia.iduprawnienia', array('iduprawnienia','name2'=>'name','opis2'=>'opis'));
+  $select->where(['rola_hierarchia.rodzic_rola_id=?'=>$rola->getIdrola()]);
+  
+   $rezultat=$sql->prepareStatementForSqlObject($select);
+    $wynik=$rezultat->execute();
+        
+    if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+          throw new RuntimeException(sprintf(
+          'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+     } 
+     
+    $wynikSet=new HydratingResultSet($this->hydrator, new Rola());
+        $wynikSet->initialize($wynik);
+        return $wynikSet;  
+     
+     
 }
 
 

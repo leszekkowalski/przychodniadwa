@@ -1,4 +1,5 @@
 <?php
+/**
 use Laminas\Stdlib\ArrayObject;
 
 
@@ -18,8 +19,13 @@ $rola3->setName('Lekarz');
 $rola3->setOpis('ddddddddddddddddddddddd dddd');
 
 
-$rola2->setDzieckoRola($rola1);
-$rola2->setDzieckoRola($rola3);
+$rola2->addDziecko($rola1);
+$rola2->addDziecko($rola3);
+
+
+$d=$rola2->getDzieciRola();
+print_r($d);exit();
+
 
 
 $dzieciRola=$rola2->getDzieciRola();
@@ -45,3 +51,7 @@ while($iterator->valid())
     echo $iterator->key();
     $iterator->next();
 }
+
+$userSession = new \Laminas\Session\Container('uzytkownik');
+
+*/

@@ -4,37 +4,45 @@ namespace Moj_rbac\Controller;
 
 use Application\Controller\AbstractController;
 use Moj_rbac\Polaczenie\RbacPolaczenie;
+use Application\Polaczenie\UzytkownikPolaczenie;
 use Moj_rbac\Model\Rola;
 use Laminas\View\Model\ViewModel;
 use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 use Moj_rbac\Service\RolaManager;
 use InvalidArgumentException;
+use Moj_rbac\Service\RbacManager;
 
 
 class RolaController extends AbstractController
 {
     private $polaczenieRbac;
     
+    private $polaczenieUzytkownik;
+    
     public $fleshMessager;
     
     protected $roleManager;
+    
+    protected $rbacManager;
 
 
-    public function __construct(RbacPolaczenie $polaczenie,RolaManager $rolaManager)
+    public function __construct(RbacPolaczenie $polaczenie, UzytkownikPolaczenie $pol,RolaManager $rolaManager,RbacManager $rbacManager)
     {
       $this->polaczenieRbac=$polaczenie;
+      $this->polaczenieUzytkownik=$pol;
       $this->fleshMessager=new FlashMessenger();
       $this->roleManager=$rolaManager;
+      $this->rbacManager=$rbacManager;
     }
     
     
     public function indexAction()
     {
-        
+
         $role=$this->polaczenieRbac->pobierzWszystkieRole();
         
         $view=new ViewModel(['role'=>$role]);
-        
+
         return $view;
     }
     
@@ -100,7 +108,7 @@ class RolaController extends AbstractController
        $wynik=$this->roleManager->updateRola($this->polaczenieRbac, $dane, $rola);
         
       if($wynik===1){
-          
+          $this->rbacManager->init(true);
           $napis='OK. Rola o nazwie '.$rola->getName().' została zaktualizowana';
            $this->fleshMessager->addSuccessMessage($napis);
             return $this->redirect()->toRoute('rola');
@@ -145,6 +153,10 @@ class RolaController extends AbstractController
 
         try {
             $rola = $this->polaczenieRbac->wpiszRola($danePost);
+            if($rola)
+            {
+                $this->rbacManager->init(true);
+            }
         } catch (\Exception $ex) {
             // An exception occurred; we may want to log this later and/or
             // report it to the user. For now, we'll just re-throw.
@@ -197,6 +209,7 @@ class RolaController extends AbstractController
         $wynik=$this->polaczenieRbac->usunRola($rola);
         
         if($wynik){
+            $this->rbacManager->init(true);
             $napis='OK. Rola '.$rola->getName().' została usunięta';
              $this->fleshMessager->addSuccessMessage($napis);
             return $this->redirect()->toRoute('rola'); 
@@ -245,6 +258,40 @@ class RolaController extends AbstractController
     
     public function testAction() 
     {
-        
+      
+       $this->rbacManager->init();
+       $this->rbacManager->isGranted($this->uzytkownik, 'uprawnienia');
+       
+       
+   //    print_r($tablica);
+     // $jeden=$tablica[0]->getDzieciRola();
+      // echo $jeden[1];
+       //echo $jeden[3]->getName();
+     //  $tablica->buffor();
+     //  exit();
+     //  foreach ($tablica as $rola)
+    //   {
+          // echo $rola->getName();
+         //  print_r($key);
+       //    $dzieci=$rola->getDzieciRola();
+           
+        //   foreach ($dzieci as $dziecko)
+         //  {
+             //  echo $dziecko->getName();
+         //  }
+         //  echo '<br />';
+      // }
+      
+       
+     //  exit();
+       
+       
+       
+       
+       
+       
+      
+     
+    
     }
 }

@@ -7,6 +7,7 @@ use Psr\Container\ContainerInterface;
 use Moj_rbac\Controller\UprawnieniaController;
 use Moj_rbac\Polaczenie\RbacPolaczenie;
 use Moj_rbac\Service\RolaManager;
+use Moj_rbac\Service\RbacManager;
 
 class UprawnieniaControllerFactory implements FactoryInterface
 {
@@ -15,8 +16,9 @@ class UprawnieniaControllerFactory implements FactoryInterface
     {
         $polaczenie=$container->get(RbacPolaczenie::class);
         $roleManager=$container->get(RolaManager::class);
+        $rbacManager=$container->get(RbacManager::class);
         
-        return new UprawnieniaController($polaczenie,$roleManager);
+        return new UprawnieniaController($polaczenie,$roleManager,$rbacManager);
     }
 
 }

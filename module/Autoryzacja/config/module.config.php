@@ -102,6 +102,19 @@ return [
                 ],
             ],   
             ////////////////////////////////////////////////
+             //////////////////////////////////////////////////////////////////// 
+            'brak-autoryzacji' => [
+                'type'    => Literal::class,
+                'options' => [
+                    // Change this to something specific to your module
+                    'route'    => '/brak-autoryzacji',
+                    'defaults' => [
+                        'controller'    => Controller\AutoryzacjaController::class,
+                        'action'        => 'brakAutoryzacji',
+                    ],
+                ],
+            ],   
+            ////////////////////////////////////////////////
         ],
     ],
     'view_manager' => [

@@ -107,7 +107,17 @@ class Rola
    {
       // $this->dzieckoRola->append($rola);
       // $this->dzieckoRola[$rola->getIdrola()]->append($rola);
-       $this->dzieckoRola->offsetSet($rola->getIdrola(), $rola);
+       //$this->dzieckoRola->offsetSet($rola->getIdrola(), $rola);
+     if ($this->getIdrola() == $rola->getIdrola()) {
+            return false;  
+     }
+     if(!$this->hasDziecko($rola))
+     {
+          $this->dzieckoRola[$rola->getIdrola()]=$rola;
+          return true;
+     }
+     
+      return false;
    }
    
    public function getDzieciRola()

@@ -54,13 +54,21 @@ class AutoryzacjaController extends AbstractController
         $fleshMessager=$this->fleshMessager;
         $sessionUzytkownik=new Session\Container('uzytkownik');
         
+      //przechwytuje param 'wyloguj' (jesli nie ma, ustawiam na 'nie') w celu pokazania komunikatu na stronie loguj o poprawnym wylogowaniu
+     $wyloguj = (string)$this->params()->fromQuery('wyloguj', 'nie');
+       if($wyloguj=='tak')
+        { 
+           $fleshMessager->addErrorMessage('Zostałeś wylogowany !!');
+           return $this->redirect()->toRoute('login');
+       }  
+     
+     
         if(isset($sessionUzytkownik->details))
         { 
            $fleshMessager->addErrorMessage('JESTEŚ JUŻ ZALOGOWANY !!');
            return $this->redirect()->toRoute('home');
        }
-       //przechwytuje param 'wyloguj' (jesli nie ma, ustawiam na 'nie') w celu pokazania komunikatu na stronie loguj o poprawnym wylogowaniu
-     $wyloguj = (string)$this->params()->fromQuery('wyloguj', 'nie');
+     
         
      //przechwutuje parametr redirectUrl w celu zabezpieczenia przea atakiem
      //konfiguracja nastepuje w pliku Module.php
@@ -180,5 +188,10 @@ class AutoryzacjaController extends AbstractController
         }
     }
     
+    public function brakAutoryzacjiAction()
+    {
+       $this->getResponse()->setStatusCode(403);
     
+       return new ViewModel(); 
+    }
 }
