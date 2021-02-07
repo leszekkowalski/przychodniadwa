@@ -248,7 +248,7 @@ data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
             ['actions' => ['pokaz'], 'allow' => '@']        
             ] ,
             Controller\LekarzController::class=>[
-                ['actions'=>['index','dodaj','edytuj','pokaz'],'allow'=>'@'],
+                ['actions'=>['index','dodaj','edytuj','pokaz','haslo','przeslijzdjecie','kalendarz','usun'],'allow'=>'@'],
             ],
             Controller\UzytkownikController::class=>[
                   ['actions' => ['pokaz'], 'allow' => '*'],

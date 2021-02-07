@@ -215,4 +215,24 @@ $ileNaStrone=4;
      
  }
  
+ public function hasloAction()
+ {
+     
+ }
+ 
+ public function przeslijzdjecieAction()
+ {
+     
+ }
+ 
+ public function kalendarzAction()
+ {
+     
+ }
+ 
+ public function usunAction()
+ {
+     
+ }
+ 
 }
