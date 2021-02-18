@@ -132,7 +132,8 @@ return [
             //dostep jest dla kazdego
           ['actions' => ['index'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
         //dostep tylko dla zalogowanych
-            ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@']        
+         //   ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@'] 
+           ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '+wszyscy.own.pokazsesje']      
             ],
              Controller\OdzyskaniehaslaController::class=>[
             //dostep jest dla kazdego

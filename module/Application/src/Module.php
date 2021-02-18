@@ -20,6 +20,7 @@ use Laminas\Mvc\Controller\AbstractActionController;
 use Autoryzacja\Service\LogowanieAuth;
 use Autoryzacja\Controller\AutoryzacjaController;
 
+
 class Module
 {
     public function getConfig() : array
@@ -201,6 +202,7 @@ class Module
     // bieżący odwiedzający może oglądać stronę lub nie. Jeśli on / ona
     // nie jest uwierzytelniony i nie ma dostępu do strony, przekierowujemy użytkownika
     // do strony logowania.
+    /**----------ponizej metody dla autoryzacji tylko przy pomocy sesji
     public function onDispatch2(MvcEvent $event)
     {
      $controller=$event->getTarget();
@@ -242,6 +244,59 @@ class Module
        }
         
          
+    }
+     * 
+     * @param MvcEvent $event
+     */
+    //ponizej metoda autoryzacji przy pomocy uprawnien i zmienionej klasy LogowanieAuth
+    public function onDispatch2(MvcEvent $event)
+    {
+        //pobieram kontroler i akcje z parametrow HTTP
+       $controler=$event->getTarget(); 
+       $nazwaControler=$event->getRouteMatch()->getParam('controller', null);
+       $nazwaAkcja=$event->getRouteMatch()->getParam('action', null);
+       
+       $nazwaAkcja= str_replace('-','',lcfirst(ucwords($nazwaAkcja, '-')));
+        
+       // Pobieram service dla  LogowanieAuth
+       $logowanieAuthService=$event->getApplication()->getServiceManager()->get(LogowanieAuth::class);
+       
+       // Wykonuje filtrowanie dla każdego kontrolera z wyjatkiem AutoryzacjaController
+        // unikam nieskonczonej petli przekierowan
+       
+       if($nazwaControler!= AutoryzacjaController::class)
+       {
+           
+          $wynikAkcji_KontrolaDostepu=$logowanieAuthService->kontrolaDostepu($nazwaControler,$nazwaAkcja);
+      
+          if($wynikAkcji_KontrolaDostepu==LogowanieAuth::DOSTEP_WYMAGANA_AUTORYZACJA)
+          {
+              //Zapamietuje adres URL strony na którą chce wejsc uzytkownik w celu
+              //przekierowania go tam po pozytywnym zalogowaniu
+              $uri=$event->getApplication()->getRequest()->getUri();
+              
+
+             // Wykonuje relatywny URL (usuwam dane) w celu unikniecia przekierowania
+              //do innej domeny przez np. złośliwego uzytkownika
+              $uri->setScheme(null)
+                  ->setHost(null)
+                  ->setPort(null)
+                      ->setUserInfo(null);
+              
+              $przekierowanieUri=$uri->toString();
+              
+              //Przekierowuje na strone logowania
+              return $controler->redirect()->toRoute('login',[],['query'=>['redirectUrl'=>$przekierowanieUri]]);
+                
+              
+          }else{
+              if($wynikAkcji_KontrolaDostepu==LogowanieAuth::DOSTEP_ZABRONIONY)
+              {
+                  return $controler->redirect()->toRoute('brak-autoryzacji');
+              }
+          }
+        
+       }
     }
     
 }

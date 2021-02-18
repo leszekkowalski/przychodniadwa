@@ -57,6 +57,16 @@ return [
         ],
     ],
     
+    
+    'controller_plugins'=>[
+        'factories'=>[
+            Controller\Plugin\AccessPlugin::class=> Controller\Plugin\Factory\AccessPluginFactory::class,
+        ],
+        'aliases'=>[
+            'dostepRbac'=> Controller\Plugin\AccessPlugin::class,
+        ],
+    ],
+    
     'router' => [
         'routes' => [
             'home' => [
@@ -245,18 +255,24 @@ data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
             //dostep jest dla kazdego
             ['actions' => ['index'], 'allow' => '*'],
         //dostep tylko dla zalogowanych
-            ['actions' => ['pokaz'], 'allow' => '@']        
+         //   ['actions' => ['pokaz'], 'allow' => '@']   
+               ['actions' => ['pokaz'], 'allow' => '+wszyscy.own.pokazsesje']  
             ] ,
             Controller\LekarzController::class=>[
-                ['actions'=>['index','dodaj','edytuj','pokaz','haslo','przeslijzdjecie','kalendarz','usun'],'allow'=>'@'],
+             //   ['actions'=>['index','dodaj','edytuj','pokaz','haslo','przeslijzdjecie','kalendarz','usun'],'allow'=>'@'],
+                ['actions'=>['haslo'],'allow'=>'+lekarz.own.zmianahasla'],
+                ['actions'=>['przeslijzdjecie'],'allow'=>'+lekarz.own.zmianazdjecia'],
+                ['actions'=>['index','dodaj','edytuj','pokaz','kalendarz','usun'],'allow'=>'+uzytkowniklekarz.zarzadzaj'],
             ],
             Controller\UzytkownikController::class=>[
-                  ['actions' => ['pokaz'], 'allow' => '*'],
-                  ['actions'=>['index','dodaj','dodajlekarz','zmienHaslo','edytuj','usun'],'allow'=>'@'],  
+              ['actions'=>['index','dodaj','dodajlekarz','pokaz','zmienHaslo','edytuj','usun'],'allow'=>'*'],     
+          //        ['actions' => ['zmienHaslo'], 'allow' => '+uzytkownik.own.zmianahaslo'],
+            //      ['actions'=>['index','dodaj','dodajlekarz','pokaz','edytuj','usun'],'allow'=>'+uzytkowniklekarz.zarzadzaj'],  
             ],
             Controller\LekarzjsonController::class=>[
                   ['actions' => ['openjsonmail'], 'allow' => '*'],
-                  ['actions'=>['dodajjsonmail','dodajjsonpesel','lekarzindexjson','uzytkownikindexjson'],'allow'=>'@'],  
+                //['actions'=>['dodajjsonmail','dodajjsonpesel','lekarzindexjson','uzytkownikindexjson'],'allow'=>'@'],  
+                  ['actions'=>['dodajjsonmail','dodajjsonpesel','lekarzindexjson','uzytkownikindexjson'],'allow'=>'+uzytkowniklekarz.zarzadzaj'], 
             ],
         ],
     ],

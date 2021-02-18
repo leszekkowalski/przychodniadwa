@@ -212,5 +212,15 @@ class RolaManager
        
        
     }
+    
+    public function dodajDoBazyDanychRoleSuperAdministrator()
+    {
+       
+       $rola=new Rola();
+       $rolaName='Super Administrator';
+       $rola->setName($rolaName);
+       $rola->setOpis('Posiada wszystkie uprawnienia !!!');
+       
+    }
         
 }

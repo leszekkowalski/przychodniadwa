@@ -10,10 +10,17 @@ use Laminas\Authentication\Result;
 use Application\Polaczenie\UzytkownikPolaczenie;
 use Application\Model\Uzytkownik;
 use Laminas\Session;
+use Moj_rbac\Service\RbacManager;
 
 
 class LogowanieAuth
 {
+    // zawartosc wymagana dla akcji filtrdostepu.
+    const DOSTEP_PRZYZNANY = 1; 
+    const DOSTEP_WYMAGANA_AUTORYZACJA  = 2;
+    const DOSTEP_ZABRONIONY  = 3; 
+    
+    
     /**
      *
      * @var type Laminas\Db\Adapter\Adapter;
@@ -31,13 +38,17 @@ class LogowanieAuth
      * @var array 
      */
     private $config;
+    
+    //Moj_rbac\Service\RbacManager;
+    protected $rbac;
 
 
-    public function __construct(Adapter $dbAdapter, UzytkownikPolaczenie $dbUzytkownik, $filtr_dostepu)
+    public function __construct(Adapter $dbAdapter, UzytkownikPolaczenie $dbUzytkownik, $filtr_dostepu, RbacManager $rbac)
     {
      $this->dbAdapter=$dbAdapter;
      $this->dbUzytkownik=$dbUzytkownik;
      $this->config=$filtr_dostepu;
+     $this->rbac= $rbac;
    //  $this->adapter=new LogujAdapter
    //          (
     //         $this->dbAdapter, 
@@ -124,7 +135,7 @@ class LogowanieAuth
  * Metoda uzywa klucza 'kontrola_dostepu' w kluczu Config. Sprawdza czy biezacy uzytkownik ma 
      * pozwolenie do obejrzenia akcji w danym kontrolerze.
      * Zwraca 'true' jesli jest zgoda, lub 'false' - brak zgody.
- */
+ 
     public function kontrolaDostepu($controllerName, $actionName)
     {
         $userSession = new Session\Container('uzytkownik');
@@ -162,12 +173,96 @@ class LogowanieAuth
         
       return true;
     
-      
-      
-      
-      
-        
-
 }
-
+*/
+    
+  public function kontrolaDostepu($controllerName, $actionName)
+    {
+        $userSession = new Session\Container('uzytkownik');
+        
+       $tryb= isset($this->config['options']['tryb']) ? $this->config['options']['tryb']:'zastrzezony';
+        
+       if($tryb!='zastrzezony' && $tryb!='pozwalajacy')
+       {
+           return new \Exception('Niepoprawny tryb dostepu !!!!!');
+       }
+       
+       if(isset($this->config['controllers'][$controllerName]))
+       {
+           $nazwyControlerow=$this->config['controllers'][$controllerName];
+           
+           foreach ($nazwyControlerow as $controler)
+           {
+               $nazwyMetod=$controler['actions'];
+               $pozwolenia=$controler['allow'];
+               
+               if(is_array($nazwyMetod) && in_array($actionName, $nazwyMetod) || $nazwyMetod=='@')
+               {
+                   if($pozwolenia=='*')
+                   {
+                       return self::DOSTEP_PRZYZNANY;
+                   }else{
+                       if(!$userSession->details)
+                       {
+                           return self::DOSTEP_WYMAGANA_AUTORYZACJA;
+                       }
+                       
+                       if($pozwolenia=='@')//nie wystepuje u mnie - ale na przyszlosc np. dla zalogowanego ale bez uprawnienia
+                       {
+                          return self::DOSTEP_PRZYZNANY; 
+                       }else{
+                           if(substr($pozwolenia,0, 1)=='@')
+                           //tylko uzytkownik ze specyficzną identyfikacja na wartość adresu mail w kluczu ma dostep np: @stepien@wp.pl zamiast +uprawnienie - na razie nie uzywam
+                           {
+                            $mailUzytkownika= substr($pozwolenia, 1);
+                            
+                            if($userSession->details->getMail()==$mailUzytkownika)
+                            {
+                               return  self::DOSTEP_PRZYZNANY;
+                            }else{
+                               return  self::DOSTEP_ZABRONIONY;
+                            }
+                            
+                           }else{
+                              if(substr($pozwolenia, 0, 1)=='+')
+                              {
+                              // Only the user with this permission is allowed to see the page.
+                              $uprawnienie= substr($pozwolenia, 1) ;
+                              
+                             if($this->rbac->isGranted(null, $uprawnienie))
+                             {
+                                 return self::DOSTEP_PRZYZNANY;
+                             }else{
+                                 return self::DOSTEP_ZABRONIONY;
+                             }
+                              }else{
+                                  throw new \Exception('Unexpected value for "allow" - expected ' .
+                            'either "?", "@", "@mail" or "+permission"');
+                              }
+                           }
+                           
+                       }
+   
+                   }
+               }
+               
+               
+           }
+       }
+       // In zastrzezony mode, we require authentication for any action not 
+    // listed under 'filtr_dostepu' key and deny access to authorized users 
+    // (for security reasons).
+    if ($tryb=='zastrzezony') {
+        if(!$userSession->details)
+            return self::DOSTEP_WYMAGANA_AUTORYZACJA;
+        else
+            return self::DOSTEP_ZABRONIONY;
+    }
+    
+    // Permit access to this page.- kiedy nie ma kontrolera na liscie np. Logowanie
+    return self::DOSTEP_PRZYZNANY;
+       
+       
+    }
+       
 }

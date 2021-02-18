@@ -6,6 +6,10 @@ use Laminas\Stdlib\ArrayObject;
 
 class Uprawnienie 
 {
+    
+    static public $tablicaUprawnien=['wszyscy.own.pokazsesje','uzytkownik.own.zmianahaslo','lekarz.own.zmianahasla',
+        'lekarz.own.zmianazdjecia','uzytkowniklekarz.zarzadzaj','rbac.zarzadzaj'];
+    
     protected $iduprawnienia;
     
     protected $name;

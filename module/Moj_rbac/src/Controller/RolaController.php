@@ -11,6 +11,7 @@ use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 use Moj_rbac\Service\RolaManager;
 use InvalidArgumentException;
 use Moj_rbac\Service\RbacManager;
+use Laminas\Session;
 
 
 class RolaController extends AbstractController
@@ -40,6 +41,11 @@ class RolaController extends AbstractController
     {
 
         $role=$this->polaczenieRbac->pobierzWszystkieRole();
+        
+        if(!count($role))
+        {
+          echo 'brak ról';          exit();  
+        }
         
         $view=new ViewModel(['role'=>$role]);
 
@@ -259,10 +265,18 @@ class RolaController extends AbstractController
     public function testAction() 
     {
       
-       $this->rbacManager->init();
-       $this->rbacManager->isGranted($this->uzytkownik, 'uprawnienia');
-       
-       
+      // $this->rbacManager->init();
+      // $this->rbacManager->isGranted($this->uzytkownik, 'uprawnienia');
+        $userSession = new Session\Container('uzytkownik');
+        
+       if($userSession->details){ 
+            return [
+            'uzytkownik' => $userSession->details
+            ]; 
+       }
+        
+        
+    
    //    print_r($tablica);
      // $jeden=$tablica[0]->getDzieciRola();
       // echo $jeden[1];

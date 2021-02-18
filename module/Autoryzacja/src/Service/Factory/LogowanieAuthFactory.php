@@ -23,7 +23,8 @@ class LogowanieAuthFactory implements FactoryInterface
         }
         $dbAdapter=$container->get(Adapter::class);
         $dbUzytkownik=$container->get(UzytkownikPolaczenie::class);
-        return new LogowanieAuth($dbAdapter,$dbUzytkownik,$config);
+        $rbac=$container->get(\Moj_rbac\Service\RbacManager::class);
+        return new LogowanieAuth($dbAdapter,$dbUzytkownik,$config,$rbac);
     }
 
 }

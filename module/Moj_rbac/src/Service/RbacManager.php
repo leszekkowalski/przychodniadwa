@@ -90,8 +90,13 @@ public function __construct(
              {
                  foreach ($dzieci as $dziecko)
                  {
+                    
                      $roleDzieci[]=$dziecko->getName();
+                     $r=$dziecko->getName();
+                     echo '<br/>';
+                     echo 'Do roli '.$nazwaRoli.' dodaje '.$r.'<br/>';
                  }
+                  
                  $rbac->addRole($nazwaRoli, $roleDzieci);
                  
              }else{
@@ -128,13 +133,13 @@ public function __construct(
              return false;
          }
         $uzytkownik=$this->uzytkownikPolaczenie->znajdzJedenPoIdUzytkownik($idUzytkownik);
-        
+               
         if($uzytkownik==null)
         {
             throw new \Exception('There is no user with such identity');
         }
         }
-        
+               
         $roleArrayId=$this->uzytkownikPolaczenie->pobierzRoleUzytkownikaJakoArray(); 
         
          if(isset($roleArrayId[$uzytkownik->getIduzytkownik()]))
