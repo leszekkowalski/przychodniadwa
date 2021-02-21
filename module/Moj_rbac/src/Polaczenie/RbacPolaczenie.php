@@ -605,6 +605,30 @@ public function pobierzRoleJakoDzieci_z_rola_hierarchia(Rola $rola)
      
 }
 
+public function pobierzRoleJakoDzieci_z_rola_hierarchia_pop(Rola $rola)
+{
+    $sql=new Sql($this->polaczenieRbac);
+  
+  $select=$sql->select();
+  $select->from('rola',array('idrola','name','opis'));
+  $select->join('rola_hierarchia', 'rola.idrola=rola_hierarchia.rodzic_rola_id');
+  //$select->join('uprawnienia', 'rola_has_uprawnienia.uprawnienia_iduprawnienia=uprawnienia.iduprawnienia', array('iduprawnienia','name2'=>'name','opis2'=>'opis'));
+  $select->where(['rola_hierarchia.dziecko_rola_id=?'=>$rola->getIdrola()]);
+  
+   $rezultat=$sql->prepareStatementForSqlObject($select);
+    $wynik=$rezultat->execute();
+        
+    if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+          throw new RuntimeException(sprintf(
+          'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+     } 
+     
+    $wynikSet=new HydratingResultSet($this->hydrator, new Rola());
+        $wynikSet->initialize($wynik);
+        return $wynikSet;  
+     
+     
+}
 
 }
     

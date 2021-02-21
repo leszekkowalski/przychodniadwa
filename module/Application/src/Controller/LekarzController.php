@@ -217,11 +217,32 @@ $ileNaStrone=4;
  
  public function hasloAction()
  {
+     $idLekarz=(int)$this->params()->fromRoute('id',0);
+     if(!$idLekarz){
+         $this->redirect()->toRoute('lekarz');
+     }
      
+     $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
+     
+     if(!$this->dostepRbacController('lekarz.own.zmianahasla',['lekarz'=>$lekarz]))
+     {
+         return $this->redirect()->toRoute('brak-autoryzacji');
+     }
  }
  
  public function przeslijzdjecieAction()
  {
+    $idLekarz=(int)$this->params()->fromRoute('id',0);
+     if(!$idLekarz){
+         $this->redirect()->toRoute('lekarz');
+     }
+     
+     $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
+     
+     if(!$this->dostepRbacController('lekarz.own.zmianahasla',['lekarz'=>$lekarz]))
+     {
+         return $this->redirect()->toRoute('brak-autoryzacji');
+     }
      
  }
  

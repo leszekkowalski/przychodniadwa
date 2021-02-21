@@ -13,6 +13,7 @@ use Moj_rbac\Service\KontrolaUprawnienIndywidualnychRbac;
 use Laminas\Permissions\Rbac\Rbac;
 use Laminas\Cache\Storage\StorageInterface;
 use Laminas\Session\Container;
+use Moj_rbac\Service\RolaManager;
 
 class RbacManager
 {
@@ -35,17 +36,24 @@ class RbacManager
      */
     private $indywidualneUprawnieniaManager=[];
     
-public function __construct(
+    // RolaManager.php
+    protected $roleManager;
+
+
+    public function __construct(
         RbacPolaczenie $pol, 
         UzytkownikPolaczenie $polUzyt,
         StorageInterface $cache,  
-        $uprawnieniaIndywidualne)
+        $uprawnieniaIndywidualne,
+        RolaManager $rolaManager   
+            )
 {
     $this->rbacPolaczenie=$pol;
     $this->uzytkownikPolaczenie=$polUzyt;
     $this->cache=$cache;
     $this->userSession=new \Laminas\Session\Container('uzytkownik');
     $this->indywidualneUprawnieniaManager=$uprawnieniaIndywidualne;
+    $this->roleManager=$rolaManager;
 } 
  /**
   * Funkcja odpowiada za załadowanie parametrów (ról i uprawnień) do kontenera rbac.
@@ -80,39 +88,75 @@ public function __construct(
          $rbac->setCreateMissingRoles(true);
          
          $role=$this->rbacPolaczenie->pobierzWszystkieRole();
+         $uprawnieniaAll=$this->rbacPolaczenie->pobierzWszystkieUprawnienia();
+         
          
          foreach ($role as $rola)
          {
-             $nazwaRoli=$rola->getName();
+          $nazwaRoli=$rola->getName();
+          $idRola=$rola->getIdrola();////////////
+          
+          $tablicaIdrola=array();///
+          $tablicaIdrola[$idRola]['idrola']=$idRola;/////
+          $tablicaIdrola[$idRola]['dziedziczony']='[własny]';////////
+          
+          $tablicaIdrola=$this->roleManager->wyliczRoleDzieci($idRola, $tablicaIdrola, $this->rbacPolaczenie);
+       
+       $tablicaDoZapytania=array();
+       $uprawnieniaRoli=array();
+       foreach ($tablicaIdrola as $pojrola)
+       {
+           $tablicaDoZapytania[]=$pojrola['idrola'];
+       }
+       
+       $uprawnieniaRoli=$this->rbacPolaczenie->pobierzRola_Uprawnienia_tablica($tablicaDoZapytania);
+                  
              $roleDzieci=[];
+             $dzieci=null;
+             /**
              $dzieci=$this->rbacPolaczenie->pobierzRoleJakoDzieci_z_rola_hierarchia($rola);
+              * */
+         $dzieci=$this->rbacPolaczenie->pobierzRoleJakoDzieci_z_rola_hierarchia_pop($rola);      
              if($dzieci)
              {
                  foreach ($dzieci as $dziecko)
                  {
-                    
-                     $roleDzieci[]=$dziecko->getName();
-                     $r=$dziecko->getName();
-                     echo '<br/>';
-                     echo 'Do roli '.$nazwaRoli.' dodaje '.$r.'<br/>';
+   
+                   $roleDzieci[]=$dziecko->getName();
+
+                     
                  }
-                  
-                 $rbac->addRole($nazwaRoli, $roleDzieci);
+                  if(($roleDzieci)){
+                  //      echo 'Do roli '.$nazwaRoli.' dodaje '.$roleDzieci[0].'<br/>';
+                      $rbac->addRole($nazwaRoli, $roleDzieci);
+                  }else{
+                   //   echo 'Do roli '.$nazwaRoli.' dodaje nic'.'<br/>';
+                     $rbac->addRole($nazwaRoli);
+                  }
                  
-             }else{
-                 $rbac->addRole($nazwaRoli);
+                 
              }
+                
+                 
              //pobieram uprawnienia Roli
-             $uprawnieniaRoli=$this->rbacPolaczenie->pobierzRola_Uprawnienia($rola->getIdrola());
+           //  $uprawnieniaRoli=$this->rbacPolaczenie->pobierzRola_Uprawnienia($rola->getIdrola());
              
-             foreach ($uprawnieniaRoli as $uprawnienie)
-             {
-                 $rbac->getRole($nazwaRoli)->addPermission($uprawnienie['name2']);
-             }
+            // foreach ($uprawnieniaRoli as $uprawnienie)
+          //   {
+            //     $rbac->getRole($nazwaRoli)->addPermission($uprawnienie['name2']);
+               //  echo 'Do roli '.$nazwaRoli.' dodaje uprawnienie '.$uprawnienie['name2'].'<br/>';
+            // }
+            foreach ($uprawnieniaRoli as $jedno)
+            {
+                $rbac->getRole($nazwaRoli)->addPermission($jedno['name2']);
+            }
      
+                          
          }
+         
          $this->cache->setItem('rbac_pamiec', $rbac);
      }
+     
  }
  /**
   * funkcja odpoawiada za sparwdzenie czy dany uzytkownik ma posiadane uprawnienia 
@@ -150,7 +194,7 @@ public function __construct(
         }else{
             return false;
         }
-         
+  
         if($this->rbac->isGranted($nazwaRoliUzytkownika, $uprawnienie))
         {
            
@@ -158,26 +202,29 @@ public function __construct(
            
             foreach ($this->indywidualneUprawnieniaManager as $indUprawnienie)
             {
-                if($indUprawnienie->assert($this->rbac,$uprawnienie,$parametry))
+                if($indUprawnienie->assert($this->rbac,$uprawnienie,$parametry,$nazwaRoliUzytkownika))
                 {
                     return true;
                 }
+                   
+                
             }
+              
             
-            $rola=new Rola();
-            $rola->setIdrola($roleArrayId[$uzytkownik->getIduzytkownik()]['idrola']);
+        //    $rola=new Rola();
+          //  $rola->setIdrola($roleArrayId[$uzytkownik->getIduzytkownik()]['idrola']);
             
             
-            $dzieciRoli=$this->rbacPolaczenie->pobierzRoleJakoDzieci_z_rola_hierarchia($rola);
+          //  $dzieciRoli=$this->rbacPolaczenie->pobierzRoleJakoDzieci_z_rola_hierarchia($rola);
             
-            foreach ($dzieciRoli as $dziecko)
-            {
-                if($this->rbac->isGranted($dziecko->getName(), $uprawnienie))
-                {
-                    return true;
-                }
-            }
-            
+         //   foreach ($dzieciRoli as $dziecko)
+         //   {
+         //       if($this->rbac->isGranted($dziecko->getName(), $uprawnienie))
+          //      {
+           //         return true;
+           //     }
+         //   }
+             
             return false;
         }
      

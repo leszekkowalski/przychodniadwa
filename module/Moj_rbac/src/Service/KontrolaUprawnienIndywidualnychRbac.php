@@ -5,6 +5,7 @@ namespace Moj_rbac\Service;
 use Laminas\Permissions\Rbac\Rbac;
 use Application\Polaczenie\UzytkownikPolaczenie;
 use Laminas\Session;
+use Laminas\Permissions\Rbac\Role;
 /**
  * Sprawdza uprawnienia indywidualne przy uzyciu metody isGranted() RbacManager
  */
@@ -20,11 +21,34 @@ class KontrolaUprawnienIndywidualnychRbac
         $this->polaczenieUzytkownik=$polaczenie;
     }
     
-    public function assert(Rbac $rbac, string $uprawnienia, array $parametry): bool
+    public function assert(Rbac $rbac, string $uprawnienia, array $parametry, $nazwaRoli=null): bool
     {
-     
+    
+        $sesjaUzytkownika=new Session\Container('uzytkownik');
         
-        return true;
+  
+        if(($uprawnienia=='lekarz.own.zmianahasla' && 
+            $sesjaUzytkownika->details->getLekarz()==$parametry['lekarz']->getIdlekarz()) ||
+            $nazwaRoli=='Super Administrator')
+        {
+            return true;
+        }
+        
+        if(($uprawnienia=='lekarz.own.zmianazdjecia' && 
+            $sesjaUzytkownika->details->getLekarz()==$parametry['lekarz']->getIdlekarz()) ||
+            $nazwaRoli=='Super Administrator')
+        {
+            return true;
+        }
+ 
+         if(($uprawnienia=='uzytkownik.own.zmianahaslo' && 
+            $sesjaUzytkownika->details->getIduzytkownik()==$parametry['uzytkownik']->getIduzytkownik()) ||
+            $nazwaRoli=='Super Administrator')
+        {
+            return true;
+        }
+        
+        return false;
     }
 
 }

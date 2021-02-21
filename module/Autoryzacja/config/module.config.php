@@ -133,7 +133,7 @@ return [
           ['actions' => ['index'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
         //dostep tylko dla zalogowanych
          //   ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@'] 
-           ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '+wszyscy.own.pokazsesje']      
+           ['actions' => ['sesja','loginprogressuzytkownik'], 'allow' => '@']      
             ],
              Controller\OdzyskaniehaslaController::class=>[
             //dostep jest dla kazdego

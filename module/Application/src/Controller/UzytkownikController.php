@@ -81,14 +81,20 @@ public function zmienHasloAction() {
             $flashMessenger->addErrorMessage('Błąd pobrania id Użytkownika. Powiadom Administratora !!'); 
             return $this->redirect()->toRoute('uzytkownik');
         }
-        
+               
       try {
             $uzytkownik = $this->dbUzytkownik->znajdzJedenPoIdUzytkownik($idUzytkownik);
         } catch (InvalidArgumentException $ex) {
           
             $flashMessenger->addErrorMessage('Błąd pobrania Użytkownika. Powiadom Administratora !!');  
             return $this->redirect()->toRoute('uzytkownik');
-        }   
+        } 
+        
+        if(!$this->dostepRbacController('uzytkownik.own.zmianahaslo',['uzytkownik'=>$uzytkownik]))
+     {
+         return $this->redirect()->toRoute('brak-autoryzacji');
+     }
+        
     
     $imie_nazwisko=$uzytkownik->getImie().' '.$uzytkownik->getNazwisko();
     $viewModel = new ViewModel(['form' => $this->formZmienHaslo,'imie_nazwisko'=>$imie_nazwisko]);

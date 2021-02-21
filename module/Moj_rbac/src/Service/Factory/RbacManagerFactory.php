@@ -20,6 +20,8 @@ class RbacManagerFactory implements FactoryInterface
        $config=$container->get('Config');
        $indywidualneUprawnieniaManager=[];
        
+       $roleManager=$container->get(\Moj_rbac\Service\RolaManager::class);
+       
        if(isset($config['rbac_manager']['assertions']))
        {
            foreach ($config['rbac_manager']['assertions'] as $serviceName)
@@ -29,7 +31,7 @@ class RbacManagerFactory implements FactoryInterface
        }
        
        
-       return new RbacManager($polaczenie,$polUzyt,$cache,$indywidualneUprawnieniaManager);
+       return new RbacManager($polaczenie,$polUzyt,$cache,$indywidualneUprawnieniaManager,$roleManager);
        
        
     }

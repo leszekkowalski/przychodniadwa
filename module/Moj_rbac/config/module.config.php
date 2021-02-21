@@ -92,7 +92,7 @@ return [
         'controllers'=>[
             Controller\RolaController::class=>[
             //dostep jest dla kazdego
-        //  ['actions' => ['index','dodaj','usun','edytuj','widok','test'], 'allow' => '*'] ,//strona rejestracji nowego uzytkownika
+        //  ['actions' => ['index','dodaj','usun','edytuj','widok','test'], 'allow' => '@'] ,//strona rejestracji nowego uzytkownika
         //dostep tylko dla zalogowanych
           ['actions' => ['index','dodaj','usun','edytuj','widok','test'], 'allow' => '+rbac.zarzadzaj'] ,       
             ],
