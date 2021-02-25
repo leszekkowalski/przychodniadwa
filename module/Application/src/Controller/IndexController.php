@@ -14,6 +14,7 @@ use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use Application\Polaczenie\LekarzPolaczenie;
 use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
+use Laminas\Session;
 
 
 class IndexController extends AbstractController
@@ -46,7 +47,15 @@ class IndexController extends AbstractController
             'paginator'=>$paginator,
                 ]);
     }
-    public function pokazAction() {
+    public function pokazAction() 
+    {
        
+        $sesjaUzytkownika=new Session\Container('uzytkownik');
+        
+        return new ViewModel([
+            'baseUrl'=>$this->baseUrl,
+            'uzytkownik'=>$sesjaUzytkownika->details,
+                ]);
+        
     }
 }

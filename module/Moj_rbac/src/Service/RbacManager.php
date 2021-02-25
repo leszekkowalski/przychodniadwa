@@ -167,7 +167,7 @@ class RbacManager
      {
         $this->init(); 
      }
-     
+
      if($uzytkownik==null)
      {
        $idUzytkownik=$this->userSession->details->getIduzytkownik();
@@ -183,7 +183,7 @@ class RbacManager
             throw new \Exception('There is no user with such identity');
         }
         }
-               
+          
         $roleArrayId=$this->uzytkownikPolaczenie->pobierzRoleUzytkownikaJakoArray(); 
         
          if(isset($roleArrayId[$uzytkownik->getIduzytkownik()]))
@@ -194,12 +194,14 @@ class RbacManager
         }else{
             return false;
         }
-  
+     
         if($this->rbac->isGranted($nazwaRoliUzytkownika, $uprawnienie))
         {
-           
-           if($parametry==null) return true;
-           
+ 
+           if($parametry==null)
+           {  
+               return true;
+           }
             foreach ($this->indywidualneUprawnieniaManager as $indUprawnienie)
             {
                 if($indUprawnienie->assert($this->rbac,$uprawnienie,$parametry,$nazwaRoliUzytkownika))
@@ -210,7 +212,7 @@ class RbacManager
                 
             }
               
-            
+           
         //    $rola=new Rola();
           //  $rola->setIdrola($roleArrayId[$uzytkownik->getIduzytkownik()]['idrola']);
             
@@ -229,7 +231,7 @@ class RbacManager
         }
      
      
-     
+    //   return false;              
      
  }
  

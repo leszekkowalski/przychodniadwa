@@ -50,7 +50,12 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="<?= $this->url('home') ?>">Wybierz lekarza</a>
+          
+         <?php  if($this->uzytkownik) :   ?>  
+          
+          <?php  if($this->dostepRbacView('wszyscy.own.pokazsesje',['layout'=>'pokaz'])):   ?>
           <a class="dropdown-item" href="<?= $this->url('pokaz',['action' => 'dodaj']) ?>">Pokaz</a>
+          <?php endif;    ?>
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </li>  
@@ -61,11 +66,14 @@
           Lekarze
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        <?php  if($this->dostepRbacView('wszyscy.own.pokazsesje',['layout'=>'pokaz'])):   ?>    
           <a class="dropdown-item" href="<?= $this->url('lekarz') ?>">zarządzaj</a>
+        <?php endif;    ?>
           <a class="dropdown-item" href="<?= $this->url('lekarz',['action' => 'dodaj']) ?>">dodaj</a>
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </li>
+     
        <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Użytkownicy
@@ -76,18 +84,24 @@
           <a class="dropdown-item" href="<?= $this->url('uzytkownik',['action' => 'pokaz']) ?>">Pokaż.......</a>
         </div>
       </li>
+       <?php   endif; ?>
       
-      
-      
+      <?php  if(!$this->uzytkownik) :   ?>
       <li class="nav-item">
         <a class="nav-link" href="<?= $this->url('login') ?>">Loguj</a>
       </li>
+      <?php   endif; ?>
+       <?php  if($this->uzytkownik) :   ?>
       <li class="nav-item">
         <a class="nav-link" href="<?= $this->url('login',['action' => 'wyloguj'])?>">Wyloguj</a>
       </li>
+       <?php   endif; ?>
+      <?php  if(!$this->uzytkownik) :   ?>
       <li class="nav-item">
         <a class="nav-link" href="<?= $this->url('rejestruj')?>">Zarejestruj się</a>
       </li>
+      <?php   endif; ?>
+       <?php  if($this->uzytkownik && $this->dostepRbacView('rbac.zarzadzaj',['layout'=>'pokaz'])):   ?> 
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           RBAC Zarządzaj
@@ -99,6 +113,7 @@
          <a class="dropdown-item" href="<?= $this->url('uprawnienia',['action' => 'dodaj'])?>">Dodaj Uprawnienie</a>
         </div>
       </li>
+       <?php   endif; ?>
     </ul>
   </div>
   </div>
@@ -110,7 +125,7 @@
         
         
         <div class="container">
-            
+
             <?= $this->content ?>
             
             <hr>

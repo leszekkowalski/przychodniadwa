@@ -5,7 +5,6 @@ namespace Moj_rbac\Service;
 use Laminas\Permissions\Rbac\Rbac;
 use Application\Polaczenie\UzytkownikPolaczenie;
 use Laminas\Session;
-use Laminas\Permissions\Rbac\Role;
 /**
  * Sprawdza uprawnienia indywidualne przy uzyciu metody isGranted() RbacManager
  */
@@ -25,8 +24,22 @@ class KontrolaUprawnienIndywidualnychRbac
     {
     
         $sesjaUzytkownika=new Session\Container('uzytkownik');
-        
+     
+        if($uprawnienia=='wszyscy.own.pokazsesje' && $parametry['layout']=='pokaz')
+        {
+            return true;
+        }
   
+         if($uprawnienia=='rbac.zarzadzaj' && $parametry['layout']=='pokaz')
+        {
+            return true;
+        }
+        
+         if($uprawnienia=='uzytkowniklekarz.zarzadzaj' && $parametry['layout']=='pokaz')
+        {
+            return true;
+        }
+        
         if(($uprawnienia=='lekarz.own.zmianahasla' && 
             $sesjaUzytkownika->details->getLekarz()==$parametry['lekarz']->getIdlekarz()) ||
             $nazwaRoli=='Super Administrator')

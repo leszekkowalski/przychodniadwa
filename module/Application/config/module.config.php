@@ -69,10 +69,10 @@ return [
     
     'view_helpers'=>[
         'factories'=>[
-            View\Helper\AccessHelper::class=> View\Factory\AccessHelperFactory::class,  
+        View\Helper\Access::class=> View\Helper\Factory\AccessFactory::class,
         ],
         'aliases'=>[
-           'dostepRbacView' => View\Helper\AccessHelper::class,
+           'dostepRbacView' => View\Helper\Access::class,
         ],
     ],
     
