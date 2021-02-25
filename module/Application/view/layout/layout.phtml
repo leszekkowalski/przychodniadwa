@@ -69,8 +69,10 @@
         <?php  if($this->dostepRbacView('wszyscy.own.pokazsesje',['layout'=>'pokaz'])):   ?>    
           <a class="dropdown-item" href="<?= $this->url('lekarz') ?>">zarządzaj</a>
         <?php endif;    ?>
+         <?php  if($this->dostepRbacView('uzytkowniklekarz.zarzadzaj',['layout'=>'pokaz'])):   ?>   
           <a class="dropdown-item" href="<?= $this->url('lekarz',['action' => 'dodaj']) ?>">dodaj</a>
           <a class="dropdown-item" href="#">Something else here</a>
+           <?php endif;    ?>
         </div>
       </li>
      
@@ -80,6 +82,8 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="<?= $this->url('uzytkownik') ?>">zarządzaj</a>
+           <?php   endif; ?>
+         <?php  if($this->dostepRbacView('uzytkowniklekarz.zarzadzaj',['layout'=>'pokaz'])):   ?>  
           <a class="dropdown-item" href="<?= $this->url('uzytkownik',['action' => 'dodaj']) ?>">dodaj</a>
           <a class="dropdown-item" href="<?= $this->url('uzytkownik',['action' => 'pokaz']) ?>">Pokaż.......</a>
         </div>

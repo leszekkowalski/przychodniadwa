@@ -14,13 +14,13 @@ $this->headTitle($title);
 <div class="card-deck">
  <div class="card">
         <h2 class="card-header mx-auto">Zarządzaj Użytkownikami</h2>
-        
-    <div style="margin-top:10px;">     
+   <div style="margin-top:10px;">      
+ <?php  if($this->dostepRbacView('uzytkowniklekarz.zarzadzaj',['layout'=>'pokaz'])):   ?>              
  <a href="<?= $this->url('uzytkownik', ['action' => 'dodaj']) ?>" title="Dodaj Użytkownika">
 <button type="button" class="btn btn-primary btn-lg btn-block">Dodaj Użytkownika</button>            
- </a>        
-   </div>  
-        
+ </a>         
+<?php   endif; ?>    
+   </div>     
  <div>
         <?= $this->partial('partial/flashMessenger.phtml'); ?>
 </div>

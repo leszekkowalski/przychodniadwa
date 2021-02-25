@@ -29,6 +29,11 @@ class KontrolaUprawnienIndywidualnychRbac
         {
             return true;
         }
+        
+        if($uprawnienia=='uzytkowniklekarz.zarzadzaj' && $parametry['layout']=='pokaz')
+        {
+            return true;
+        }
   
          if($uprawnienia=='rbac.zarzadzaj' && $parametry['layout']=='pokaz')
         {
