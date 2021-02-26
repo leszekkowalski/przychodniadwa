@@ -30,4 +30,5 @@ return [
     'Application',
     'Autoryzacja',
     'Moj_rbac',
+    'Kalendarz',
 ];

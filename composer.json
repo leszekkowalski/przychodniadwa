@@ -41,7 +41,8 @@
         "psr-4": {
             "Application\\": "module/Application/src/",
              "Autoryzacja\\": "module/Autoryzacja/src/",
-              "Moj_rbac\\":   "module/Moj_rbac/src/"
+              "Moj_rbac\\":   "module/Moj_rbac/src/",
+              "Kalendarz\\": "module/Kalendarz/src/"
         }
     },
     "autoload-dev": {
