@@ -16,7 +16,7 @@ class LoginFieldset extends Fieldset implements InputFilterProviderInterface
     public function __construct()
     {
         parent::__construct('login_fieldset');
-        
+                   
         $this->add([
             'type'=> Element\Email::class,
             'name'=>self::ELEMENT_MAIL,
@@ -53,6 +53,7 @@ class LoginFieldset extends Fieldset implements InputFilterProviderInterface
     
     
     public function getInputFilterSpecification(): array {
+        
         $validators=[
             [
               'name'=>self::ELEMENT_MAIL,
@@ -110,7 +111,7 @@ class LoginFieldset extends Fieldset implements InputFilterProviderInterface
             ],
         ];
  //dodaje extra validator DB (bazy danych) do formularza rejestracji omijajac  formularz logowania 
-        
+
            if(!empty($this->getOption('dbAdapter'))) {
               $validators[0]['validators'][0] =[
                   'name'=> \Laminas\Validator\Db\NoRecordExists::class,

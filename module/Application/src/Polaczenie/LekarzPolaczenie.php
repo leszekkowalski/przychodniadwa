@@ -17,6 +17,7 @@ use Laminas\Db\Sql\Insert;
 use Application\Validator\PeselValidator;
 use Laminas\Db\Sql\Update;
 use Laminas\Cache\Storage\StorageInterface;
+use Laminas\Db\Sql\Where;
 
 
 class LekarzPolaczenie{
@@ -380,6 +381,30 @@ private function fetchPaginatedResults()
         $wynikSet->initialize($wynik);
         return $wynikSet;
         
+    }
+    
+    public function searchlekarzejson($term)
+    {
+        $skrot = $term.'%';
+        $noweWhere=new Where();
+        $noweWhere->like('nazwisko', $term.'%');
+        
+        $sql=new Sql($this->adapter);
+        $select=$sql->select('lekarz');
+        //$select=$select->columns(['idlekarz','imie','nazwisko','plec','zdjecie','mail','specjalnosc','telefon','opis']);
+       $select->where($noweWhere);
+        
+     // $select->where('nazwisko LIKE ?', 'Rożek');
+        $rezultat=$sql->prepareStatementForSqlObject($select);
+        $wynik=$rezultat->execute();
+        if(! $wynik instanceof ResultInterface || ! $wynik->isQueryResult() ){
+            throw new RuntimeException(sprintf(
+            'Nastapił błąd podczas pobierania danych z bazy danych. Nieznany bład. Powiadom administratora.'));
+        }
+        
+        $wynikSet=new HydratingResultSet($this->hydrator, $this->lekarzPrototype);
+        $wynikSet->initialize($wynik);
+        return $wynikSet; 
     }
     
 } 

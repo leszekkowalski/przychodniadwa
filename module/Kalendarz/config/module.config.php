@@ -2,32 +2,76 @@
 namespace Kalendarz;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\Router\Http\Literal;
+use Laminas\Router\Http\Segment;
 
 
 return [
     'controllers' => [
         'factories' => [
-            Controller\KalendarzController::class => InvokableFactory::class,
+            Controller\KalendarzController::class => Controller\Factory\KalendarzControllerFactory::class,
         ],
     ],
+    
+     'service_manager' => [
+        'aliases' => [
+          
+        ],
+        'factories' => [
+            Polaczenie\WydarzeniePolaczenie::class=> Polaczenie\Factory\WydarzeniePolaczenieFactory::class,
+        ],
+    ],
+    
     'router' => [
         'routes' => [
             'kalendarz' => [
-                'type'    => 'Literal',
+                'type'    => Segment::class,
                 'options' => [
-                    // Change this to something specific to your module
-                    'route'    => '/kalendarz',
+                     'route' => '/kalendarz[/:action/:id[/:data][/:idlekarz]]',//parametr id jest obowiazkowy - bez nawiasów
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                        'data'=>'[0-9]{4}-{1}[0-9]{2}-{1}[0-9]{2}',
+                        'idlekarz'=>'[0-9]+',
+                        
+                    ],
                     'defaults' => [
-                        'controller'    => Controller\KalendarzController::class,
+                       'controller'    => Controller\KalendarzController::class,
                         'action'        => 'index',
                     ],
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                    // You can place additional routes that match under the
-                    // route defined above here.
+                  ///////////////////////////
+                    'pokaz' => [     //$this->url('kalendarz/pokaz', ['data' => '2021-12-12','id'=>22]); - wynik-  "/kalendarz/2021-12-12/22"
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => '/[:data][/:id]',
+                            'constraints' => [
+                              'data'=>'[0-9]{4}-{1}[0-9]{2}-{1}[0-9]{2}',
+                                 'id'     => '[0-9]+', 
+                            ],
+                            'defaults' => [
+                                'action' => 'pokaz',
+                                ],
+                            ],
+                         ],
+                ],
+              
+            ],
+              ////////////////////////////////////////////////
+              'search_lekarzajson' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/search_lekarzajson',
+                    'defaults' => [
+                        'controller'    => \Application\Controller\LekarzjsonController::class,
+                        'action'        => 'searchlekarzajson',
+                    ],
                 ],
             ],
+            
+            ////////////////////////////////////////////////
         ],
     ],
     'view_manager' => [
@@ -46,7 +90,7 @@ return [
         'controllers'=>[
             Controller\KalendarzController::class=>[
             //dostep jest dla kazdego
-            ['actions' => ['index'], 'allow' => '*'],
+            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete'], 'allow' => '*'],
         //dostep tylko dla zalogowanych
             //   ['actions' => ['pokaz'], 'allow' => '+wszyscy.own.pokazsesje']  
             ] ,

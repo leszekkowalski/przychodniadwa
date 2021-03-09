@@ -158,7 +158,18 @@ return [
                     ],
                 ],
             ],
-            
+            ////////////////////////////////////////////////////
+       //        'search_lekarzajson' => [
+       //         'type'    => Literal::class,
+       //         'options' => [
+        //            // Change this to something specific to your module
+        //            'route'    => 'search_lekarzajson',
+        //            'defaults' => [
+         //               'controller'    => Controller\LekarzjsonController::class,
+         //               'action'        => 'searchlekarzajson',
+          //          ],
+          //      ],
+          //  ],
             ////////////////////////////////////////////////
             'lekarz' => [
                 'type'    => Segment::class,
@@ -282,7 +293,7 @@ data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
                   ['actions'=>['dodaj','dodajlekarz','pokaz','edytuj','usun'],'allow'=>'+uzytkowniklekarz.zarzadzaj'],  
             ],
             Controller\LekarzjsonController::class=>[
-                  ['actions' => ['openjsonmail'], 'allow' => '*'],
+                  ['actions' => ['openjsonmail','searchlekarzajson'], 'allow' => '*'],
                  ['actions' => ['lekarzindexjson'], 'allow' => '+wszyscy.own.pokazsesje'],
                 //['actions'=>['dodajjsonmail','dodajjsonpesel','lekarzindexjson','uzytkownikindexjson'],'allow'=>'@'],  
                   ['actions'=>['dodajjsonmail','dodajjsonpesel'],'allow'=>'+uzytkowniklekarz.zarzadzaj'], 

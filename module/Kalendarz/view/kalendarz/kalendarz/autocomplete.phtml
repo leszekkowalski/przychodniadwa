@@ -1,0 +1,98 @@
+<?php
+
+$this->headLink()->appendStylesheet(
+       $this->basePath('js/jquery-ui-1.12.1.custom/jquery-ui.min.css')); 
+?>
+  <style>
+  .ui-autocomplete-loading {
+    background: white url(<?= $this->basePath('img/ladowanie.gif') ?>) right center no-repeat;
+  }
+  </style>
+  <?php
+$this->headScript()->appendFile(
+        $this->basePath('js/jquery-ui-1.12.1.custom/jquery-ui.min.js'), 'text/javascript');
+?>
+  <script>
+  $( function() {
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    $( "#tags1" ).autocomplete({
+      source: availableTags
+    });
+    /////////////////////////////////////
+const search_lekarzajson="http://localhost/przychodniadwa/search_lekarzajson";
+    let cache = {};
+    $( "#birds" ).autocomplete({
+      minLength: 2,
+      source: function( request, response ) {
+        var term = request.term;
+        if ( term in cache ) {
+          response( cache[ term ] );
+          return;
+        }
+ 
+        $.getJSON( search_lekarzajson, request, function( data, status, xhr ) {
+ 
+      //  let count = 0;
+       // for(let key in data) {
+       // count ++;
+      //  } 
+      //  console.log(count);
+       // let tab={};
+       // let tabzew={};
+        //  for(let i = 0; i < count; i++)
+        //  {
+             // tab[i]=data[i]['imie_nazwisko_pesel'];
+         //     tab[i]=data[i];
+        //  }
+        cache[ term ] = data;
+          response( data );
+        }).fail(function() {
+   // console.log( "error" );
+    alert('Błąd w pobieraniu danych');
+  })  .done(function() {
+   // alert( "OK !!!" ); - cos do zrobienia ???
+  });
+      }
+    });
+    ///////////////////////////////////
+  } );
+  </script>
+</head>
+<body>
+ 
+<div class="ui-widget">
+  <label for="tags">Tags: </label>
+  <input id="tags1">
+</div>
+    
+ <div class="ui-widget">
+  <label for="birds">Birds: </label>
+  <input id="birds" class="w-25">
+</div>   
+ 
+ 
+</body>
+</html>

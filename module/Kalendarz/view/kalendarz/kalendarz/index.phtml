@@ -1,69 +1,56 @@
 <?php
+ 
+$this->headLink()->appendStylesheet($this->basePath('css/kalendarz.css'));
 
-function printCalendar()
-{
-  $year = date("Y");
-  $monthNum = date("n");
-  $daysofmonth = date("t");
-  $dayofweek = date("w");
-  $dayofmonth = date("j");
-  $firstdayofmonth = date("w", mktime(0,0,0,$monthNum, 1, $year));
+$title = 'Kalendarz miesiąca';
+$this->headTitle($title);
 
-  if($dayofweek == 0) $dayofweek = 7;
-  if($firstdayofmonth == 0) $firstdayofmonth = 7;
-
-  switch($monthNum){
-    case 1 : $monthName = "Styczeń";break;
-    case 2 : $monthName = "Luty";break;
-    case 3 : $monthName = "Marzec";break;
-    case 4 : $monthName = "Kwiecień";break;
-    case 5 : $monthName = "Maj";break;
-    case 6 : $monthName = "Czerwiec";break;
-    case 7 : $monthName = "Lipiec";break;
-    case 8 : $monthName = "Sierpień";break;
-    case 9 : $monthName = "Wrzesień";break;
-    case 10 : $monthName = "Październik";break;
-    case 11 : $monthName = "Listopad";break;
-    case 12 : $monthName = "Grudzień";break;
-  }
-
-  echo("<TABLE border = 1><TR>");
-  echo("<TD bgcolor=\"yellow\" align=\"center\" colspan=\"7\">");
-  echo($monthName." ".$year);
-  echo("</TD></TR><TR>");
-  ?>
-  <TR>
-  <TD align="center" bgcolor="pink">Pn</TD>
-  <TD align="center" bgcolor="pink">Wt</TD>
-  <TD align="center" bgcolor="pink">Sr</TD>
-  <TD align="center" bgcolor="pink">Cz</TD>
-  <TD align="center" bgcolor="pink">Pi</TD>
-  <TD align="center" bgcolor="pink">So</TD>
-  <TD align="center" bgcolor="pink">Nd</TD>
-  </TR>
-  <?php
-  $j = $daysofmonth + $firstdayofmonth - 1;
-
-  for($i = 0; $i < $j; $i++){
-    if($i < $firstdayofmonth - 1){
-      echo("<TD bgcolor=\"white\"></TD>");
-      continue;
-    }
-    if(($i % 7) == 0){
-      echo("</TR><TR>");
-    }
-    if(($i - $firstdayofmonth + 2) == $dayofmonth){
-      $color = "yellow";
-    }
-    else{
-      $color = "green";
-    }
-    echo("<TD bgcolor=\"$color\" align=\"center\">");
-    echo($i - $firstdayofmonth + 2);
-   
-    echo("</TD>");
-  }
-  echo("</TR></TABLE>");
-}
-printCalendar();
+$dzienMiesiacRok=strftime('%F', strtotime($data)); 
+$rok= (int)substr($dzienMiesiacRok, 0, 4);
+$miesiac=substr($dzienMiesiacRok, 5, 2);
+$dzien= substr($dzienMiesiacRok, 8, 2);
+$nastepnyRok=strftime('%F',mktime(0, 0, 0, $miesiac,   $dzien,   $rok+1));
+$nastepnyMiesiac=strftime('%F',mktime(0, 0, 0, $miesiac+1,   $dzien,   $rok));
+$poprzedniRok=strftime('%F',mktime(0, 0, 0, $miesiac,   $dzien,   $rok-1));
+$poprzedniMiesiac=strftime('%F',mktime(0, 0, 0, $miesiac-1,   $dzien,   $rok));
 ?>
+
+<div id="kalendarz">
+    
+   
+<h3 style="text-align: center"><?= 'Kalendarz dla '.$lekarz->getImie().' '.$lekarz->getNazwisko();   ?></h3>
+<div class="panel_kalendarza">
+    
+    <div id="zdjecie"> <a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz(), 'data'=>$poprzedniRok])   ?>"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" fill="orange" class="bi bi-skip-backward" viewBox="0 0 16 16">
+  <path d="M.5 3.5A.5.5 0 0 1 1 4v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v2.94l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L8.5 8.752v2.94c0 .653-.713.998-1.233.696L1 8.752V12a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm7 1.133L1.696 8 7.5 11.367V4.633zm7.5 0L9.196 8 15 11.367V4.633z"/></svg></a> </div>      
+    <div id="zdjecie"> <a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz(),'data'=>$poprzedniMiesiac])   ?>"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+  <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753l-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/></svg></a></div>     
+<div class="srodkowy_panel_kalendarza"><span style="font-size: 34px;"><?= $naglowekKalendarza?> </span></div>
+<div id="zdjecie"><a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz(),'data'=>$nastepnyMiesiac])   ?>"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+  <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753l5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/></svg></a> </div>            
+    <div id="zdjecie"><a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz(),'data'=>$nastepnyRok])   ?>"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" fill="orange" class="bi bi-skip-forward" viewBox="0 0 16 16">
+  <path d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V8.752l-6.267 3.636c-.52.302-1.233-.043-1.233-.696v-2.94l-6.267 3.636C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696L7.5 7.248v-2.94c0-.653.713-.998 1.233-.696L15 7.248V4a.5.5 0 0 1 .5-.5zM1 4.633v6.734L6.804 8 1 4.633zm7.5 0v6.734L14.304 8 8.5 4.633z"/></svg></a> </div> 
+</div>
+
+<?= $this->kodHTML;  ?>
+ 
+
+<div style="padding-top:10px;"> 
+ <a href="<?= $this->url('lekarz', ['action' => 'index']) ?>" title="Powrót do lekarzy" style="color: white;">
+              <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
+  <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+              </svg><?= 'Powrót do zarządzania Lekarzami' ?>
+             </a>    
+      
+ <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
+            <?= 'Wpisz nowe Wydarzenie' ?>  <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
+  <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+              </svg></a> 
+                
+    
+    </div> 
+
+
+</div>

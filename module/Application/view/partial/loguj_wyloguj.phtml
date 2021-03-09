@@ -4,6 +4,9 @@
                     <?php 
                     
                    if ($this->uzytkownik){
+                       ?>
+                       <div id="zegar" baseUrl="<?= $this->baseUrl;  ?>">Automatyczne wylogowanie za 10:00</div>
+                       <?php
                        echo 'Jestes zalogowany jako - '.$this->escapeHtml($this->uzytkownik->getImie().' '.$this->uzytkownik->getNazwisko());?><br>
                         <a href="<?= $this->url('login',['action' => 'wyloguj']) ?>">Wyloguj się !</a><?php
                    }else{
@@ -14,3 +17,37 @@
                     ?>
           </div>
 </div>
+
+<script type="text/javascript">
+   
+"use strict";
+
+$(document ).ready( function () {
+  let baseUrl=$("#zegar").attr('baseurl');   
+  
+  if((baseUrl !== undefined)){ 
+  let count = 6000; // ustawienie licznika na 60 sekund
+  let counter = setInterval(zegar, 1000); // ustawienie funkcji odpowiedajacej za cykliczne wywolanie(co 1 s) funkcji timer()  
+  
+  //console.log(baseUrl);
+    function zegar()
+    {
+        --count;
+        let minutes = Math.floor(count / 60); // obliczanie ile minut zostało
+        let sec = count % 60; //obliczanie ile sekund zostało reszta z dzielenia licznika przez 60 sekund
+        if(sec<10) sec = '0' + sec; // jeżeli mniej niż 10 sekund to wyświetl sekundy w formacie 00 zamiast 0  
+        let out = "Automatyczne wylogowanie za " + minutes + ':' + sec; //tekst wyswietlony uzytkownikowi
+        $("#zegar").html(out); // przypisanie tekstu timera do odpowiedniego elementu html
+        if( count <= 0) //licznik osiągnął 0 
+        {
+            //licznik się wyzerował należy podjąć odpowiednią akcje
+            clearInterval(counter); //zatrzymanie licznika
+            location.href = baseUrl+"/login/wyloguj";
+            //return; 
+        } 
+    
+     }
+                    }
+ }); 
+
+</script>

@@ -331,6 +331,48 @@ class LekarzjsonController extends AbstractController{
      
  }
  
+ public function searchlekarzajsonAction() 
+ {
+    $term=$this->params()->fromQuery('term',null); 
+    
+    if(!$term)
+    {
+            $this->redirect()->toRoute('home');  
+    }
+    
+    $lekarze=$this->polaczenieDb->searchlekarzejson($term);
+    //////////////
+    // $lekarzearray=(iterator_to_array($lekarze, true));
+              
+     $jsonData = array(); 
+     // $idx = 0; 
+      foreach($lekarze as $sampledata) { 
+
+        // $temp = array( 
+           // 'iduzytkownik'=>$sampledata->getIduzytkownik(), 
+         //   'imie_i_nazwisko' => $sampledata->getImie().' '.$sampledata->getNazwisko(), 
+         //   'imie_nazwisko_pesel' => $sampledata->getNazwisko().' '.$sampledata->getImie().' '.$sampledata->getPesel(),
+        //   'nazwisko'=>$sampledata->getNazwisko(),
+       $temp= $sampledata->getNazwisko().' '.$sampledata->getImie();
+          //  'imie_nazwisko_lekarz'=>$imie_i_nazwisko_lekarz,
+          //  'idlekarz'=>$idlekarz,
+          //   'rola'=>$rola,
+            
+       //  ); 
+        
+         $jsonData[] = $temp; 
+      } 
+       
+      // $iterator = new \RecursiveArrayIterator($jsonData);
+ 
+    $json= \Laminas\Json\Json::encode($jsonData);
+   
+     $viewModel = new JsonModel();
+     $viewModel->setVariable('term', $json);
+     return $viewModel;
+    
+ }
+ 
  
  
 }
