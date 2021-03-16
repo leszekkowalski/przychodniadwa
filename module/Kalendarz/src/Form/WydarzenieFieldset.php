@@ -8,16 +8,23 @@ use Laminas\Hydrator\ReflectionHydrator;
 use Kalendarz\Entity\Wydarzenie;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
-class WydarzenieFieldset extends Fieldset implements InputFilterProviderInterface {
+class WydarzenieFieldset extends Fieldset {
     
-    
+   
     public function __construct() {
           
         parent::__construct('wydarzenie-fieldset'); 
-        
+    
         $this->setHydrator(new ReflectionHydrator());
         $this->setObject(new Wydarzenie());
-       
+        $this->addElement();
+    }
+    
+    public function addElement(){
+        
+        //$min= date('Y-m-d');
+      //  $max=
+        
         $this->add([
             'type' => Element\Hidden::class,
             'name' => 'idwydarzenie',
@@ -81,18 +88,18 @@ class WydarzenieFieldset extends Fieldset implements InputFilterProviderInterfac
              'label'  => 'Data wydarzenia',
               'format' => 'Y-m-d'
                  ],
+              'attributes' => [
+        'min' => date('Y-m-d'),
+        'step' => '1', // days; default step interval is 1 day
+    ],
               ]); 
          
-        
+              
     }
 
-    public function getInputFilterSpecification(): array {
-            var_dump($this->getOptions()); 
-    }
+   
 
     
-    
-
 }
 
 

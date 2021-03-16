@@ -293,7 +293,7 @@ data-dismiss="alert" aria-hidden="true">&times;</button><ul><li>',
                   ['actions'=>['dodaj','dodajlekarz','pokaz','edytuj','usun'],'allow'=>'+uzytkowniklekarz.zarzadzaj'],  
             ],
             Controller\LekarzjsonController::class=>[
-                  ['actions' => ['openjsonmail','searchlekarzajson'], 'allow' => '*'],
+                  ['actions' => ['openjsonmail','searchlekarzajson','searchlekarza2json','searchlekarza3json'], 'allow' => '*'],
                  ['actions' => ['lekarzindexjson'], 'allow' => '+wszyscy.own.pokazsesje'],
                 //['actions'=>['dodajjsonmail','dodajjsonpesel','lekarzindexjson','uzytkownikindexjson'],'allow'=>'@'],  
                   ['actions'=>['dodajjsonmail','dodajjsonpesel'],'allow'=>'+uzytkowniklekarz.zarzadzaj'], 

@@ -5,24 +5,57 @@ namespace Kalendarz\Form;
 use Kalendarz\Form\WydarzenieFieldset;
 use Laminas\Form\Form;
 use Laminas\Form\Element;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
-class WydarzenieForm extends Form
+class WydarzenieForm extends Form implements InputFilterProviderInterface
 {
+   public $param;
+    
    public function __construct($name='wydarzenie-form',$param)
    {
 
         parent::__construct($name,$param);
-     
+       // $this->param=$param;
         $this->setAttribute('method', 'post');
                 
-        $this->addElements($param);
-        $this->addInputFilter($param);   
-   } 
+       // $this->addElements($param);
+        //$this->addInputFilter($param);   
+   //} 
    
-   protected function addElements($param) 
-   {
+  // protected function addElements($param) 
+  // {
       
-     //  var_dump($param);
+    if($param['wpisz_czy_edytuj']==='wpisz')
+    {
+        $napis='Dokonujesz wpisu dla ';
+                if(($param['lekarz']) instanceof \Application\Model\Lekarz) 
+                {
+                    $napis.= $param['lekarz']->getImie().' '.$param['lekarz']->getNazwisko();
+                }else{
+                    $napis.=' wszystkich lekarzy';
+                }
+      $this->add([
+           'type' => Element\Checkbox::class,
+             'name' => 'checkbox',
+                 'options' => [
+                    'label' => $napis,
+                    'use_hidden_element' => true,
+                    'checked_value' => 'yes',
+                    'unchecked_value' => 'no',
+    ],
+                     'attributes' => [
+                        'value' => 'yes',
+                             ],
+          
+      ]);  
+    }
+    
+    if($param['wpisz_czy_edytuj']==='edytuj')
+    {
+        
+    }
+    
+    
         $this->add([
             'name'=>'wydarzenie_fieldset',
             'type'=> WydarzenieFieldset::class,
@@ -30,13 +63,13 @@ class WydarzenieForm extends Form
             'use_as_base_fieldset' => true,
             'parametry'=>$param,
         ],
-           // 'options'=>$param,
+        //    'options'=>$param,
         ]);
        
        
         $this->add([
             'type'  => 'csrf',
-            'name' => Element\Csrf::class,
+            'name' => 'csrf',
             'attributes' => [],
             'options' => [                
                 'csrf_options' => [
@@ -47,11 +80,12 @@ class WydarzenieForm extends Form
         
         // Add the submit button
         $this->add([
-            'type'  => 'submit',
-            'name' => Element\Submit::class,
+            'type'  => Element\Submit::class,
+            'name' => 'submit',
             'attributes' => [                
                 'value' => 'Wpisz do bazy',
                 'id' => 'submitbutton',
+               'class' => 'btn btn-primary'
             ],
         ]);  
    }
@@ -61,4 +95,27 @@ class WydarzenieForm extends Form
        $inputFilter = new \Laminas\InputFilter\InputFilter();       
        $this->setInputFilter($inputFilter);
    }
+
+    public function getInputFilterSpecification(): array {
+        
+      //  if($param['wpisz_czy_edytuj']==='wpisz'){
+        $validator=[
+            
+            [
+             'name'=>'checkbox',
+             'required'=>false,
+                'filters'  => [                    
+                ],                
+                'validators' => [
+                   
+                ],
+            ]
+        ];
+      //  }else{
+       //     $validator=[];
+      //  }
+    
+    return $validator;
+    }
+
 }

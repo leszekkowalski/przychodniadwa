@@ -56,6 +56,19 @@ return [
                                 ],
                             ],
                          ],
+                 /////////////////////////////////////   
+                   'search_lekarza4xml' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/search_lekarza4xml',
+                    'defaults' => [
+                        'controller'    => Controller\KalendarzController::class,
+                        'action'        => 'searchlekarza4xml',
+                    ],
+                ],
+            ],  
+                    
+                //////////////////////////////////////    
                 ],
               
             ],
@@ -72,6 +85,29 @@ return [
             ],
             
             ////////////////////////////////////////////////
+            'search_lekarza2json' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/search_lekarza2json',
+                    'defaults' => [
+                        'controller'    => \Application\Controller\LekarzjsonController::class,
+                        'action'        => 'searchlekarza2json',
+                    ],
+                ],
+            ],    
+
+            ///////////////////////////////////////////////////
+                ////////////////////////////////////////////////
+            'search_lekarza3json' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/search_lekarza3json',
+                    'defaults' => [
+                        'controller'    => \Application\Controller\LekarzjsonController::class,
+                        'action'        => 'searchlekarza3json',
+                    ],
+                ],
+            ], 
         ],
     ],
     'view_manager' => [
@@ -90,7 +126,7 @@ return [
         'controllers'=>[
             Controller\KalendarzController::class=>[
             //dostep jest dla kazdego
-            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete'], 'allow' => '*'],
+            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml'], 'allow' => '*'],
         //dostep tylko dla zalogowanych
             //   ['actions' => ['pokaz'], 'allow' => '+wszyscy.own.pokazsesje']  
             ] ,

@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/LekarzjsonController.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Controller/KalendarzController.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/autocomplete.phtml</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/config/module.config.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/partial/wpisz_wydarzenie.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/edytuj.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Form/WydarzenieFieldset.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Moj_rbac/view/moj_rbac/rola/edytuj.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Form/WydarzenieForm.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Entity/Wydarzenie.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Moj_rbac/view/moj_rbac/rola/dodaj.phtml</file>
         </group>
     </open-files>
 </project-private>

@@ -373,6 +373,85 @@ class LekarzjsonController extends AbstractController{
     
  }
  
+ public function searchlekarza2jsonAction() 
+ {
+    $term=$this->params()->fromQuery('term',null);
+    
+    
+    if(!$term)
+    {
+            $this->redirect()->toRoute('home');  
+    }
+    
+    $lekarze=$this->polaczenieDb->searchlekarzejson($term);
+    //////////////
+    // $lekarzearray=(iterator_to_array($lekarze, true));
+              
+     $jsonData = array(); 
+      
+      
+      foreach($lekarze as $sampledata) { 
+
+         $temp = array( 
+           // 'iduzytkownik'=>$sampledata->getIduzytkownik(), 
+         //   'imie_i_nazwisko' => $sampledata->getImie().' '.$sampledata->getNazwisko(), 
+        //    'imie_nazwisko_pesel' => $sampledata->getNazwisko().' '.$sampledata->getImie().' '.$sampledata->getPesel(),
+           'value'=>$sampledata->getNazwisko().' '.$sampledata->getImie(),
+            'id'=>$sampledata->getPesel(),
+      // $temp= $sampledata->getNazwisko().' '.$sampledata->getImie();
+          //  'imie_nazwisko_lekarz'=>$imie_i_nazwisko_lekarz,
+          //  'idlekarz'=>$idlekarz,
+          //   'rola'=>$rola,
+            
+        ); 
+        
+         $jsonData[] = $temp; 
+      } 
+       
+     //  $iterator = new \RecursiveArrayIterator($jsonData);
+ 
+    $json= \Laminas\Json\Json::encode($jsonData);
+   
+     $viewModel = new JsonModel();
+     $viewModel->setVariable('term', $json);
+     return $viewModel;  
+ }
+ 
+  public function searchlekarza3jsonAction() 
+ {
+    $term=$this->params()->fromQuery('term',null);
+    
+    $callback=$this->params()->fromQuery('callback',null);
+    
+    if(!$term || !$callback)
+    {
+            $this->redirect()->toRoute('home');  
+    }
+    
+    $lekarze=$this->polaczenieDb->searchlekarzejson($term);
+              
+     $jsonData = array(); 
+      
+      
+      foreach($lekarze as $sampledata) { 
+         $temp = array( 
+           'value'=>$sampledata->getNazwisko().' '.$sampledata->getImie(),
+            'id'=>$sampledata->getPesel(),
+        ); 
+        
+         $jsonData[] = $temp; 
+      } 
+        
+    $json= \Laminas\Json\Json::encode($jsonData);
+
+     $jsonJSONP= "$callback(".$json.");";
+
+    
+     $viewModel = new JsonModel();
+     $viewModel->setVariable('term', $jsonJSONP);
+     return $viewModel;  
+ }
+ 
  
  
 }

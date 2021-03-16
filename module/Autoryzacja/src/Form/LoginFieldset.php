@@ -124,10 +124,11 @@ class LoginFieldset extends Fieldset implements InputFilterProviderInterface
                       )
                   )
               ];
+              
            }
          
-         
-            
+                
+      //     var_dump($this->getOption('dbAdapter'));
            return $validators;
     }
 

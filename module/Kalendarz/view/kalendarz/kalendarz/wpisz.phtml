@@ -1,1 +1,5 @@
+<?php
+$title = 'Wpisz Wydarzenie';
+$this->headTitle(($title));
 
+ echo  $this->partial('partial/wpisz_wydarzenie.phtml',['form'=>$form,'lekarz'=>$lekarz,  'wpisz_czy_edytuj'  => null,]); 

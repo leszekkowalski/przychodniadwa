@@ -15,9 +15,11 @@ $poprzedniRok=strftime('%F',mktime(0, 0, 0, $miesiac,   $dzien,   $rok-1));
 $poprzedniMiesiac=strftime('%F',mktime(0, 0, 0, $miesiac-1,   $dzien,   $rok));
 ?>
 
+
+ <?= $this->partial('partial/flashMessenger.phtml'); ?>
+
 <div id="kalendarz">
-    
-   
+       
 <h3 style="text-align: center"><?= 'Kalendarz dla '.$lekarz->getImie().' '.$lekarz->getNazwisko();   ?></h3>
 <div class="panel_kalendarza">
     

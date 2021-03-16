@@ -12,6 +12,8 @@ use Laminas\Cache\Storage\StorageInterface;
 use Kalendarz\Entity\Wydarzenie;
 use Laminas\Db\Sql\Sql;
 use Kalendarz\Entity\Kalendarz;
+use Laminas\Db\Sql\Insert;
+use Laminas\Db\Sql\Update;
 
 class WydarzeniePolaczenie
 {
@@ -104,6 +106,72 @@ class WydarzeniePolaczenie
                     );
         }
         return $wydarzenie;  
+    }
+    
+    
+    public function wpiszNoweWydarzenie(Wydarzenie $wydarzenie, string $string) : Wydarzenie
+    {
+       
+        if($string=='no')
+        {
+          $wydarzenie->setIdLekarz(null); 
+        }
+       
+         $wpisz=new Insert('wydarzenie');
+        $wpisz->values([
+            'wydarzenie_idlekarz'=>$wydarzenie->getIdLekarz(),
+            'wydarzenie_data'=>$wydarzenie->getWydarzenie_data(),
+            'wydarzenie_start'=>$wydarzenie->getWydarzenie_start(),
+            'wydarzenie_koniec'=>$wydarzenie->getWydarzenie_koniec(),
+            'wydarzenie_tytul'=>$wydarzenie->getWydarzenie_tytul(),
+            'wydarzenie_opis'=>$wydarzenie->getWydarzenie_opis(),
+        ]);
+        
+        $sql=new Sql($this->polaczenieWydarzenie);
+        $statement=$sql->prepareStatementForSqlObject($wpisz);
+        $wynik=$statement->execute();
+        
+        if(!$wynik instanceof ResultInterface){
+            throw new RuntimeException('Błąd bazy danych podczas wprowadzenia danych Wydarzenie.');
+        }
+        $idWydarzenie=$wynik->getGeneratedValue();
+        $wydarzenie->setIdwydarzenie($idWydarzenie);
+        
+        return $wydarzenie;
+    }
+    
+    public function edytujWydarzenie(Wydarzenie $wydarzenie): Wydarzenie
+    {
+        if($wydarzenie->getIdLekarz()){
+            $id=$wydarzenie->getIdLekarz();
+        }else{
+            $id=null;
+        }
+        
+        
+          $update = new Update('wydarzenie');
+    $update->set([
+            'wydarzenie_idlekarz' => $id,
+            'wydarzenie_data' => $wydarzenie->getWydarzenie_data(),
+            'wydarzenie_start' => $wydarzenie->getWydarzenie_start(),
+            'wydarzenie_koniec' => $wydarzenie->getWydarzenie_koniec(),
+          'wydarzenie_tytul' => $wydarzenie->getWydarzenie_tytul(),
+            'wydarzenie_opis' => $wydarzenie->getWydarzenie_opis(),
+    ]);
+    
+     $update->where(['idwydarzenie = ?' => $wydarzenie->getIdwydarzenie()]);
+
+    $sql = new Sql($this->polaczenieWydarzenie);
+    $statement = $sql->prepareStatementForSqlObject($update);
+    $result = $statement->execute();
+
+    if (! $result instanceof ResultInterface) {
+        throw new RuntimeException(
+            'Database error occurred during blog post update operation'
+        );
+    }
+   
+        return $wydarzenie;
     }
     
     

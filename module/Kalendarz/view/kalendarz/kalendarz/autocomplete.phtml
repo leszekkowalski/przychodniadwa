@@ -42,7 +42,7 @@ $this->headScript()->appendFile(
       source: availableTags
     });
     /////////////////////////////////////
-const search_lekarzajson="http://localhost/przychodniadwa/search_lekarzajson";
+const search_lekarzajson="/przychodniadwa/search_lekarzajson";
     let cache = {};
     $( "#birds" ).autocomplete({
       minLength: 2,
@@ -78,6 +78,81 @@ const search_lekarzajson="http://localhost/przychodniadwa/search_lekarzajson";
       }
     });
     ///////////////////////////////////
+ const search_lekarza2json="/przychodniadwa/search_lekarza2json"; 
+ 
+        function log( message ) {
+      $( "<div>" ).text( message ).prependTo( "#log" );
+      $( "#log" ).scrollTop( 0 );
+    }
+ 
+     $( "#lekarze" ).autocomplete({
+      source: search_lekarza2json,
+      minLength: 2,
+      select: function( event, ui ) {
+          console.log(ui);
+        log( "Wybrano: " + ui.item.value + ", o nr PESEL: " + ui.item.id );
+      }
+    });
+  ////////////////////////////////////////////////////////////////////// 
+   const search_lekarza3json="/przychodniadwa/search_lekarza3json"; 
+  
+        function log2( message ) {
+      $( "<div>" ).text( message ).prependTo( "#log2" );
+      $( "#log2" ).scrollTop( 0 );
+    }
+        
+        $( "#lekarze2" ).autocomplete({
+      source: function( request, response ) {  
+        $.ajax( {
+          url: search_lekarza3json,
+          dataType: "jsonp",
+          data: {
+            term: request.term
+          },
+          success: function( data ) {
+            response( data );
+          }
+        } );
+      },
+      minLength: 2,
+      select: function( event, ui ) {
+        log2( "Selected: " + ui.item.value + " aka " + ui.item.id );
+      }
+    } );
+   ///////////////////////////////////////// 
+ //const search_lekarza4xml="/przychodniadwa/kalendarz/search_lekarza4xml";   
+       function log3( message ) {
+      $( "<div/>" ).text( message ).prependTo( "#log3" );
+      $( "#log3" ).attr( "scrollTop", 0 );
+    }
+
+    $.ajax({
+      url: '2/search_lekarza4xml',//parametr 2 jest obowiazkowy - wynika z zasad 
+      dataType: "xml",
+      success: function( xmlResponse ) {
+        var data = $( "lekarz", xmlResponse ).map(function() {
+          return {
+            value: $( "name", this ).text() + ", " +
+              ( $.trim( $( "mail", this ).text() ) || "(unknown mail)" ),
+            id: $( "id", this ).text()
+          };
+        }).get();
+        
+        $( "#lekarze3" ).autocomplete({
+          source: data,
+          minLength: 0,
+          select: function( event, ui ) {
+            log3( ui.item ?
+              "Wybrano: " + ui.item.value + ", id: " + ui.item.id :
+              "Nothing selected, input was " + this.value );
+          }
+        });
+      }
+    });
+   
+   
+   
+   
   } );
   </script>
 </head>
@@ -91,8 +166,41 @@ const search_lekarzajson="http://localhost/przychodniadwa/search_lekarzajson";
  <div class="ui-widget">
   <label for="birds">Birds: </label>
   <input id="birds" class="w-25">
+</div>  
+    
+    <div>   
+ <div class="ui-widget">
+  <label for="lekarze">Lekarze: </label>
+  <input id="lekarze">
+</div>
+<div class="ui-widget" style="margin-top:2em; font-family:Arial">
+  Result:
+  <div id="log" style="height: 100px; width: 500px; overflow: auto;" class="ui-widget-content"></div>
+</div>
+ </div>
+    <p></p> 
+    <div>
+     <div class="ui-widget">
+  <label for="lekarze2">Lekarze2: </label>
+  <input id="lekarze2">
+</div>
+<div class="ui-widget" style="margin-top:2em; font-family:Arial">
+  Result:
+  <div id="log2" style="height: 100px; width: 500px; overflow: auto;" class="ui-widget-content"></div>
 </div>   
+    </div>  
+    
+    <p></p>
+ <div class="ui-widget">
+  <label for="lekarz3">Wybierz Lekarza: </label>
+  <input id="lekarze3">
+</div>
  
- 
+<div class="ui-widget" style="margin-top:2em; font-family:Arial">
+  Wynik:
+  <div id="log3" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
+</div>
+    
+  
 </body>
 </html>

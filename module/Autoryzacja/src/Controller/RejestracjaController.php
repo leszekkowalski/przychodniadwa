@@ -28,7 +28,7 @@ public $polaczenieUzytkownik;
               'rejestruj_form',
               [
                'dbAdapter'  => Lekarz::pobierzAdapter(),
-                'baseUrl'=>$this->baseUrl.'__UUU__',
+                'baseUrl'=>$this->baseUrl,
               ]
               );
       

@@ -8,17 +8,21 @@ use Kalendarz\Polaczenie\WydarzeniePolaczenie;
 use Kalendarz\Entity\Wydarzenie;
 use Application\Model\Lekarz;
 use Laminas\View\Model\ViewModel;
+use Laminas\Mvc\Plugin\FlashMessenger\View\Helper\FlashMessenger;
 
 class KalendarzController extends AbstractController
 {
     protected $lekarzDb;
     
     protected $wydarzenieDb;
+    
+     public $flashMessenger; 
 
     public function __construct(LekarzPolaczenie $lekarzDb, WydarzeniePolaczenie $wydDb) 
     {
       $this->lekarzDb=$lekarzDb;
       $this->wydarzenieDb=$wydDb;
+      $this->flashMessenger=new FlashMessenger();
     }
        
     public function indexAction()
@@ -109,33 +113,169 @@ class KalendarzController extends AbstractController
    public function edytujAction() 
    {
        
-       $idWydarzenie=$this->params('id',0);
+      $idWydarzenie=$this->params('id',0);
        if(!$idWydarzenie)
        {
           $this->getResponse()->setStatusCode(404);
            return; 
        }
        $wydarzenie=$this->wydarzenieDb->pobierzWydarzeniePoId($idWydarzenie);
+       if($wydarzenie->getIdLekarz())
+       {
+           $lekarz=$this->lekarzDb->pobierzJedenLekarz($wydarzenie->getIdLekarz());
+       }else{
+           $lekarz=null;
+       }
+       
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'edytuj',
+               'baseUrl'=>$this->baseUrl, 
+              ]
+              );
+       
+       $wydarzenie->zmienWydarzenie_start();
+       $wydarzenie->zmienWydarzenie_koniec();
+       
+       $form->bind($wydarzenie);
+       
+       $request=$this->getRequest();
+       
+
+        $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz, 'wpisz_czy_edytuj'=>'edytuj']);
+        
+       $request = $this->getRequest();
+       
+        if (! $request->isPost()) {
+            return $view;
+        }
+       
+      $form->setData($request->getPost());
+       
+       if (! $form->isValid())
+       {
+        return $view;
+    }
+       
+    $wydarzenie=$form->getData();
+    
+       $flashMessenger=$this->flashMessenger;  
+     try {
+         $wydarzenie=$this->wydarzenieDb->edytujWydarzenie($wydarzenie); 
+         
+         $flashMessenger->addSuccessMessage('Wydarzenie zostało zaktualizowane !!');
+    } catch (\Exception $ex) {
+        $flashMessenger->addErrorMessage('Wydarzenie nie zostało zaktualizowane !!. Powiadom administratora');
+        var_dump($ex);exit();
+        }
+
+    if($wydarzenie->getIdLekarz()){
+    return $this->redirect()->toRoute(
+        'kalendarz',
+        ['id' => $wydarzenie->getIdLekarz()] 
+            ); 
+    }else{
+        return $this->redirect()->toRoute
+                ('lekarz'); 
+    }
+   }
+   
+   public function wpiszAction()
+   {
+       
+       $request=$this->getRequest();
+       
+       $idLekarz=$this->params('id',0);
+       if(!$idLekarz)
+       {
+          $this->getResponse()->setStatusCode(404);
+           return; 
+       }
+       $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
        
        
        
        $form=new \Kalendarz\Form\WydarzenieForm(
               'wydarzenie_form',
               [
-               'wpisz_czy_edytuj'  => 'edytuj',
+               'wpisz_czy_edytuj'  => 'wpisz',
                'baseUrl'=>$this->baseUrl,
+                'lekarz'=>$lekarz,
               ]
               );
        
-   }
-   
-   public function wpiszAction()
-   {
+       $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz]);
+       
+       if(!$request->isPost())
+       {
+           return $view;
+       }
+       
+       $form->setData($request->getPost());
+       
+       if (! $form->isValid())
+       {
+        return $view;
+    }
+       
+    $wydarzenie=$form->getData();
+    
+    $checkbox=$this->request->getPost('checkbox');
+    $flashMessenger=$this->flashMessenger;
+    
+     try {
+         $wydarzenie=$this->wydarzenieDb->wpiszNoweWydarzenie($wydarzenie, $checkbox); 
+         $flashMessenger->addSuccessMessage('Wydarzenie zostało wpisane !!');
+
+         
+    } catch (\Exception $ex) {
+       $flashMessenger->addErrorMessage('Błąd: Wydarzenie nie zostało wpisane !!.'); 
+    }
+     return $this->redirect()->toRoute(
+        'kalendarz',
+        ['id' => $idLekarz] 
+            ); 
+     
        
    }
    
    public function autocompleteAction()
    {
        
+   }
+   public function searchlekarza4xmlAction()
+   {
+
+     $term=$this->params()->fromQuery('wpis');
+       
+     $lekarze=$this->lekarzDb->searchlekarzejson($term);
+
+     $xml=new \DOMDocument('1.0', 'UTF-8');
+     
+     $lekarzeElement=$xml->appendChild(new \DOMElement('lekarze'));
+     
+     foreach ($lekarze as $lekarz2)
+     {
+         $lekarzElement=$lekarzeElement->appendChild(new \DOMElement('lekarz'));
+         $name=new \DOMElement('name',$lekarz2->getNazwisko().' '.$lekarz2->getImie());
+         $mail=new \DOMElement('mail',$lekarz2->getMail());
+         $id=new \DOMElement('id',$lekarz2->getIdlekarz());
+         $lekarzElement->appendChild($name);
+         $lekarzElement->appendChild($mail);
+         $lekarzElement->appendChild($id);
+     }
+     
+     $xmlString=$xml->saveXML();
+     
+      $response=new \Laminas\Http\Response();
+      $response->getHeaders()->addHeaderLine('Content-Type', 'text/xml; charset=utf-8');
+      
+      $response->setContent($xmlString);
+      
+      
+      return $response;
+      
+     
    }
 }

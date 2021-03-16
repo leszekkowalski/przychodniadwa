@@ -46,7 +46,18 @@ class Wydarzenie implements InputFilterAwareInterface
     {
        return $this->idwydarzenie; 
     }
-    
+    public function setIdwydarzenie($id)
+    {
+      $this->idwydarzenie=$id; 
+    }
+    public function getIdLekarz()
+    {
+       return $this->wydarzenie_idlekarz; 
+    }
+    public function setIdLekarz($id)
+    {
+      $this->wydarzenie_idlekarz=$id; 
+    }
     public function getWydarzenie_data()
     {
        return $this->wydarzenie_data; 
@@ -61,10 +72,20 @@ class Wydarzenie implements InputFilterAwareInterface
     {
        return $this->wydarzenie_start; 
     }
+    public function zmienWydarzenie_start()
+    {
+       $nowe=substr($this->wydarzenie_start,0,5); 
+       $this->wydarzenie_start=$nowe;  
+    }
 
     public function getWydarzenie_koniec()
     {
        return $this->wydarzenie_koniec; 
+    }
+     public function zmienWydarzenie_koniec()
+    {
+       $nowe=substr($this->wydarzenie_koniec,0,5); 
+       $this->wydarzenie_koniec=$nowe;  
     }
     
     public function getWydarzenie_opis()
@@ -122,7 +143,7 @@ class Wydarzenie implements InputFilterAwareInterface
             ['name'=> \Laminas\Validator\NotEmpty::class],
              ['name'=> \Laminas\Validator\Date::class,
                  'options'=>[
-                       'format'=>'G:i:s',
+                       'format'=>'G:i',
                      'messages'=>[
                      \Laminas\Validator\Date::FALSEFORMAT=>'Niepoprawny format czasu',
                        ]
@@ -142,7 +163,7 @@ class Wydarzenie implements InputFilterAwareInterface
             ['name'=> \Laminas\Validator\NotEmpty::class],
              ['name'=> \Laminas\Validator\Date::class,
                  'options'=>[
-                       'format'=>'G:i:s',
+                       'format'=>'G:i',
                      'messages'=>[
                      \Laminas\Validator\Date::FALSEFORMAT=>'Niepoprawny format czasu',
                        ]
@@ -190,7 +211,7 @@ class Wydarzenie implements InputFilterAwareInterface
               ['name'=> \Laminas\Validator\StringLength::class,
                'options'=>[
                   'min'=>3,
-                   'max'=>45,
+                   'max'=>75,
                    'encoding'=>'UTF-8',
                ],
                   ],
