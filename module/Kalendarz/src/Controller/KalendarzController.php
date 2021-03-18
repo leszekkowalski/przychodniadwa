@@ -205,7 +205,7 @@ class KalendarzController extends AbstractController
               ]
               );
        
-       $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz]);
+       $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz,'wpisz_czy_edytuj'=>'wpisz']);
        
        if(!$request->isPost())
        {

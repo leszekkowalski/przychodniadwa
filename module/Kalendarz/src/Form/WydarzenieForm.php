@@ -45,6 +45,7 @@ class WydarzenieForm extends Form implements InputFilterProviderInterface
     ],
                      'attributes' => [
                         'value' => 'yes',
+                        
                              ],
           
       ]);  
