@@ -12,7 +12,11 @@ if($wpisz_czy_edytuj=='edytuj')
 }else{
     $napisLogo='Zarejestruj nowe Wydarzenie w systemie !';
 }
- ?> <div id="napisLogo" opis="<?= $this->lekarz->getImie().' '.$lekarz->getNazwisko() ?>"></div>    <?php
+if($this->lekarz){
+ ?>
+<div id="napisLogo" opis="<?= $this->lekarz->getImie().' '.$lekarz->getNazwisko() ?>"></div>   
+ <?php
+}
 $form->setAttribute('id', 'wpiszWydarzenie');
 $form->setAttributes([
     'class'=>"form-horizontal",
