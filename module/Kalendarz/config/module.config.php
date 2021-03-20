@@ -67,7 +67,17 @@ return [
                     ],
                 ],
             ],  
-                    
+             ///////////////////////////////////////////
+              'pokazwydarzeniemodal' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/pokazwydarzeniemodal',
+                    'defaults' => [
+                        'controller'    => Controller\KalendarzController::class,
+                        'action'        => 'pokazwydarzeniemodal',
+                    ],
+                ],
+            ],      
                 //////////////////////////////////////    
                 ],
               
@@ -96,7 +106,7 @@ return [
                 ],
             ],    
 
-            ///////////////////////////////////////////////////
+            ///////////////////////////////////////////////////          
                 ////////////////////////////////////////////////
             'search_lekarza3json' => [
                 'type'    => Literal::class,
@@ -126,7 +136,7 @@ return [
         'controllers'=>[
             Controller\KalendarzController::class=>[
             //dostep jest dla kazdego
-            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml'], 'allow' => '*'],
+            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml','pokazwydarzeniemodal'], 'allow' => '*'],
         //dostep tylko dla zalogowanych
             //   ['actions' => ['pokaz'], 'allow' => '+wszyscy.own.pokazsesje']  
             ] ,

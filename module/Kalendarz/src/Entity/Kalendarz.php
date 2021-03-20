@@ -144,21 +144,23 @@ class Kalendarz
             $daneDniDoWpisu_kawalek= sprintf("<strong id='cyfra_powieksz' >%02d</strong>",$c++); 
         
            
+            $dzienUrl= sprintf('%02d',$c-1);
+       $dzisjajUrl=$this->rok.'-'.$miesiacUrl.'-'.$dzienUrl;
+            
            if(isset($wydarzeniaArray[$c-1]))
            {
                foreach ($wydarzeniaArray[$c-1] as $jedno)
                {
                $nazwa=$jedno->getWydarzenie_tytul();
                $idWydarzenie=$jedno->getIdwydarzenie();
-               $calyUrl=$baseUrl.'/kalendarz/pokaz-wydarzenie/'.$idWydarzenie.'/'.$lekarz->getIdlekarz();
+               $calyUrl=$baseUrl.'/kalendarz/pokaz-wydarzenie/'.$idWydarzenie.'/'.$lekarz->getIdlekarz().'?id='.$idWydarzenie.'&idlekarz='.$lekarz->getIdlekarz().'&data='.$dzisjajUrl;
                $linki.= "<a href='{$calyUrl}' class='link'>{$nazwa}</a>"; 
                }
               
            }
            
          
-       $dzienUrl= sprintf('%02d',$c-1);
-       $dzisjajUrl=$this->rok.'-'.$miesiacUrl.'-'.$dzienUrl;
+       
        $calyUrl=$baseUrl.'/kalendarz/'.$dzisjajUrl.'/'.$lekarz->getIdlekarz();
        
         $daneDniDoWpisu="<a href={$calyUrl} title='Wpisz wydarzenie' class='cyfra'>{$daneDniDoWpisu_kawalek}</a>";    

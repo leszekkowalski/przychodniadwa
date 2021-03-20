@@ -96,6 +96,8 @@ class KalendarzController extends AbstractController
    {
      $idwydarzenie=$this->params('id',0); 
      $idlekarz=$this->params('idlekarz',0);
+       $idwydarzenie=$this->params()->fromQuery('id', $idwydarzenie);
+     $idlekarz=$this->params()->fromQuery('idlekarz', $idlekarz);
      if(!$idlekarz || !$idwydarzenie)
      {
         $this->getResponse()->setStatusCode(404);
@@ -278,4 +280,6 @@ class KalendarzController extends AbstractController
       
      
    }
+   
+   
 }

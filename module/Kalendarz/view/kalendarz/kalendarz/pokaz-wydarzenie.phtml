@@ -8,12 +8,13 @@ $koniec=substr($wydarzenie->getWydarzenie_koniec() , 0,5);
 ?>
 
 <div id="kalendarz" class="text-center">
-    
+  
     <h4><?=  'Wydarzenie dla '.$lekarz->getImie().' '.$lekarz->getNazwisko().' z dnia '.$data,' r.'    ?>  </h4>
+     <div id="tresc">
     <p><?=  'Czas wydarzena od:'.$poczatek.' do: '.$koniec ?></p>
     <p><?=  'Nazwa wydarzenia: '.$wydarzenie->getWydarzenie_tytul() ?></p>
      <p><?=  $this->escapeHtml('Opis: '.$wydarzenie->getWydarzenie_opis()) ?></p>
-     
+    </div>
  <div style="padding:10px;"> 
  <a href="<?= $this->url('kalendarz', ['action' => 'edytuj','id'=>$wydarzenie->getIdwydarzenie(),'data'=>$wydarzenie->getWydarzenie_data()]) ?>" title="Powrót do kalendarza" style="color: white; float: left;">
               <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
