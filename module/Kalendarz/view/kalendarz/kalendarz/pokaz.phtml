@@ -46,16 +46,16 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
      if($licznikWydarzenie==0){
      ?>
          
-    <a href=<?= $this->url('kalendarz', ['action' => 'pokaz-wydarzenie', 'id' =>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()])  ?>
-       style=" margin-top:<?= $minuty_jako_marginTop ?>px;height:<?= $wynik_height ?>px;background-color:<?= $kalendarz->KOLORY[$licznik++]  ?>;z-index:<?= $z_index ?>;" id="a"><?= $wydarzenie->getWydarzenie_tytul().' '.$poczatek->format('H:i').' - '.$koniec->format('H:i') ?></a> 
+    <a href=<?= $this->url('kalendarz', ['action' => 'pokaz-wydarzenie', 'id' =>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()],['query'=>['id'=>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()]])  ?>
+       style=" margin-top:<?= $minuty_jako_marginTop ?>px;height:<?= $wynik_height ?>px;background-color:<?= $kalendarz->KOLORY[$licznik++]  ?>;z-index:<?= $z_index ?>;" id="a" class="link"><?= $wydarzenie->getWydarzenie_tytul().' '.$poczatek->format('H:i').' - '.$koniec->format('H:i') ?></a> 
      
        
    <?php
    $licznikWydarzenie++;
      }else{?>
         
-      <a href=<?= $this->url('kalendarz', ['action' => 'pokaz-wydarzenie', 'id' =>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()])  ?>
-   style=" width:<?= $szerokosc ?>px; margin-top:<?= $minuty_jako_marginTop ?>px;height:<?= $wynik_height ?>px;background-color:<?= $kalendarz->KOLORY[$licznik++] ?>;z-index:<?= $z_index ?>;" id="a"><?= $wydarzenie->getWydarzenie_tytul().' '.$poczatek->format('H:i').' - '.$koniec->format('H:i') ?></a>   
+      <a href=<?= $this->url('kalendarz', ['action' => 'pokaz-wydarzenie', 'id' =>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()],['query'=>['id'=>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()]])  ?>
+   style=" width:<?= $szerokosc ?>px; margin-top:<?= $minuty_jako_marginTop ?>px;height:<?= $wynik_height ?>px;background-color:<?= $kalendarz->KOLORY[$licznik++] ?>;z-index:<?= $z_index ?>;" id="a" class="link"><?= $wydarzenie->getWydarzenie_tytul().' '.$poczatek->format('H:i').' - '.$koniec->format('H:i') ?></a>   
      
      <?php
      $licznikWydarzenie++;
@@ -72,7 +72,7 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
    
     <?php endfor; ?>
     <div style="padding-top:10px;"> 
- <a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz(),'data'=>$kalendarz->dataKalendarza]) ?>" title="Powrót do kalendarza" style="color: white;">
+ <a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white;">
               <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
   <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -88,3 +88,82 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
     </div> 
  
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="pokazWydarzenie" tabindex="-1" aria-labelledby="pokazWydarzenieModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title text-center" id="pokazWydarzenieModalLabel">
+            <?= $napis ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+    
+      </div>
+      <div class="modal-footer">
+             
+   <button type="button" class="btn btn-secondary" data-dismiss="modal">       
+ <a href="<?= $this->url('lekarz', ['action' => 'index']) ?>" title="Powrót do lekarzy" style="color: white;">
+              <?= 'Powrót ' ?>
+</a>    
+                  
+   </button>
+        <button type="button" class="btn btn-primary">
+     <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
+            <?= 'Wpisz nowe Wydarzenie' ?> 
+ </a>    
+        
+        
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+"use strict";
+
+let id=null;
+let idlekarz=null;
+
+
+// Wyświetl wydarzenie w oknie modalnym
+$("#kalendarz").on("click", ".link", function(event){
+
+    event.preventDefault(); 
+    $(this).addClass("active");
+    
+
+    let data = $(this).attr("href").replace(/.+?\?(.*)$/, "$1");
+    let szukanyCiagid=/id=([0-9]{1,})/;
+    let szukanyciagidlekarz=/idlekarz=([0-9]{1,})/;
+    let id1=data.match(szukanyCiagid);
+    
+    id=id1[1];
+    idlekarz=data.match(szukanyciagidlekarz);
+    
+    $('#pokazWydarzenie').modal('show');    
+});
+
+$('#pokazWydarzenie').on('show.bs.modal', function (event) {
+    
+   // let url="http://localhost/przychodniadwa/kalendarz/pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz[1]+"&data="+dzien[1];
+   // console.log(url);
+   $( ".modal-body" ).load( "../pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz[1]+" #tresc", function( response, status, xhr ) {
+      // console.log(response);
+  if ( status == "error" ) {
+    var msg = "Przepraszamy, pojawił się błąd : ";
+    $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
+  }
+});
+
+    
+});
+
+
+
+
+</script>

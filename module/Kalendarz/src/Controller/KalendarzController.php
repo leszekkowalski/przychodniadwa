@@ -96,7 +96,7 @@ class KalendarzController extends AbstractController
    {
      $idwydarzenie=$this->params('id',0); 
      $idlekarz=$this->params('idlekarz',0);
-       $idwydarzenie=$this->params()->fromQuery('id', $idwydarzenie);
+     $idwydarzenie=(int)$this->params()->fromQuery('id', $idwydarzenie);
      $idlekarz=$this->params()->fromQuery('idlekarz', $idlekarz);
      if(!$idlekarz || !$idwydarzenie)
      {
@@ -188,7 +188,7 @@ class KalendarzController extends AbstractController
        
        $request=$this->getRequest();
        
-       $idLekarz=$this->params('id',0);
+      $idLekarz=$this->params('id',0);
        if(!$idLekarz)
        {
           $this->getResponse()->setStatusCode(404);
@@ -279,6 +279,68 @@ class KalendarzController extends AbstractController
       return $response;
       
      
+   }
+   
+   public function wpiszjqueryAction() 
+   {
+    $this->layout()->setTemplate('layout/layout_posty');  
+     
+      $request=$this->getRequest();
+       
+        $idLekarz=$this->params('id',0);
+       if(!$idLekarz)
+       {
+          $this->getResponse()->setStatusCode(404);
+           return; 
+       }
+       $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
+       
+       
+       
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'wpisz',
+               'baseUrl'=>$this->baseUrl,
+                'lekarz'=>$lekarz,
+              ]
+              );
+       
+       $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz,'wpisz_czy_edytuj'=>'wpisz']);
+       
+     //  echo $zmiennaPost=$request->getPost();
+    //   if(!$request->isPost())
+    //   {
+       //    var_dump($request->getPost());exit();
+        //   return $view;
+    //   }
+       
+       $form->setData($request->getPost());
+       
+       if (! $form->isValid())
+       {
+        return $view;
+    }
+       
+    $wydarzenie=$form->getData();
+    
+    $checkbox=$this->request->getPost('checkbox');
+    $flashMessenger=$this->flashMessenger;
+    
+     try {
+         $wydarzenie=$this->wydarzenieDb->wpiszNoweWydarzenie($wydarzenie, $checkbox); 
+         $flashMessenger->addSuccessMessage('Wydarzenie zostało wpisane !!');
+
+         
+    } catch (\Exception $ex) {
+       $flashMessenger->addErrorMessage('Błąd: Wydarzenie nie zostało wpisane !!.'); 
+    }
+     return $this->redirect()->toRoute(
+        'kalendarz',
+        ['id' => $idLekarz] 
+            );
+      
+       
    }
    
    

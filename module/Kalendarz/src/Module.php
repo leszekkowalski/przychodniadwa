@@ -66,12 +66,35 @@ class Module
         
         $body = str_replace("\n", "<br>", $body);
         
-        echo $body;
+       // echo $body;
         // Wysyłka maila po bledzie
         // 
        // mail($to, $subject, $body);
         
     }
     
+    public function onBootstrap(MvcEvent $e)
+    {
+        // Register a dispatch event
+        $app = $e->getParam('application');
+        $app->getEventManager()->attach('dispatch', [$this, 'setLayout']);
+    }
     
+    public function setLayout(MvcEvent $e)
+    {
+        $matches    = $e->getRouteMatch();
+        $controller = $matches->getParam('controller');
+        $action=$matches->getParam('action');
+        if (false === strpos($controller, __NAMESPACE__)) {
+            // kontroler nie jest z tego modułu
+            return;
+        }
+
+        if($action==='proba_kasuj')
+        {
+        // Set the layout template
+        $viewModel = $e->getViewModel();
+        $viewModel->setTemplate('layout/layout_posty');
+        }
+    }
 }

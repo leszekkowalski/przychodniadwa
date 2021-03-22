@@ -121,6 +121,10 @@ return [
         ],
     ],
     'view_manager' => [
+       //  'template_map' => array(
+         //  'layout/blog'           => __DIR__ . '/../view/layout/layout.phtml',
+        //   'kalendarz/proba' => __DIR__ . '/../view/layout/layout_pusty.phtml',
+       //  ),
         'template_path_stack' => [
             'Kalendarz' => __DIR__ . '/../view',
         ],
@@ -136,7 +140,7 @@ return [
         'controllers'=>[
             Controller\KalendarzController::class=>[
             //dostep jest dla kazdego
-            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml','pokazwydarzeniemodal'], 'allow' => '*'],
+            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml','wpiszjquery'], 'allow' => '*'],
         //dostep tylko dla zalogowanych
             //   ['actions' => ['pokaz'], 'allow' => '+wszyscy.own.pokazsesje']  
             ] ,
