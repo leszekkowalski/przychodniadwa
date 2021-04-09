@@ -1,6 +1,9 @@
 <?php
  
 $this->headLink()->appendStylesheet($this->basePath('css/kalendarz.css'));
+$this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
 
 $title = 'Kalendarz miesiąca';
 $this->headTitle($title);
@@ -100,6 +103,7 @@ $napis='Wydarzenie dla '.$this->lekarz->getImie().' '.$lekarz->getNazwisko();
         </button>
       </div>
       <div class="modal-body" id="wpiszWydarzeniemodalBody">
+          <div id="wpiszWydarzeniemodalBody2"></div>
       </div>
      
     </div>
@@ -123,6 +127,69 @@ let dzien=null;
 
 jQuery(function($){
 
+let fx = {
+    
+// Dodaje nowe wydarzenie po jego zapisaniu do kodu HTML
+"dodajWydarzenie" : function(data, formData){
+// Przekształć łańcuch zapytania w obiekt
+let entry = fx.deserialize(formData);
+},
+// Przeprowadza deserializację łańcucha zapytania i zwraca
+// obiekt wydarzenia
+"deserialize" : function(str){
+// Rozbij parę nazwa-wartość
+let data = str.split("&"),
+// Deklaruj zmienne potrzebne w pętli
+pairs=[], entry={}, key, val; 
+
+// Przekształć każdą parę nazwa-wartość we właściwość obiektu
+for (let x in data )
+{
+// Rozdziel każdą parę i zapisz otrzymane elementy w tablicy
+pairs = data[x].split("=");
+// Pierwszy element to nazwa parametru
+key = pairs[0];
+// Drugi element to wartość parametru
+val = pairs[1];
+
+// Przywróć łańcuchowi zakodowanemu w URL oryginalną postać
+// i zapisz każdą wartość jako właściwość obiektu
+entry[key] = fn.url_decode(val);
+}
+
+return entry;
+},
+// Dekoduje łańcuch zapytania
+"url_decode" : function(str) {
+// Zamienia znaki plus na spacje
+let znaki_plus_na_spacje = str.replace(/\+/g, ' ');
+// Zamienia encje na odpowiadające im znaki
+return decodeURIComponent(znaki_plus_na_spacje);
+
+},
+
+// Sprawdza poprawność łańcucha daty (RRRR-MM-DD GG:MM:SS)
+"kontrola_datyPK": function(date)
+{
+// Definiuj wyrażenie regularne, które będzie wzorcem poprawnego formatu np. 10:22
+let pattern = /^ (\d{2})(:\d{2})$/;
+// Zwróć true przy dopasowaniu albo false w przeciwnym wypadku
+return date.match(pattern)!==null;
+},
+"kontrola_daty": function(date)
+{
+// Definiuj wyrażenie regularne, które będzie wzorcem poprawnego formatu np. 202`-12-12
+let pattern =/^ (\d{4}(-\d{2}){2})$/;
+// Zwróć true przy dopasowaniu albo false w przeciwnym wypadku
+return date.match(pattern)!==null;
+},
+
+};
+
+
+
+
+
 // Wyświetl wydarzenie w oknie modalnym
 $("#kalendarz").on("click", ".link", function(event){
 
@@ -139,7 +206,7 @@ $("#kalendarz").on("click", ".link", function(event){
     dzien=data.match(szukanadata);
     $('#pokazWydarzenie').modal('show');  
     
-    $( "#pokazWydarzenieladuj" ).load( "../pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+"&data="+dzien[1]+" #tresc", function( response, status, xhr ) {
+    $( "#pokazWydarzenieladuj" ).load( "http://localhost/przychodniadwa/kalendarz/pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+"&data="+dzien[1]+" #tresc", function( response, status, xhr ) {
   if ( status == "error" ) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( "#pokazWydarzenieladuj" ).html( msg + xhr.status + " " + xhr.statusText );
@@ -156,27 +223,39 @@ $("#kalendarz").on("click", "#noweWydarzenie", function(event){
     event.preventDefault(); 
     $(this).addClass("active");
    
-     $("#wpiszWydarzeniemodalBody").html('');
+   //  $("#wpiszWydarzeniemodalBody").html('');
      
     $('#wpiszWydarzenie').modal('show');  
      let form=null;
      
+     let czyJest=$("#wpiszWydarzenieForm").length;
+
+     if(!czyJest){
       $.ajax({
             method: "POST",
-            url: "../wpiszjquery/"+idlekarz,
-           // data: "idlekarz="+idlekarz,
+            url: "http://localhost/przychodniadwa/kalendarz/wpiszjquery/"+idlekarz,
+            //data: "idlekarz="+idlekarz,
             dataType: "html",
             success: function(data){
-            // Ukryj formularz
-            form = $(data).hide();
 
-            form.appendTo("#wpiszWydarzeniemodalBody")
+            form = $(data).hide();
+           // $("#wpiszWydarzeniemodalBody2").html('');
+            form.appendTo("#wpiszWydarzeniemodalBody2")
             .fadeIn("slow");
             },
             error: function(msg){
             alert(msg);
                                 }
             });
+        }
+});
+
+
+// przycisk Zamknij - ukrywa okno modalne i warstwę maskującą
+$("form").on("click", "button", function(event){
+    console.log('submitwwwwwwww'); 
+  $('#wpiszWydarzenie').modal('hide'); 
+  // event.preventDefault();
 });
 
 

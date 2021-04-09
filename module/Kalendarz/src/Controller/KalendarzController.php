@@ -28,7 +28,7 @@ class KalendarzController extends AbstractController
     public function indexAction()
     {
         
-       $idLekarz=(int)$this->params('id',0);
+      $idLekarz=(int)$this->params('id',0);
        if($idLekarz<1)
        {
            $this->getResponse()->setStatusCode(404);
@@ -169,7 +169,7 @@ class KalendarzController extends AbstractController
          $flashMessenger->addSuccessMessage('Wydarzenie zostało zaktualizowane !!');
     } catch (\Exception $ex) {
         $flashMessenger->addErrorMessage('Wydarzenie nie zostało zaktualizowane !!. Powiadom administratora');
-        var_dump($ex);exit();
+      //  var_dump($ex);exit();
         }
 
     if($wydarzenie->getIdLekarz()){
@@ -282,12 +282,12 @@ class KalendarzController extends AbstractController
    }
    
    public function wpiszjqueryAction() 
-   {
-    $this->layout()->setTemplate('layout/layout_posty');  
-     
+   { 
+      $this->layout()->setTemplate('layout/layout_posty'); 
+      
       $request=$this->getRequest();
        
-        $idLekarz=$this->params('id',0);
+    $idLekarz=$this->params('id',0);  
        if(!$idLekarz)
        {
           $this->getResponse()->setStatusCode(404);
@@ -302,45 +302,184 @@ class KalendarzController extends AbstractController
               [
                'wpisz_czy_edytuj'  => 'wpisz',
                'baseUrl'=>$this->baseUrl,
-                'lekarz'=>$lekarz,
+               'lekarz'=>$lekarz,
               ]
               );
-       
+      
        $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz,'wpisz_czy_edytuj'=>'wpisz']);
        
-     //  echo $zmiennaPost=$request->getPost();
-    //   if(!$request->isPost())
-    //   {
-       //    var_dump($request->getPost());exit();
-        //   return $view;
-    //   }
+       
+       if(!$request->isPost())
+       {
+           return $view;
+       }
        
        $form->setData($request->getPost());
        
-       if (! $form->isValid())
+       if (!$form->isValid())
        {
+           
         return $view;
     }
+  
+    
+   }
+   
+      public function wpiszjquery2Action() 
+   { 
+      $this->layout()->setTemplate('layout/layout_posty'); 
+      
+      $request=$this->getRequest();
        
+    $idLekarz=$this->params('id',0);  
+       if(!$idLekarz)
+       {
+          $this->getResponse()->setStatusCode(404);
+           return; 
+       }
+       $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
+       
+       
+       
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'wpisz',
+               'baseUrl'=>$this->baseUrl,
+               'lekarz'=>$lekarz,
+              ]
+              );
+      
+       $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz,'wpisz_czy_edytuj'=>'wpisz']);
+       
+       
+       if(!$request->isPost())
+       {
+           return $view;
+       }
+       
+       $form->setData($request->getPost());
+       
+       if (!$form->isValid())
+       {
+           
+        return $view;
+    }
+  
+    
+   }
+  
+   public function wpiszjquerykontrolawynikowAction()
+   {
+      $this->layout()->setTemplate('layout/layout_posty'); 
+      
+      $request=$this->getRequest();
+       
+    $idLekarz=$this->params('id',0);  
+       if(!$idLekarz)
+       {
+           return['wynik'=>'Błąd przy pobieraniu danych Lekarza !!']; 
+       }
+       
+       $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
+
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'wpisz',
+               'baseUrl'=>$this->baseUrl,
+               'lekarz'=>$lekarz,
+              ]
+              );
+      
+     
+       
+       
+       if(!$request->isPost())
+       {
+          return['wynik'=>'Błąd przy pobieraniu danych Post !!']; 
+       }
+       
+       $form->setData($request->getPost());
+       
+       if (!$form->isValid())
+       {
+         $bledy=$form->getMessages();  
+       return['wynik'=>'Błąd przy wprowadzonych danych !!','bledy'=>$bledy]; 
+    }
+  
     $wydarzenie=$form->getData();
-    
-    $checkbox=$this->request->getPost('checkbox');
-    $flashMessenger=$this->flashMessenger;
-    
+
+   $checkbox=$this->request->getPost('checkbox');
+
+ 
      try {
          $wydarzenie=$this->wydarzenieDb->wpiszNoweWydarzenie($wydarzenie, $checkbox); 
-         $flashMessenger->addSuccessMessage('Wydarzenie zostało wpisane !!');
 
          
+        return['wynik'=>'Wydarzenie zostało wpisane !!'];
+         
     } catch (\Exception $ex) {
-       $flashMessenger->addErrorMessage('Błąd: Wydarzenie nie zostało wpisane !!.'); 
-    }
-     return $this->redirect()->toRoute(
-        'kalendarz',
-        ['id' => $idLekarz] 
-            );
+
+       return['wynik'=>'Błąd: Wydarzenie nie zostało wpisane !!'];
+    }  
+   }
+   
+   
+    public function wpiszjquerykontrolawynikow2Action()
+   {
+      $this->layout()->setTemplate('layout/layout_posty'); 
       
+      $request=$this->getRequest();
        
+    $idLekarz=$this->params('id',0);  
+       if(!$idLekarz)
+       {
+           return['wynik'=>'Błąd przy pobieraniu danych Lekarza !!']; 
+       }
+       
+       $lekarz=$this->lekarzDb->pobierzJedenLekarz($idLekarz);
+
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'wpisz',
+               'baseUrl'=>$this->baseUrl,
+               'lekarz'=>$lekarz,
+              ]
+              );
+      
+     
+       
+       
+       if(!$request->isPost())
+       {
+          return['wynik'=>'Błąd przy pobieraniu danych Post !!']; 
+       }
+       
+       $form->setData($request->getPost());
+       
+       if (!$form->isValid())
+       {
+         $bledy=$form->getMessages();  
+       return['wynik'=>'Błąd przy wprowadzonych danych !!','bledy'=>$bledy]; 
+    }
+  
+    $wydarzenie=$form->getData();
+
+   $checkbox=$this->request->getPost('checkbox');
+
+ 
+     try {
+         $wydarzenie=$this->wydarzenieDb->wpiszNoweWydarzenie($wydarzenie, $checkbox); 
+
+         
+        return['wynik'=>'Wydarzenie zostało wpisane !!'];
+         
+    } catch (\Exception $ex) {
+
+       return['wynik'=>'Błąd: Wydarzenie nie zostało wpisane !!'];
+    }  
    }
    
    

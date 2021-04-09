@@ -1,7 +1,11 @@
 <?php
 setlocale(LC_TIME, 'pl_PL.UTF-8', 'pl.UTF-8'); 
 $this->headLink()->appendStylesheet($this->basePath('css/kalendarz.css'));
-
+$this->headLink()->appendStylesheet($this->basePath('css/ajax.css'));
+$this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/pokazwydarzenie.js', 'text/javascript'));
 
 
 $kalendarz=new Kalendarz\Entity\Kalendarz($this->data);
@@ -79,7 +83,7 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
               </svg><?= 'Powrót do kalendarza' ?>
 </a>     <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
    
- <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
+ <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;" class="linkPokazWydarzenie">
             <?= 'Wpisz nowe Wydarzenie' ?>  <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
   <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -112,7 +116,7 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
                   
    </button>
         <button type="button" class="btn btn-primary">
-     <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
+     <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Wpisz nowe wydarzenie" style="color: white; float: right;">
             <?= 'Wpisz nowe Wydarzenie' ?> 
  </a>    
         
@@ -126,11 +130,80 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
 <script type="text/javascript"> 
 "use strict";
 
+jQuery(function($){
+    
+
 let id=null;
-let idlekarz=null;
+let idlekarz=parseInt("<?= $this->escapeJs($lekarz->getIdlekarz()) ?>");
+let imie=("<?= $this->escapeJs($lekarz->getImie()) ?>");
+let nazwisko=("<?= $this->escapeJs($lekarz->getNazwisko()) ?>");
+let imie_nazwisko=imie+" "+nazwisko;
 
+let napisPierwotny="Dokonujesz wpisu dla "+ imie_nazwisko;
 
-// Wyświetl wydarzenie w oknie modalnym
+let napis='Dokonujesz wpisu dla wszystkich lekarzy';
+let fx={
+ // Sprawdza istnienie okna modalnego i zwraca jego kod lub
+// tworzy i zwraca nowe   
+ "stworzOknoModalne" : function () {
+     if($(".modal-window").length===0){
+        return $("<div>").hide().addClass("modal-window").prependTo("body"); 
+     }else{
+         return $(".modal-window");
+     }
+ },
+ // Ukrywa płynnie okno i usuwa je z DOM
+ "zamknijOkno":function(event){
+    // Jeżeli element wywołujący tę funkcję
+// wyzwolił zdarzenie,
+// wstrzymaj domyślne działanie 
+    if(event!==undefined)
+    {
+        event.preventDefault();
+     }
+     // Usuń klasę active ze wszystkich odnośników
+    $("a").removeClass("active");
+    
+    // Ukryj płynnie okno, a następnie usuń je z DOM
+    $(".modal-window,.modal-overlay").fadeOut("slow", function() {
+    $(this).remove();
+    }
+    );   
+},
+"zamknijOkno2":function(){
+    
+    let czyjest=$(".modal-window").length;
+
+    if(czyjest){
+      $("a").removeClass("active");
+    // Ukryj płynnie okno, a następnie usuń je z DOM
+   // $(".modal-window").fadeOut("slow", function() {
+    $(".modal-window,.modal-overlay").remove();
+   // } 
+   // );
+    }   
+    },
+// Wstawia okno do kodu HTML i płynnie je wyświetla
+"pokazOknoModalneiCzarne":function(dane,oknomodalne){
+   // Utwórz warstwę maskującą treść strony, dodaj do niej
+// klasę i procedurę obsługi zdarzenia click, a następnie
+// umieść ją w elemencie body
+$("<div>").hide().addClass("modal-overlay").click(function(event){
+    fx.zamknijOkno(event);
+}).appendTo("body");
+
+// Wczytaj dane do okna modalnego
+// i umieść je w elemencie body
+oknomodalne.hide().append(dane).appendTo("body");
+
+// Pokaż płynnie okno i warstwę maskującą
+$(".modal-window,.modal-overlay")
+.fadeIn("slow");
+    
+},
+
+}
+// ////////////////Wyświetl wydarzenie w oknie modalnym
 $("#kalendarz").on("click", ".link", function(event){
 
     event.preventDefault(); 
@@ -143,27 +216,103 @@ $("#kalendarz").on("click", ".link", function(event){
     let id1=data.match(szukanyCiagid);
     
     id=id1[1];
-    idlekarz=data.match(szukanyciagidlekarz);
+   // idlekarz=data.match(szukanyciagidlekarz);
     
     $('#pokazWydarzenie').modal('show');    
 });
-
+///////////////////////////////////////////////////////////////////
 $('#pokazWydarzenie').on('show.bs.modal', function (event) {
     
-   // let url="http://localhost/przychodniadwa/kalendarz/pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz[1]+"&data="+dzien[1];
-   // console.log(url);
-   $( ".modal-body" ).load( "../pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz[1]+" #tresc", function( response, status, xhr ) {
+   $( ".modal-body" ).load( "../pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+" #tresc", function( response, status, xhr ) {
       // console.log(response);
   if ( status == "error" ) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
   }
 });
+   
+});
+/////////////////////////////////////////////////////////////////////////
+// Wyświetl wydarzenie w oknie modalnym po wybraniu "Wpisz nowe Wydarzenie"
+$("#kalendarz").on("click", "a.linkPokazWydarzenie", function(event){
+// Zapobiega załadowaniu pliku 
+event.preventDefault();
+// Dodaj klasę "active" do odnośnika
+$(this).addClass("active");
 
-    
+let oknoModalne=fx.stworzOknoModalne();
+
+// Utwórz przycisk do zamykania okna
+$("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
+.click(function(event){
+fx.zamknijOkno(event);
+}).appendTo(oknoModalne);
+
+ $.ajax({
+            method: "POST",
+            url: "http://localhost/przychodniadwa/kalendarz/wpiszjquery2/"+idlekarz,
+            //data: "idlekarz="+idlekarz,
+            dataType: "html",
+            success: function(data){
+
+         //   let form = $(data).hide();
+         
+         //   form.appendTo(oknoModalne).fadeIn("slow");
+            fx.pokazOknoModalneiCzarne(data,oknoModalne)
+
+            },
+            error: function(msg){
+            alert(msg);
+                                }
+            });
+
 });
 
+$("body").on("click", "#submit", function(event){
+ 
+event.preventDefault();
+
+let formData = $(this).parents("form").serialize(),
+
+form2 = $( "#wpiszWydarzenieForm" );
+
+if(form2.valid() ){
+    
+$.ajax({
+type: "POST",
+url: "http://localhost/przychodniadwa/kalendarz/wpiszjquerykontrolawynikow2/"+idlekarz,
+data: formData,
+success: function(data) {
+
+fx.zamknijOkno2();
+
+let oknoModalne2=fx.stworzOknoModalne();
+
+$("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
+.click(function(event){
+fx.zamknijOkno(event);
+}).appendTo(oknoModalne2);
 
 
+fx.pokazOknoModalneiCzarne(data,oknoModalne2);
 
+},
+error: function(msg) {
+alert(msg);
+}
+});
+
+}
+ 
+});
+
+////////////////////////////
+/////////////////////////   
+$("body").on("click", "#anuluj", function(event){
+    
+     fx.zamknijOkno(event);
+    
+    });
+
+});
 </script>

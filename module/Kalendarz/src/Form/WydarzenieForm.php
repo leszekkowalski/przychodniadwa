@@ -40,8 +40,8 @@ class WydarzenieForm extends Form implements InputFilterProviderInterface
                  'options' => [
                     'label' => $napis,
                     'use_hidden_element' => true,
-                    'checked_value' => 'yes',
-                    'unchecked_value' => 'no',
+                     'unchecked_value' => 'no',
+                    'checked_value' => 'yes',                   
     ],
                      'attributes' => [
                         'value' => 'yes',
@@ -85,7 +85,6 @@ class WydarzenieForm extends Form implements InputFilterProviderInterface
             'name' => 'submit',
             'attributes' => [                
                 'value' => 'Wpisz do bazy',
-                'id' => 'submitbutton',
                'class' => 'btn btn-primary'
             ],
         ]);  
@@ -107,8 +106,7 @@ class WydarzenieForm extends Form implements InputFilterProviderInterface
              'required'=>false,
                 'filters'  => [                    
                 ],                
-                'validators' => [
-                   
+                'validators' => [ 
                 ],
             ]
         ];

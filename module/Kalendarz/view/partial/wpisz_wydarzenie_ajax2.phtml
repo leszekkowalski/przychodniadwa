@@ -1,0 +1,315 @@
+<style>
+.krotki_25{
+    width: 25%;   
+}
+.krotki_50{
+      width: 50%;
+}
+.krotki_25:focus{
+    width: 50%;
+}
+
+.form-control:focus{
+    background-color: lightblue; 
+}
+.niewidoczny {
+    visibility: hidden;
+}
+.widoczny {
+    visibility: visible;
+}
+</style>
+
+<?php
+
+$wskaznik=0;
+if($wpisz_czy_edytuj=='edytuj')
+{
+    if($lekarz){
+   $napisLogo='Edytuj Wydarzenie dla '.$this->lekarz->getImie().' '.$lekarz->getNazwisko();
+    }else{
+        $napisLogo='Edytuj Wydarzenie dla wszystkich lekarzy !';
+    }
+    $wskaznik=1;
+}else{
+    $napisLogo='Zarejestruj nowe Wydarzenie w systemie !';
+}
+
+$form->setAttribute('id', 'wpiszWydarzenieForm');
+
+$wydarzenieFieldset=$form->get('wydarzenie_fieldset');
+
+$wydarzenieIdlekarz=$wydarzenieFieldset->get('wydarzenie_idlekarz');
+
+if($this->lekarz instanceof Application\Model\Lekarz)
+{
+    $wydarzenieIdlekarz->setValue($this->lekarz->getIdlekarz());
+}
+
+$wydarzenieTytul=$wydarzenieFieldset->get('wydarzenie_tytul');
+$wydarzenieTytul->setAttributes([
+    'id'=>'tytul',   
+    'class' => 'form-control',
+]);
+
+$wydarzenieOpis=$wydarzenieFieldset->get('wydarzenie_opis');
+$wydarzenieOpis->setAttributes([
+    'id'=>'opis',   
+    'class' => 'form-control',
+]);
+
+$wydarzenieStart=$wydarzenieFieldset->get('wydarzenie_start');
+$wydarzenieStart->setAttributes([
+    'id'=>'start',   
+    'class' => 'form-control krotki_25',
+    
+]);
+
+$wydarzenieKoniec=$wydarzenieFieldset->get('wydarzenie_koniec');
+$wydarzenieKoniec->setAttributes([
+    'id'=>'koniec',   
+    'class' => 'form-control krotki_25',
+]);
+
+$wydarzenieData=$wydarzenieFieldset->get('wydarzenie_data');
+$wydarzenieData->setAttributes([
+    'id'=>'data',   
+    'class' => 'form-control krotki_50 ignore',
+]);
+
+if(!$wskaznik){
+$checkbox=$form->get('checkbox');
+$checkbox->setAttributes([
+    'id'=>'checkbox',   
+    'class' => 'form-control',
+]);
+$checkbox->setLabelAttributes([
+    'for'=>'checkbox',
+    'id'=>'checkbox_label'
+    ]);
+
+}
+
+$submit=$form->get('submit');
+$submit->setAttributes([
+    'id'=>'submit',   
+]);
+
+$csrf=$form->get('csrf');
+
+
+?>
+
+<h5 class="text-center text-warning"><b><?= $napisLogo ?></b></h5><br>
+
+<?php
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+?> 
+<div  id="error"><span></span></div>
+                    <?php     if(!$wskaznik):  ?>
+                                <div class="form-group">
+						<?=  $this->formLabel($checkbox); ?>
+						<div class="text-center">
+						<?php
+                                                echo $this->formCheckbox($checkbox);
+                                                ?>
+						</div>
+					</div>
+                            <?php endif; ?>
+
+                            <div class="form-group">
+						<?=  $this->formLabel($wydarzenieTytul); ?>
+						
+						<?php
+                                                echo $this->formText($wydarzenieTytul);        
+                                                ?>
+						
+					</div>
+
+					<div class="form-group">
+						<?=  $this->formLabel($wydarzenieOpis); ?>
+						
+						<?php
+                                                echo $this->formTextarea($wydarzenieOpis);
+                                                
+                                                ?>
+						
+					</div>
+                            
+                            
+                            <div class="form-group">
+						<?=  $this->formLabel($wydarzenieStart); ?>
+						<div class="text-center">
+						<?php
+                                                echo $this->formTime($wydarzenieStart);
+                                                
+                                                ?>
+						</div>
+					</div>
+                            
+                            <div class="form-group">
+						<?=  $this->formLabel($wydarzenieKoniec); ?>
+						<div class="text-center">
+						<?php
+                                                echo $this->formTime($wydarzenieKoniec);
+                                                
+                                                ?>
+						</div>
+					</div>
+                            
+                            <div class="form-group">
+						<?=  $this->formLabel($wydarzenieData); ?>
+						<div class="text-center">
+						<?php
+                                                echo $this->formDate($wydarzenieData);
+                                                
+                                                ?>
+						</div>
+					</div>
+
+                            
+                            <div class="btn btn-secondary btn-lg btn-block">
+                                <?=  $this->formHidden($wydarzenieIdlekarz);  ?>   
+                                <?=  $this->formHidden($csrf);  ?>     
+                                <?=  $this->formSubmit($submit);  ?>
+            
+                                
+    <button type="button" data-dismiss="modal" data-target="#wpiszWydarzenie" id="anuluj" class="btn btn-primary">Anuluj</button>
+                            
+                            </div>
+    
+       
+  <?= $this->form()->closeTag();  ?>
+
+
+<script type="text/javascript"> 
+"use strict";
+ 
+jQuery(function($){
+
+let imie=("<?= $this->escapeJs($lekarz->getImie()) ?>");
+let nazwisko=("<?= $this->escapeJs($lekarz->getNazwisko()) ?>");
+let imie_nazwisko=imie+' '+nazwisko;
+
+let napisPierwotny='Dokonujesz wpisu dla '+ imie_nazwisko;
+
+let napis='Dokonujesz wpisu dla wszystkich lekarzy';
+ //console.log(napisLabal);
+ 
+ 
+ $( "form input:checkbox" ).click(function(){
+     
+    let wynik =$(this).is( ":checked" ); 
+
+     if(!wynik){
+        $('#checkbox_label').addClass('bg-danger'); 
+        $('#checkbox').parent().css("background-color", "white");
+        $('#checkbox_label').text(napis);
+     }else{
+         $('#checkbox_label').removeClass('bg-danger');
+         $('#checkbox_label').text(napisPierwotny);
+         $('#checkbox').parent().css({ background: "yellow"});
+     }    
+ });
+/////////////////////////////////////
+$.validator.addMethod( "polskieznaki", function( value, element ) {
+	return this.optional( element ) || /^[a-ząśżźćńęłó ]+$/i.test( value );
+}, "Tylko polskie znaki" );
+$.validator.addMethod( "godzina", function( value, element ) {
+	return this.optional( element ) || /^[0-9]{2}:[0-9]{2}$/i.test( value );
+}, "Godzina w odpowoednim formacie" );
+///////////////////////////
+$( "#wpiszWydarzenieForm" ).validate( {
+                              // This global normalizer will trim the value of all elements
+                                // before validatng them.
+                                normalizer: function( value ) {
+                                return $.trim( value );
+                                 },
+                                 //  ignore: ".ignore",
+
+				rules: {
+					"wydarzenie_fieldset[wydarzenie_tytul]": { 
+                                          required: true,
+						minlength: 3,
+                                                polskieznaki: true,
+                                        },
+					"wydarzenie_fieldset[wydarzenie_opis]": {
+						required: true,
+						minlength: 3,
+                                                polskieznaki: true,
+					},
+                                     
+                                     "wydarzenie_fieldset[wydarzenie_start]": {
+                                         step: false,
+                                         required: true,
+                                         godzina: true
+                                              },
+                                     "wydarzenie_fieldset[wydarzenie_koniec]": {
+                                         step: false,
+                                         required: true,
+                                         godzina: true
+                                              },       
+                                      
+                                     "wydarzenie_fieldset[wydarzenie_data]": {
+                                         step: false,
+                                         required: true
+                                              },                  
+					
+					
+                                       
+					//"checkbox": "required"
+				},
+				messages: {
+					//firstname: "Please enter your firstname",
+					"wydarzenie_fieldset[wydarzenie_tytul]": {
+						required: "Please enter a tytuł",
+						minlength: "Your username must consist of at least 3 characters",
+                                                polskieznaki: "Akceptujemy tylko polskie znaki"
+					},
+					"wydarzenie_fieldset[wydarzenie_opis]": {
+						required: "Please enter a username",
+						minlength: "Your username must consist of at least 3 characters",
+                                                polskieznaki: "Tylko polskie znaki"
+					},
+                                       
+
+				},
+                                
+				errorElement: "em",
+                              
+				errorPlacement: function ( error, element ) {
+					// Add the `invalid-feedback` class to the error element
+					error.addClass( "invalid-feedback text-center" );
+
+					if ( element.prop( "type" ) === "checkbox" ) {
+						error.insertAfter( element.next( "label" ) );
+					} else {
+						error.insertAfter( element );
+                                              
+					}
+                                                                     
+                                   //     if ( element.prop( "type" ) === "textarea" ) {    
+				//	error.insertAfter( element.next( "label" ) );
+                                  //      } else {
+				//	error.insrtAfter( element );
+                                     //       }
+				},
+				highlight: function ( element, errorClass, validClass ) {
+					$( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+                                     
+				},
+				unhighlight: function (element, errorClass, validClass) {
+					$( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+                                       
+				},
+        
+			} );
+
+ });
+ 
+
+ 
+ </script>

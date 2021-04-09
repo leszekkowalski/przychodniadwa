@@ -1,38 +1,9 @@
-<?php
-/**
- * @var Laminas\View\Renderer\PhpRenderer $this
- */
-?>
-<?= $this->doctype() ?>
-<html lang="pl">
-    <head>
-        <meta charset="utf-8">
-
-        <?= $this->headMeta()
-            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
-        ?>
-
-        <!-- Le styles -->
-        <?= $this->headLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'])
-            ->prependStylesheet($this->basePath('css/style.css'))
-            ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
-        ?>
-
-        <!-- Scripts -->
-        <?= $this->headScript()  
-            ->prependFile($this->basePath('js/bootstrap.min.js'))
-            ->prependFile($this->basePath('js/jquery-3.5.1.min.js')) 
-        ?>    
-    </head>
-    <body>      
+      
  
-        <div class="container">
+        <div class="container" id="tresc">
 
             <?= $this->content ?>
             
         </div>
      
       
-    </body>
-</html>
