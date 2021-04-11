@@ -109,8 +109,8 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
       </div>
       <div class="modal-footer">
              
-   <button type="button" class="btn btn-secondary" data-dismiss="modal">       
- <a href="<?= $this->url('lekarz', ['action' => 'index']) ?>" title="Powrót do lekarzy" style="color: white;">
+   <button type="button" class="btn btn-secondary" id="edytujWydarzenie">       
+ <a href="<?= $this->url('lekarz', ['action' => 'index']) ?>" title="Powrót do lekarzy" style="color: white;" id="edytujWydarzeniea">
               <?= 'Powrót ' ?>
 </a>    
                   
@@ -223,12 +223,17 @@ $("#kalendarz").on("click", ".link", function(event){
 ///////////////////////////////////////////////////////////////////
 $('#pokazWydarzenie').on('show.bs.modal', function (event) {
     
+      $("#edytujWydarzenie").show();
+    
    $( ".modal-body" ).load( "../pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+" #tresc", function( response, status, xhr ) {
       // console.log(response);
   if ( status == "error" ) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
   }else{
+      let button=$("<a href='../edytuj/"+id+"' style='color: white;' id='edytujid2'>Edytuj Wydarzenie</a>");
+     // let button2=$("<a>").attr("href","#")
+      $("#edytujWydarzeniea").html(button);
        $("#buttonusunWydarzenie").show();
   }
 });
@@ -241,8 +246,7 @@ $("body").on("click", "#usunjquery", function(event){
     event.preventDefault(); 
     $(this).addClass("active");   
     
-    let data = $("#edytujid").attr("href").replace(/.+?\?(.*)$/, "$1");
-    
+    let data = $("#edytujid2").attr("href").replace(/.+?\?(.*)$/, "$1");
     let szukanyCiagid=/([0-9]{1,})/;
     let id1=data.match(szukanyCiagid);
     let id=id1[1];
@@ -254,6 +258,7 @@ $("body").on("click", "#usunjquery", function(event){
     $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
   } else{
       $("#buttonusunWydarzenie").hide("slow");
+      $("#edytujWydarzenie").hide("slow");
   }
     }); 
     
