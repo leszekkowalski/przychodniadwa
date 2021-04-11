@@ -482,5 +482,28 @@ class KalendarzController extends AbstractController
     }  
    }
    
+   public function usunjqueryAction() 
+   {
+       
+      $this->layout()->setTemplate('layout/layout_posty');  
+      
+      if($this->request->isGet())
+      {
+      $idWydarzenie=$this->params()->fromQuery('id',0);
+      
+      $wynik=$this->wydarzenieDb->usunWydarzenie($idWydarzenie);
+      
+      if($wynik){
+          return ['wynik'=>'Wydarzenie zostało usunięte'];
+      }else{
+         return ['wynik'=>'Błąd ']; 
+      }
+      
+      }else{
+          return ['wynik'=>'Błąd '];
+      }
+       
+   }
+   
    
 }

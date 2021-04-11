@@ -83,11 +83,13 @@ $napis='Wydarzenie dla '.$this->lekarz->getImie().' '.$lekarz->getNazwisko();
 </a>    
                   
    </button>
-        <button type="button" class="btn btn-primary">
-            <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
-            <?= 'Wpisz nowe Wydarzenie' ?> 
+    <button type="button" class="btn btn-primary" id="buttonusunWydarzenie2">
+     <a href="<?= $this->url('kalendarz', ['action' => '#']) ?>" title="Usun wydarzenie" style="color: white; float: right;" id="usunjquery2">
+            <?= 'Usuń Wydarzenie' ?> 
  </a>    
-        </button>
+        
+        
+        </button>    
       </div>
     </div>
   </div>
@@ -210,13 +212,40 @@ $("#kalendarz").on("click", ".link", function(event){
   if ( status == "error" ) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( "#pokazWydarzenieladuj" ).html( msg + xhr.status + " " + xhr.statusText );
+  }else{
+      $("#buttonusunWydarzenie2").show();
   }
 });
 
     $('#pokazWydarzenieModalLabel2').text('dla '+dzien[1]);
     
 });
+///////////////////////////////////////////////////////////////
+////okno po kliku na usun wydarzenie 
+$("body").on("click", "#usunjquery2", function(event){
 
+    event.preventDefault(); 
+    $(this).addClass("active");   
+    
+    let data = $("#edytujid").attr("href").replace(/.+?\?(.*)$/, "$1");
+    
+    let szukanyCiagid=/([0-9]{1,})/;
+    let id1=data.match(szukanyCiagid);
+    let id=id1[1];
+  
+    $( ".modal-body" ).load( "../usunjquery/2?id="+id+" ", function( response, status, xhr ) {
+      // console.log(response);
+  if ( status == "error" ) {
+    var msg = "Przepraszamy, pojawił się błąd : ";
+    $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
+  } else{
+      $("#buttonusunWydarzenie2").hide("slow");
+  }
+    }); 
+    
+    
+});
+///////////////////////////////////////////////////////////////////
 
 $("#kalendarz").on("click", "#noweWydarzenie", function(event){
 

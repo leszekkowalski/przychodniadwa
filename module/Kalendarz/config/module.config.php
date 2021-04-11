@@ -140,7 +140,7 @@ return [
         'controllers'=>[
             Controller\KalendarzController::class=>[
             //dostep jest dla kazdego
-            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml','wpiszjquery','wpiszjquery2','wpiszjquerykontrolawynikow','wpiszjquerykontrolawynikow2'], 'allow' => '*'],
+            ['actions' => ['index','pokaz','pokazWydarzenie','edytuj','wpisz','autocomplete','searchlekarza4xml','wpiszjquery','wpiszjquery2','wpiszjquerykontrolawynikow','wpiszjquerykontrolawynikow2','usunjquery'], 'allow' => '*'],
         //dostep tylko dla zalogowanych
             //   ['actions' => ['pokaz'], 'allow' => '+wszyscy.own.pokazsesje']  
             ] ,

@@ -174,5 +174,22 @@ class WydarzeniePolaczenie
         return $wydarzenie;
     }
     
+    public function usunWydarzenie($idWydarzenie)
+    {
+        $usun = new \Laminas\Db\Sql\Delete('wydarzenie');
+        
+        $usun->where(['idwydarzenie=?'=>$idWydarzenie]);
+        
+        $sql = new Sql($this->polaczenieWydarzenie);
+    $statement = $sql->prepareStatementForSqlObject($usun);
+    $result = $statement->execute();
+
+    if (! $result instanceof ResultInterface) {
+        return false;
+    }
+
+    return true;
+    }
+    
     
 }
