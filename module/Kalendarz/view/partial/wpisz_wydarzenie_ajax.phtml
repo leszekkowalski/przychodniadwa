@@ -237,9 +237,10 @@ $("body").on("click", "input[type=submit]", function(event){
  
 event.preventDefault();
 
-let formData = $(this).parents("form").serialize(),
+let formData = $(this).parents("form").serialize();
+
 // Zapisz wartość przycisku submit
-submitVal = $(this).val(),
+let submitVal = $(this).val(),
 // Określa, czy trzeba usunąć wydarzenie
 usun = false,
 // Zapisz datę rozpoczęcia
@@ -268,12 +269,10 @@ type: "POST",
 url: "http://localhost/przychodniadwa/kalendarz/wpiszjquerykontrolawynikow/"+idlekarz,
 data: formData,
 success: function(data) {
-
+fx.dodajWydarzenieDoKoduHtml(data,formData);
 let dane=$(data);
-//dane.appendTo("#wpiszWydarzeniemodalBody");
-//$(".modal-header").remove();
 $("#wpiszWydarzeniemodalBody").html(dane);
-console.log(data);
+//console.log(data);
 },
 error: function(msg) {
 alert(msg);

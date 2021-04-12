@@ -54,8 +54,8 @@ class Kalendarz
     
     
     private $dzisjaj;
-
-
+    
+  
     public function __construct($dataKalendarza=null)
     {
         if(isset($dataKalendarza))
@@ -77,7 +77,7 @@ class Kalendarz
         $znacznikCzasuUnix= mktime(0,0,0,$this->miesiac,1,$this->rok);
         
        $this->poczatekMiesiaca=(int) date('w',$znacznikCzasuUnix);
-        
+               
         $this->wyliczPoprzedniINastepnyMiesiac();
     }
     

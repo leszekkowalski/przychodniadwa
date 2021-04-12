@@ -4,6 +4,8 @@ $this->headLink()->appendStylesheet($this->basePath('css/kalendarz.css'));
 $this->headScript()->appendFile($this->basePath('js/jquery.validate.min.js', 'text/javascript'));
 $this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'text/javascript'));
 $this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
+$this->headScript()->appendFile($this->basePath('js/pokazWydarzenie.js', 'text/javascript'));
+
 
 $title = 'Kalendarz miesiąca';
 $this->headTitle($title);
@@ -16,6 +18,9 @@ $nastepnyRok=strftime('%F',mktime(0, 0, 0, $miesiac,   $dzien,   $rok+1));
 $nastepnyMiesiac=strftime('%F',mktime(0, 0, 0, $miesiac+1,   $dzien,   $rok));
 $poprzedniRok=strftime('%F',mktime(0, 0, 0, $miesiac,   $dzien,   $rok-1));
 $poprzedniMiesiac=strftime('%F',mktime(0, 0, 0, $miesiac-1,   $dzien,   $rok));
+
+$miesiac_ID='miesiac-'.date('Y-m', strtotime($data));
+
 ?>
 
 
@@ -23,7 +28,7 @@ $poprzedniMiesiac=strftime('%F',mktime(0, 0, 0, $miesiac-1,   $dzien,   $rok));
 
 <div id="kalendarz">
        
-<h3 style="text-align: center"><?= 'Kalendarz dla '.$lekarz->getImie().' '.$lekarz->getNazwisko();   ?></h3>
+<h3 style="text-align: center" id="<?= $miesiac_ID ?>"><?= 'Kalendarz dla '.$lekarz->getImie().' '.$lekarz->getNazwisko();   ?></h3>
 <div class="panel_kalendarza">
     
     <div id="zdjecie"> <a href="<?= $this->url('kalendarz', ['action' => 'index','id'=>$lekarz->getIdlekarz(), 'data'=>$poprzedniRok])   ?>"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" fill="orange" class="bi bi-skip-backward" viewBox="0 0 16 16">
@@ -132,9 +137,20 @@ jQuery(function($){
 let fx = {
     
 // Dodaje nowe wydarzenie po jego zapisaniu do kodu HTML
-"dodajWydarzenie" : function(data, formData){
+"dodajWydarzenieDoKoduHtml" : function(data, formData){
 // Przekształć łańcuch zapytania w obiekt
 let entry = fx.deserialize(formData);
+
+//nowy obiekt daty dla biezacego miesjaca
+let kalendarz=new Date(NaN);
+
+//nowy obiekt daty dla nowego Wydarzenie
+let wydarzenie=new Date(NaN);
+
+// Wyodrębnij miesiąc i rok z identyfikatora $miesiac_ID elementu h3
+let idWydarzenie=$("h3").attr("id").split('-');
+
+console.log(entry);
 },
 // Przeprowadza deserializację łańcucha zapytania i zwraca
 // obiekt wydarzenia
@@ -156,7 +172,7 @@ val = pairs[1];
 
 // Przywróć łańcuchowi zakodowanemu w URL oryginalną postać
 // i zapisz każdą wartość jako właściwość obiektu
-entry[key] = fn.url_decode(val);
+entry[key] = fx.url_decode(val);
 }
 
 return entry;
@@ -227,8 +243,8 @@ $("body").on("click", "#usunjquery2", function(event){
     event.preventDefault(); 
     $(this).addClass("active");   
     
-    let data = $("#edytujid").attr("href").replace(/.+?\?(.*)$/, "$1");
-    
+   // let data = $("#edytujid").attr("href").replace(/.+?\?(.*)$/, "$1");
+    let data=$("#edytujidp").attr("wartosc");
     let szukanyCiagid=/([0-9]{1,})/;
     let id1=data.match(szukanyCiagid);
     let id=id1[1];
@@ -266,7 +282,7 @@ $("#kalendarz").on("click", "#noweWydarzenie", function(event){
             //data: "idlekarz="+idlekarz,
             dataType: "html",
             success: function(data){
-
+      
             form = $(data).hide();
            // $("#wpiszWydarzeniemodalBody2").html('');
             form.appendTo("#wpiszWydarzeniemodalBody2")
