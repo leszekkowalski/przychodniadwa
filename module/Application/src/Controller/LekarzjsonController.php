@@ -37,14 +37,9 @@ class LekarzjsonController extends AbstractController{
           $odpowiedz='false';
       }
      
-   //  $jsonObject= \Laminas\Json\Json::encode($jsonData);
-     //$items=null;
-        $viewModel = new JsonModel();
-     //   $viewModel->setVariable('items', $jsonObject);
-       $viewModel->setVariable('items', $odpowiedz);
-        //ustawia lauout jako niwwidoczny
-      //  $viewModel->setTerminal(true);
-        return $viewModel;
+      echo $odpowiedz; 
+      die();
+
       }else{
             $this->redirect()->toRoute('lekarz');
       }
@@ -57,7 +52,7 @@ class LekarzjsonController extends AbstractController{
   public function dodajjsonmailAction() {
      
   if($this->params()->fromRoute('action')=='dodajjsonmail'){
-     
+           
       if ($this->getRequest()->isPost()){ 
       
     $mail = $this->params()->fromPost('mail', 1);  
@@ -72,6 +67,9 @@ class LekarzjsonController extends AbstractController{
       }else{
           $odpowiedz='false';
       }
+      
+      echo ($odpowiedz);
+      exit();
         $viewModel = new JsonModel();
        $viewModel->setVariable('items', $odpowiedz);
         return $viewModel;
@@ -102,13 +100,9 @@ class LekarzjsonController extends AbstractController{
        
        
    $lekarzearray=(iterator_to_array($lekarze, true));
-   
- 
-   
-   
+
    $lekarzePosortowani=$this->sortujPoNazwisku($lekarzearray);
-   //echo $lekarzePosortowani[0]->getNazwisko().' '.$lekarzePosortowani[0]->getPesel();
-   //exit();
+
    
    $jsonData = array(); 
       $idx = 0; 
@@ -128,32 +122,29 @@ class LekarzjsonController extends AbstractController{
          $jsonData[$idx++] = $temp; 
       } 
    
+      
+      
    
-     $iterator = new \RecursiveArrayIterator($jsonData);
-   
-  // var_dump($lekarzearray[0]);exit();
-    //   $b=$lekarze->current();
-     //  echo $nazwisko=$b->getNazwisko();
-      // echo $wynik= strcmp($nazwisko, 'Oożek');exit();
-   
-     // $d=( iterator_to_array($combinedIterator, false) ); 
-     //  echo $lekarzearray[0]->getNazwisko();
-     // exit();
-    $jsonLekarze= \Laminas\Json\Json::encode($iterator);
-   
+   //  $iterator = new \RecursiveArrayIterator($jsonData);
+  
+   // $jsonLekarze= \Laminas\Json\Json::encode($iterator);
+     // $viewModel = new JsonModel();
+      
+   echo json_encode($jsonData);
+      
+      die();
         
-     //$items=null;
-        $viewModel = new JsonModel();
-        $viewModel->setVariable('jsonLekarze', $jsonLekarze);
-      // $viewModel->setVariable('jsonLekarze', $odpowiedz);
-        //$viewModel->setTerminal(true);
-       return $viewModel;
+    
+       
+       // $viewModel->setVariable('jsonLekarze', $jsonLekarze);
+        
+     //  return $viewModel;
        
        
        
         
-    }else{
-        $this->redirect()->toRoute('lekarz');
+   // }else{
+     //   $this->redirect()->toRoute('lekarz');
   } 
      
  }
@@ -251,20 +242,24 @@ class LekarzjsonController extends AbstractController{
          $jsonData[$idx++] = $temp; 
       } 
        
-       $iterator = new \RecursiveArrayIterator($jsonData);
- 
-    $jsonUzytkownicy= \Laminas\Json\Json::encode($iterator);
-   
-        
-     //$items=null;
-        $viewModel = new JsonModel();
-        $viewModel->setVariable('jsonUzytkownicy', $jsonUzytkownicy);
 
-       return $viewModel;
+    
+     //  $iterator = new \RecursiveArrayIterator($jsonData);
+ 
+  // $jsonUzytkownicy= \Laminas\Json\Json::encode($iterator);
+       
+      echo json_encode($jsonData);
+      
+      exit();
+
+      //  $viewModel = new JsonModel();
+      //  $viewModel->setVariable('jsonUzytkownicy', $jsonUzytkownicy);
+
+      // return $viewModel;
        
        
-        }else{
-            $this->redirect()->toRoute('uzytkownik');
+      //  }else{
+       //     $this->redirect()->toRoute('uzytkownik');
         }
 
  }

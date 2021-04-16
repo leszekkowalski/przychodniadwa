@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/pokaz.phtml</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/public/js/pokazwydarzenie.js</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Entity/Kalendarz.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Controller/KalendarzController.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/partial/wpisz_wydarzenie_ajax.phtml</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/index.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/view/application/lekarz/edytuj.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/LekarzjsonController.php</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Application/src/Controller/LekarzController.php</file>
         </group>
     </open-files>
 </project-private>

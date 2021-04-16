@@ -142,15 +142,15 @@ let fx = {
 let entry = fx.deserialize(formData);
 
 //nowy obiekt daty dla biezacego miesjaca
-let kalendarz=new Date(NaN);
+let kalendarz_biezacy_miesiac=new Date(NaN);
 
 //nowy obiekt daty dla nowego Wydarzenie
-let wydarzenie=new Date(NaN);
+let wydarzenie_nowe=new Date(NaN);
 
 // Wyodrębnij miesiąc i rok z identyfikatora $miesiac_ID elementu h3
 let idWydarzenie=$("h3").attr("id").split('-');
 
-console.log(entry);
+//console.log(idWydarzenie);
 },
 // Przeprowadza deserializację łańcucha zapytania i zwraca
 // obiekt wydarzenia

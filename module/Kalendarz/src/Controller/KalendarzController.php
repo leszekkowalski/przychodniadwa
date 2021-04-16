@@ -371,8 +371,12 @@ class KalendarzController extends AbstractController
   
    public function wpiszjquerykontrolawynikowAction()
    {
-      $this->layout()->setTemplate('layout/layout_posty'); 
       
+       if(!$this->request->isXmlHttpRequest()){
+           $this->getResponse()->setStatusCode(404);
+        return;
+       }
+       $this->layout()->setTemplate('layout/layout_posty'); 
       $request=$this->getRequest();
        
     $idLekarz=$this->params('id',0);  
@@ -392,9 +396,7 @@ class KalendarzController extends AbstractController
               ]
               );
       
-     
-       
-       
+      
        if(!$request->isPost())
        {
           return['wynik'=>'Błąd przy pobieraniu danych Post !!']; 
@@ -422,12 +424,19 @@ class KalendarzController extends AbstractController
     } catch (\Exception $ex) {
 
        return['wynik'=>'Błąd: Wydarzenie nie zostało wpisane !!'];
-    }  
-   }
+    } 
    
+   
+   }
    
     public function wpiszjquerykontrolawynikow2Action()
    {
+        
+        if(!$this->request->isXmlHttpRequest()){
+           $this->getResponse()->setStatusCode(404);
+        return;
+       }
+       
       $this->layout()->setTemplate('layout/layout_posty'); 
       
       $request=$this->getRequest();
@@ -480,14 +489,19 @@ class KalendarzController extends AbstractController
 
        return['wynik'=>'Błąd: Wydarzenie nie zostało wpisane !!'];
     }  
+   
    }
    
    public function usunjqueryAction() 
    {
+        if(!$this->request->isXmlHttpRequest()){
+           $this->getResponse()->setStatusCode(404);
+        return;
+       }
        
       $this->layout()->setTemplate('layout/layout_posty');  
       
-      if($this->request->isGet())
+      if($this->request->isGet() && $this->request->isXmlHttpRequest())
       {
       $idWydarzenie=$this->params()->fromQuery('id',0);
       
