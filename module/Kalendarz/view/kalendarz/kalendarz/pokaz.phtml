@@ -28,7 +28,11 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
         <div class="tekst">
             <p> <em><?= $kalendarz->GODZINYPRACY[$i]  ?></em></p>
    </div>
-    <div class="wiersz">
+        <?php
+       $idwiersz="wiersz-".substr($kalendarz->GODZINYPRACY[$i], 0, 2) ;
+        ?>
+
+    <div class="wiersz" id="<?= $idwiersz ?>" >
      <?php
      $godzina= substr($kalendarz->GODZINYPRACY[$i], 0, 2) ;
        $szerokosc=500;
@@ -72,6 +76,7 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
      ?>
 
     </div>
+            
      </div>
    
     <?php endfor; ?>

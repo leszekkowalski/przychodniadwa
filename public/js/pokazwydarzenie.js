@@ -18,26 +18,61 @@ var fx = {
 let entry = fx.deserialize(formData);
 
 //nowy obiekt daty dla biezacego miesjaca
-let kalendarz=new Date(NaN);
+let cal=new Date(NaN);
 //nowy obiekt daty dla nowego Wydarzenie
-let wydarzenie=new Date(NaN);
+let event=new Date(NaN);
 
+// Wyodrębnij dzień, miesiąc i rok wydarzenia
+let date=entry["wydarzenie_fieldset[wydarzenie_data]"].split(' ')[0];
+
+// Podziel datę wydarzenia
+edata = date.split('-');
+        
 // Wyodrębnij miesiąc i rok z identyfikatora $miesiac_ID elementu h3
-let idWydarzenie=$("h3").attr("id").split('-');
+let cdata=$("h3").attr("id").split('-');
 
-let date=entry["wydarzenie_fieldset[wydarzenie_data]"].split(' ')[0],
-data_podzielona=date.split('-');
+
 
 // Ustaw datę w obiekcie kalendarza
-kalendarz.setUTCFullYear(idWydarzenie[1],idWydarzenie[2],1);
+cal.setUTCFullYear(cdata[1],cdata[2],1);
 
 // Ustaw datę w obiekcie wydarzenia
-wydarzenie.setUTCFullYear(data_podzielona[0],data_podzielona[1],data_podzielona[2]);
+event.setUTCFullYear(edata[0],edata[1],edata[2]);
 // Ponieważ obiekt daty jest tworzony na podstawie
 // czasu uniwersalnego, a następnie dostosowywany do strefy czasowej użytkownika,
 // dodaj lub odejmij określoną liczbę minut, aby uzyskać właściwą datę
-wydarzenie.setMinutes(wydarzenie.getTimezoneOffset());
-console.log(idWydarzenie);
+event.setMinutes(event.getTimezoneOffset());
+
+// Jeżeli rok i miesiąc się zgadzają, rozpocznij proces
+// dodawania nowego wydarzenia do kalendarza
+if ( cal.getFullYear()==event.getFullYear() && cal.getMonth()==event.getMonth() )
+{
+// Pobierz dzień miesiąca wydarzenia
+let day = String(event.getDate());
+// Poprzedź jednocyfrowe dni zerem
+day = day.length==1 ? "0"+day : day;
+
+let idwydarzenie = parseInt(data);
+
+if(idwydarzenie>0){
+let href_1='http://localhost/przychodniadwa/kalendarz/pokaz-wydarzenie/'+idwydarzenie+'/';
+let href=href_1+entry["wydarzenie_fieldset[wydarzenie_idlekarz]"]+'&id='+idwydarzenie+'&idlekarz='+entry["wydarzenie_fieldset[wydarzenie_idlekarz]"]+"&data="+entry["wydarzenie_fieldset[wydarzenie_data]"];
+
+// Dodaj nowy odnośnik
+$("<a>")
+.hide()
+.attr("z-index",1)
+.attr("href", href)
+.text(entry["wydarzenie_fieldset[wydarzenie_tytul]"]).addClass("link")
+.insertAfter($("strong:contains("+day+")"))
+.delay(1000)
+.fadeIn("slow");
+}
+
+}
+
+//console.log(cal);
+//console.log(event);
 },
 // Przeprowadza deserializację łańcucha zapytania i zwraca
 // obiekt wydarzenia
@@ -56,7 +91,6 @@ pairs = data[x].split("=");
 key = decodeURIComponent(pairs[0]);
 //key=pairs[0].replace(/%5B/, '_');
 //key2=key.replace(/%5D/, '_');
-console.log(key);
 // Drugi element to wartość parametru
 val = pairs[1];
 

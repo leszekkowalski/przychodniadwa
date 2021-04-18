@@ -123,11 +123,7 @@ $napis='Wydarzenie dla '.$this->lekarz->getImie().' '.$lekarz->getNazwisko();
 
 
 let foo = "<?= $this->escapeJs($rok) ?>";
-//console.log(foo);
 
-
-
-//console.log(id);
 let id=null;
 let idlekarz=parseInt("<?= $this->escapeJs($lekarz->getIdlekarz()) ?>");
 let dzien=null;
@@ -250,7 +246,7 @@ $("body").on("click", "#usunjquery2", function(event){
     let id=id1[1];
   
     $( ".modal-body" ).load( "../usunjquery/2?id="+id+" ", function( response, status, xhr ) {
-      // console.log(response);
+    
   if ( status == "error" ) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
@@ -298,7 +294,7 @@ $("#kalendarz").on("click", "#noweWydarzenie", function(event){
 
 // przycisk Zamknij - ukrywa okno modalne i warstwę maskującą
 $("form").on("click", "button", function(event){
-    console.log('submitwwwwwwww'); 
+    
   $('#wpiszWydarzenie').modal('hide'); 
   // event.preventDefault();
 });

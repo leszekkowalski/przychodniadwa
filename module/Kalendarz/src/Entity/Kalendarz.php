@@ -141,7 +141,7 @@ class Kalendarz
           //dodajemy dzień miesiaca w polu kalendarza
           if($this->poczatekMiesiaca<$i && $this->dniMiesiaca>=$c)
           {
-            $daneDniDoWpisu_kawalek= sprintf("<strong id='cyfra_powieksz' >%02d</strong>",$c++); 
+            $daneDniDoWpisu_kawalek= sprintf("<strong id='cyfra_powieksz' style='z-index: 10'>%02d</strong>",$c++); 
         
            
             $dzienUrl= sprintf('%02d',$c-1);

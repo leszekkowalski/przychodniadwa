@@ -259,8 +259,22 @@ type: "POST",
 url: "http://localhost/przychodniadwa/kalendarz/wpiszjquerykontrolawynikow/"+idlekarz,
 data: formData,
 success: function(data) {
+
 fx.dodajWydarzenieDoKoduHtml(data,formData);
-let dane=$(data);
+console.log(data);
+let idwydarzenie=parseInt(data);
+let komunikat=null;
+if(idwydarzenie>0)
+{
+  komunikat="Wydarzenie zostało wprowadzone dobazy danych";
+}else{
+  komunikat="Błąd. Spróbuj ponownie. Powiadom administratora";
+ }
+let wpisz_komunikat=null;
+//wpisz_komunikat=$("p").text(komunikat);
+wpisz_komunikat='<p>'+komunikat+'</p>';
+let div=wpisz_komunikat+('<div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal"  id="anuluj_kontrola_wynikow">Zamknij</button></div>');
+let dane=$(div);
 $("#wpiszWydarzeniemodalBody").html(dane);
 //console.log(data);
 },
@@ -366,13 +380,13 @@ $( "#wpiszWydarzenieForm" ).validate( {
                                 
 			} );
 /////////////////////////   
-$("body").on("click", "#anuluj", function(event){
+$("body").on("click", "#anuluj_kontrola_wynikow", function(event){
     
      event.preventDefault();
      $("#wpiszWydarzeniemodalBody2").html('');
      $('#wpiszWydarzenie').modal('hide');
     // $('#wpiszWydarzenie').remove();
-     location.reload();
+    // location.reload();
     // $("#tytul").val('').removeClass('is-invalid is-valid');
     //  $("#start").val('').removeClass('is-invalid is-valid');
      //console.log("anilij przycisniete");
