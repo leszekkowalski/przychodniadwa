@@ -220,7 +220,7 @@ $("#kalendarz").on("click", ".link", function(event){
     dzien=data.match(szukanadata);
     $('#pokazWydarzenie').modal('show');  
     
-    $( "#pokazWydarzenieladuj" ).load( "http://localhost/przychodniadwa/kalendarz/pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+"&data="+dzien[1]+" #tresc", function( response, status, xhr ) {
+    $( "#pokazWydarzenieladuj" ).load( "../../kalendarz/pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+"&data="+dzien[1]+" #tresc", function( response, status, xhr ) {
   if ( status == "error" ) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( "#pokazWydarzenieladuj" ).html( msg + xhr.status + " " + xhr.statusText );
@@ -274,7 +274,7 @@ $("#kalendarz").on("click", "#noweWydarzenie", function(event){
      if(!czyJest){
       $.ajax({
             method: "POST",
-            url: "http://localhost/przychodniadwa/kalendarz/wpiszjquery/"+idlekarz,
+            url: "../../kalendarz/wpiszjquery/"+idlekarz,
             //data: "idlekarz="+idlekarz,
             dataType: "html",
             success: function(data){

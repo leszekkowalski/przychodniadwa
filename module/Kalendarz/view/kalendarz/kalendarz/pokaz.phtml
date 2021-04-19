@@ -7,19 +7,18 @@ $this->headScript()->appendFile($this->basePath('js/additional-methods.js', 'tex
 $this->headScript()->appendFile($this->basePath('js/messages_pl.js', 'text/javascript'));
 $this->headScript()->appendFile($this->basePath('js/pokazwydarzenie.js', 'text/javascript'));
 
-
 $kalendarz=new Kalendarz\Entity\Kalendarz($this->data);
 $ilegodzinpracy=count($kalendarz->GODZINYPRACY);
 $tablicaWydarzen=$this->tablicaWydarzen;
 $data= strftime('%e %B %Y', strtotime($kalendarz->dataKalendarza));
- 
+$data_kodHtml=$this->data;
 
 $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->getNazwisko().'<br>'.' w dniu '.$data.' r.';
  $licznik=0;
 
 ?>
 
-<div id="kalendarz">
+<div id="kalendarz" data_kodhtml="<?= $data_kodHtml?>" >
     <h4 style="text-align: center"><?= $napis  ?></h4>
     
    <?php for($i=0; $i<$ilegodzinpracy ; $i++):  ?> 
@@ -32,12 +31,12 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
        $idwiersz="wiersz-".substr($kalendarz->GODZINYPRACY[$i], 0, 2) ;
         ?>
 
-    <div class="wiersz" id="<?= $idwiersz ?>" >
+    <div class="wiersz">
      <?php
      $godzina= substr($kalendarz->GODZINYPRACY[$i], 0, 2) ;
        $szerokosc=500;
      if(isset($tablicaWydarzen[$godzina])){
-      $z_index=(int)8; 
+      $z_index=(int)15; 
       $licznikWydarzenie=0;
      foreach ($tablicaWydarzen[$godzina] as $wydarzenie){
      $minuty_jako_marginTop= substr($wydarzenie->getWydarzenie_start(), 3, 2);
@@ -53,24 +52,29 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
      //$w=$dlugoscwydarzenia->format('%i');
      if($licznikWydarzenie==0){
      ?>
-         
+      <div id="<?= $idwiersz ?>" >   
     <a href=<?= $this->url('kalendarz', ['action' => 'pokaz-wydarzenie', 'id' =>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()],['query'=>['id'=>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()]])  ?>
        style=" margin-top:<?= $minuty_jako_marginTop ?>px;height:<?= $wynik_height ?>px;background-color:<?= $kalendarz->KOLORY[$licznik++]  ?>;z-index:<?= $z_index ?>;" id="a" class="link"><?= $wydarzenie->getWydarzenie_tytul().' '.$poczatek->format('H:i').' - '.$koniec->format('H:i') ?></a> 
-     
+      </div>
        
    <?php
    $licznikWydarzenie++;
      }else{?>
-        
+         <div id="<?= $idwiersz ?>" >   
       <a href=<?= $this->url('kalendarz', ['action' => 'pokaz-wydarzenie', 'id' =>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()],['query'=>['id'=>$wydarzenie->getIdWydarzenie(),'idlekarz'=>$lekarz->getIdlekarz()]])  ?>
    style=" width:<?= $szerokosc ?>px; margin-top:<?= $minuty_jako_marginTop ?>px;height:<?= $wynik_height ?>px;background-color:<?= $kalendarz->KOLORY[$licznik++] ?>;z-index:<?= $z_index ?>;" id="a" class="link"><?= $wydarzenie->getWydarzenie_tytul().' '.$poczatek->format('H:i').' - '.$koniec->format('H:i') ?></a>   
-     
+         </div>
      <?php
      $licznikWydarzenie++;
      
      }
      $z_index=$z_index-1;;    
      };
+     }else{
+         ?>
+        
+       <div id="<?= $idwiersz ?>" ></div>
+           <?php
      }
      
      ?>
@@ -147,7 +151,7 @@ let imie_nazwisko=imie+" "+nazwisko;
 let napisPierwotny="Dokonujesz wpisu dla "+ imie_nazwisko;
 
 let napis='Dokonujesz wpisu dla wszystkich lekarzy';
-let fx={
+let fx2={
  // Sprawdza istnienie okna modalnego i zwraca jego kod lub
 // tworzy i zwraca nowe   
  "stworzOknoModalne" : function () {
@@ -194,7 +198,7 @@ let fx={
 // klasę i procedurę obsługi zdarzenia click, a następnie
 // umieść ją w elemencie body
 $("<div>").hide().addClass("modal-overlay").click(function(event){
-    fx.zamknijOkno(event);
+    fx2.zamknijOkno(event);
 }).appendTo("body");
 
 // Wczytaj dane do okna modalnego
@@ -203,10 +207,39 @@ oknomodalne.hide().append(dane).appendTo("body");
 
 // Pokaż płynnie okno i warstwę maskującą
 $(".modal-window,.modal-overlay")
-.fadeIn("slow");
-    
-}
+.fadeIn("slow");   
+},
+"pokazOknoModalneiCzarnePoWpisie":function(dane,oknomodalne){
+   // Utwórz warstwę maskującą treść strony, dodaj do niej
+// klasę i procedurę obsługi zdarzenia click, a następnie
+// umieść ją w elemencie body
+$("<div>").hide().addClass("modal-overlay").click(function(event){
+    fx2.zamknijOkno(event);
+}).appendTo("body");
 
+let idwydarzenie=parseInt(dane);
+
+let komunikat=null;
+if(idwydarzenie>0)
+{
+  komunikat="Wydarzenie zostało wprowadzone dobazy danych";
+}else{
+  komunikat="Błąd. Spróbuj ponownie. Powiadom administratora";
+ }
+let wpisz_komunikat=null;
+//wpisz_komunikat=$("p").text(komunikat);
+wpisz_komunikat='<p>'+komunikat+'</p>';
+let div=wpisz_komunikat+('<button type="button" class="btn btn-secondary" data-dismiss="modal"  id="anuluj">Zamknij</button>');
+let danePokaz=$(div);
+
+// Wczytaj dane do okna modalnego
+// i umieść je w elemencie body
+oknomodalne.hide().append(danePokaz).appendTo("body");
+
+// Pokaż płynnie okno i warstwę maskującą
+$(".modal-window,.modal-overlay")
+.fadeIn("slow");   
+},
 };
 // ////////////////Wyświetl wydarzenie w oknie modalnym
 $("#kalendarz").on("click", ".link", function(event){
@@ -278,17 +311,17 @@ event.preventDefault();
 // Dodaj klasę "active" do odnośnika
 $(this).addClass("active");
 
-let oknoModalne=fx.stworzOknoModalne();
+let oknoModalne=fx2.stworzOknoModalne();
 
 // Utwórz przycisk do zamykania okna
 $("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
 .click(function(event){
-fx.zamknijOkno(event);
+fx2.zamknijOkno(event);
 }).appendTo(oknoModalne);
 
  $.ajax({
             method: "POST",
-            url: "http://localhost/przychodniadwa/kalendarz/wpiszjquery2/"+idlekarz,
+            url: "../../kalendarz/wpiszjquery2/"+idlekarz,
             //data: "idlekarz="+idlekarz,
             dataType: "html",
             success: function(data){
@@ -296,7 +329,7 @@ fx.zamknijOkno(event);
          //   let form = $(data).hide();
          
          //   form.appendTo(oknoModalne).fadeIn("slow");
-            fx.pokazOknoModalneiCzarne(data,oknoModalne)
+            fx2.pokazOknoModalneiCzarne(data,oknoModalne)
 
             },
             error: function(msg){
@@ -318,21 +351,24 @@ if(form2.valid() ){
     
 $.ajax({
 type: "POST",
-url: "http://localhost/przychodniadwa/kalendarz/wpiszjquerykontrolawynikow2/"+idlekarz,
+url: "../../kalendarz/wpiszjquerykontrolawynikow2/"+idlekarz,
 data: formData,
 success: function(data) {
+    
+fx.dodajWydarzenieDoKoduHtmldzien(data,formData,idlekarz);
 
-fx.zamknijOkno2();
 
-let oknoModalne2=fx.stworzOknoModalne();
+fx2.zamknijOkno2();
+
+let oknoModalne2=fx2.stworzOknoModalne();
 
 $("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
 .click(function(event){
-fx.zamknijOkno(event);
+fx2.zamknijOkno(event);
 }).appendTo(oknoModalne2);
 
 
-fx.pokazOknoModalneiCzarne(data,oknoModalne2);
+fx2.pokazOknoModalneiCzarnePoWpisie(data,oknoModalne2);
 
 },
 error: function(msg) {
@@ -348,7 +384,7 @@ alert(msg);
 /////////////////////////   
 $("body").on("click", "#anuluj", function(event){
     
-     fx.zamknijOkno(event);
+     fx2.zamknijOkno(event);
     
     });
 

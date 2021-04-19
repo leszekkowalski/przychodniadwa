@@ -437,7 +437,7 @@ class KalendarzController extends AbstractController
         return;
        }
        
-      $this->layout()->setTemplate('layout/layout_posty'); 
+      $this->layout()->setTemplate('layout/layout_posty_1'); 
       
       $request=$this->getRequest();
        
@@ -478,17 +478,17 @@ class KalendarzController extends AbstractController
 
    $checkbox=$this->request->getPost('checkbox');
 
- 
+  $idwydarzenie=0;
      try {
          $wydarzenie=$this->wydarzenieDb->wpiszNoweWydarzenie($wydarzenie, $checkbox); 
-
+         $idwydarzenie=$wydarzenie->getIdwydarzenie();
          
-        return['wynik'=>'Wydarzenie zostało wpisane !!'];
+        return['wynik'=>'Wydarzenie zostało wpisane !!','idwydarzenie'=>$idwydarzenie];
          
     } catch (\Exception $ex) {
 
-       return['wynik'=>'Błąd: Wydarzenie nie zostało wpisane !!'];
-    }  
+       return['idwydarzenie'=>$idwydarzenie];
+    }   
    
    }
    
