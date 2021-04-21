@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/edytujjquery2.phtml</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/pokaz.phtml</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/public/js/pokazwydarzenie.js</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/src/Controller/KalendarzController.php</file>
-            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/index.phtml</file>
+            <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/config/module.config.php</file>
             <file>file:/C:/xampp/htdocs/przychodniadwa/module/Kalendarz/view/kalendarz/kalendarz/wpisz.phtml</file>
         </group>
     </open-files>

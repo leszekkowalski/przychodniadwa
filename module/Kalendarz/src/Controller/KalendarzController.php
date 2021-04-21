@@ -331,7 +331,8 @@ class KalendarzController extends AbstractController
       
       $request=$this->getRequest();
        
-    $idLekarz=$this->params('id',0);  
+   //  $idLekarz=$request->getPost('idlekarz',0);
+     $idLekarz=$this->params('id',0);  
        if(!$idLekarz)
        {
           $this->getResponse()->setStatusCode(404);
@@ -364,6 +365,64 @@ class KalendarzController extends AbstractController
        {
            
         return $view;
+    }
+  
+    
+   }
+   
+        public function edytujjquery2Action() 
+   { 
+      $this->layout()->setTemplate('layout/layout_posty'); 
+      
+      $request=$this->getRequest();
+
+     $idwydarzenie=$this->params('id',0);  
+  
+      if(!$idwydarzenie)
+       {
+          $this->getResponse()->setStatusCode(404);
+           return; 
+       }
+       
+       $wydarzenie=$this->wydarzenieDb->pobierzWydarzeniePoId($idwydarzenie);
+       
+       if($wydarzenie->getIdLekarz())
+       {
+           $lekarz=$this->lekarzDb->pobierzJedenLekarz($wydarzenie->getIdLekarz());
+       }else{
+           $lekarz=null;
+       }
+       
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'edytuj',
+               'baseUrl'=>$this->baseUrl, 
+              ]
+              );
+       
+       $wydarzenie->zmienWydarzenie_start();
+       $wydarzenie->zmienWydarzenie_koniec();
+       
+       $form->bind($wydarzenie);
+       
+      
+       $view=new ViewModel(['form'=>$form,'lekarz'=>$lekarz,'wpisz_czy_edytuj'=>'edytuj']);
+       
+       
+       if(!$request->isPost())
+       {
+           return $view;
+       }
+       
+       $form->setData($request->getPost());
+       
+       if (!$form->isValid())
+       {
+           
+        return $view;
+    }else{
+        echo 'OK';exit();
     }
   
     
@@ -491,7 +550,68 @@ class KalendarzController extends AbstractController
     }   
    
    }
+   ///////////////////////////////////////////////////
+     public function edytujjquerykontrolawynikow2Action()
+   {
+        
+        if(!$this->request->isXmlHttpRequest()){
+           $this->getResponse()->setStatusCode(404);
+        return;
+       }
+       
+      $this->layout()->setTemplate('layout/layout_posty_1'); 
+      
+      $request=$this->getRequest();
+       
+    $idwydarzenie=$this->params('id',0); 
+    
+       if(!$idwydarzenie)
+       {
+           return['wynik'=>'Błąd przy pobieraniu danych Wydarzenia !!']; 
+       }
+       
+       $wydarzenie=$this->wydarzenieDb->pobierzWydarzeniePoId($idwydarzenie);
+
+       $form=new \Kalendarz\Form\WydarzenieForm(
+              'wydarzenie_form',
+              [
+               'wpisz_czy_edytuj'  => 'edytuj',
+               'baseUrl'=>$this->baseUrl,
+              ]
+              );
+      
+ 
+       if(!$request->isPost())
+       {
+          return['wynik'=>'Błąd przy pobieraniu danych Post !!']; 
+       }
+       
+       $form->setData($request->getPost());
+       
+       if (!$form->isValid())
+       {
+         $bledy=$form->getMessages();  
+       return['wynik'=>'Błąd przy wprowadzonych danych !!','bledy'=>$bledy]; 
+    }
+  
+    $wydarzenie=$form->getData();
+    
+    $idwydarzeniePoWpisie=0;
+
+     try {
+         $wydarzenie=$this->wydarzenieDb->edytujWydarzenie($wydarzenie);
+         
+         $idwydarzeniePoWpisie=$wydarzenie->getIdwydarzenie();
+         
+        return['wynik'=>'Wydarzenie zostało zaktualizowane !!','idwydarzenie'=>$idwydarzeniePoWpisie];
+         
+    } catch (\Exception $ex) {
+
+       return['idwydarzenie'=>$idwydarzeniePoWpisie];
+    }   
    
+   }
+   /////////////////////////////////////////////////////
    public function usunjqueryAction() 
    {
         if(!$this->request->isXmlHttpRequest()){

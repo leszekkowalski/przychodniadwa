@@ -92,7 +92,7 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
               </svg><?= 'Powrót do kalendarza' ?>
 </a>     <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;">
    
- <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Powrót do kalendarza" style="color: white; float: right;" class="linkPokazWydarzenie">
+ <a href="<?= $this->url('kalendarz', ['action' => 'wpisz','id'=>$lekarz->getIdlekarz()]) ?>" title="Wpisz nowe Wydarzenie" style="color: white; float: right;" class="linkPokazWydarzenie">
             <?= 'Wpisz nowe Wydarzenie' ?>  <svg class="bi bi-caret-down-square" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" d="M3.544 6.295A.5.5 0 0 1 4 6h8a.5.5 0 0 1 .374.832l-4 4.5a.5.5 0 0 1-.748 0l-4-4.5a.5.5 0 0 1-.082-.537z"/>
   <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -121,15 +121,13 @@ $napis='Zaplanowane wydarzenia dla lekarza '.$lekarz->getImie().' '.$lekarz->get
    <button type="button" class="btn btn-secondary" id="edytujWydarzenie">       
  <a href="<?= $this->url('lekarz', ['action' => 'index']) ?>" title="Powrót do lekarzy" style="color: white;" id="edytujWydarzeniea">
               <?= 'Powrót ' ?>
-</a>    
-                  
+</a>                     
    </button>
-        <button type="button" class="btn btn-primary" id="buttonusunWydarzenie">
+          
+   <button type="button" class="btn btn-primary" id="buttonusunWydarzenie">
      <a href="<?= $this->url('kalendarz', ['action' => '#']) ?>" title="Usun wydarzenie" style="color: white; float: right;" id="usunjquery">
             <?= 'Usuń Wydarzenie' ?> 
  </a>    
-        
-        
         </button>
       </div>
     </div>
@@ -222,7 +220,7 @@ let idwydarzenie=parseInt(dane);
 let komunikat=null;
 if(idwydarzenie>0)
 {
-  komunikat="Wydarzenie zostało wprowadzone dobazy danych";
+  komunikat="Wydarzenie zostało wprowadzone do bazy danych";
 }else{
   komunikat="Błąd. Spróbuj ponownie. Powiadom administratora";
  }
@@ -240,6 +238,28 @@ oknomodalne.hide().append(danePokaz).appendTo("body");
 $(".modal-window,.modal-overlay")
 .fadeIn("slow");   
 },
+ "pokazOknoModalneiCzarnePotwierdzUsuniecie" :function(idwydarzenie,oknomodalne){
+     
+   $("<div>").hide().addClass("modal-overlay").click(function(event){
+    fx2.zamknijOkno(event);
+}).appendTo("body"); 
+
+let wpisz_komunikat=null;
+//wpisz_komunikat=$("p").text(komunikat);
+wpisz_komunikat='<p id="modal-body-potwierdzenie_usuniecia">Czy potwierdzasz usunięcie wybranego Wydarzenie</p>';
+let div=wpisz_komunikat+('<button type="button" class="btn btn-secondary" data-dismiss="modal" id="anuluj">Nie, pomyliłem się !</button>');
+div=div+'    '+('<button type="button" class="btn btn-secondary" data-dismiss="modal"  id="usunjquery" idwydarzenie="'+idwydarzenie+'">Potwierdzam usunięcie</button>');
+let danePokaz=$(div);
+
+// Wczytaj dane do okna modalnego
+// i umieść je w elemencie body
+oknomodalne.hide().append(danePokaz).appendTo("body");
+
+// Pokaż płynnie okno i warstwę maskującą
+$(".modal-window,.modal-overlay")
+.fadeIn("slow");
+
+ },
 };
 // ////////////////Wyświetl wydarzenie w oknie modalnym
 $("#kalendarz").on("click", ".link", function(event){
@@ -261,7 +281,7 @@ $("#kalendarz").on("click", ".link", function(event){
 ///////////////////////////////////////////////////////////////////
 $('#pokazWydarzenie').on('show.bs.modal', function (event) {
     
-      $("#edytujWydarzenie").show();
+    //  $("#edytujWydarzenie").hide();
     
    $( ".modal-body" ).load( "../pokaz-wydarzenie/2?id="+id+"&idlekarz="+idlekarz+" #tresc", function( response, status, xhr ) {
       // console.log(response);
@@ -269,17 +289,51 @@ $('#pokazWydarzenie').on('show.bs.modal', function (event) {
     var msg = "Przepraszamy, pojawił się błąd : ";
     $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
   }else{
-      let button=$("<a href='../edytuj/"+id+"' style='color: white;' id='edytujid2'>Edytuj Wydarzenie</a>");
-     // let button2=$("<a>").attr("href","#")
-      $("#edytujWydarzeniea").html(button);
-       $("#buttonusunWydarzenie").show();
+      let button="<a href='../edytuj/"+id+'/'+idlekarz+"' style='color: red;' id='edytujid2' idwydarzenie='"+id+"' idlekarz='"+idlekarz+"'>Edytuj Wydarzenie</a>";
+    
+   let button2='<button type="button" class="btn btn-secondary" id="buttonusunWydarzeniePotwierdz"><a href="<?= $this->url('kalendarz', ['action' => '#']) ?>" title="Usun wydarzenie" style="color: white; float: right;" id="usunjqueryPotwierdz"> Usuń Wydarzenie </a></button>'; 
+     
+    $("#edytujWydarzeniea").html(button);
+    $("#buttonusunWydarzenie").html(button2);
   }
 });
    
 });
-///////////////////////////////////////////////////////////
-////okno po kliku na usun wydarzenie 
+////////////////////////////////////////////////////
+//Potwierdzenie usuniecia wydarzenia
+////okno po kliku na Potwierdz usun wydarzenie 
 $("body").on("click", "#usunjquery", function(event){
+
+    event.preventDefault(); 
+    $(this).addClass("active");   
+    
+   // let data = $("#edytujid2").attr("href").replace(/.+?\?(.*)$/, "$1");
+   // let szukanyCiagid=/([0-9]{1,})/;
+   // let id1=data.match(szukanyCiagid);
+   // let id=id1[1];
+   let id=$(this).attr("idwydarzenie");
+  
+    $( "#modal-body-potwierdzenie_usuniecia" ).load( "../usunjquery/2?id="+id+" ", function( response, status, xhr ) {
+     
+  if ( status == "error" ) {
+    var msg = "Przepraszamy, pojawił się błąd : ";
+    $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
+  } else{
+      let komunikat='Zamknij okno';
+      $("#anuluj").text(komunikat);
+      $("#usunjquery").hide("slow");
+      // Usuń każde wydarzenie z klasą "active"
+        $(".active").fadeOut("slow", function(){
+            $(this).remove();
+                        });
+  }
+    }); 
+    
+    
+});
+///////////////////////////////////////////////////////////////////
+////okno po kliku na usun wydarzenie 
+$("body").on("click", "#usunjqueryPotwierdz", function(event){
 
     event.preventDefault(); 
     $(this).addClass("active");   
@@ -287,22 +341,24 @@ $("body").on("click", "#usunjquery", function(event){
     let data = $("#edytujid2").attr("href").replace(/.+?\?(.*)$/, "$1");
     let szukanyCiagid=/([0-9]{1,})/;
     let id1=data.match(szukanyCiagid);
-    let id=id1[1];
-  
-    $( ".modal-body" ).load( "../usunjquery/2?id="+id+" ", function( response, status, xhr ) {
-      // console.log(response);
-  if ( status == "error" ) {
-    var msg = "Przepraszamy, pojawił się błąd : ";
-    $( ".modal-body" ).html( msg + xhr.status + " " + xhr.statusText );
-  } else{
-      $("#buttonusunWydarzenie").hide("slow");
-      $("#edytujWydarzenie").hide("slow");
-  }
-    }); 
+    let idwydarzenie=id1[1];
+    
+    $('#pokazWydarzenie').modal('hide');
+    
+    let oknoModalne3=fx2.stworzOknoModalne();
+
+$("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
+.click(function(event){
+fx2.zamknijOkno(event);
+}).appendTo(oknoModalne3);
+
+
+fx2.pokazOknoModalneiCzarnePotwierdzUsuniecie(idwydarzenie,oknoModalne3);
+    
+     console.log(idwydarzenie);
     
     
 });
-///////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 // Wyświetl wydarzenie w oknie modalnym po wybraniu "Wpisz nowe Wydarzenie"
 $("#kalendarz").on("click", "a.linkPokazWydarzenie", function(event){
@@ -319,16 +375,14 @@ $("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
 fx2.zamknijOkno(event);
 }).appendTo(oknoModalne);
 
+
  $.ajax({
             method: "POST",
             url: "../../kalendarz/wpiszjquery2/"+idlekarz,
-            //data: "idlekarz="+idlekarz,
+            data: {idlekarz:idlekarz},
             dataType: "html",
             success: function(data){
 
-         //   let form = $(data).hide();
-         
-         //   form.appendTo(oknoModalne).fadeIn("slow");
             fx2.pokazOknoModalneiCzarne(data,oknoModalne)
 
             },
@@ -338,7 +392,44 @@ fx2.zamknijOkno(event);
             });
 
 });
+/////////////////////////////////////////////////////////////////////
+// Wyświetl wydarzenie w oknie modalnym po wybraniu "Edytuj   Wydarzenie"
+$("body").on("click", "#edytujid2", function(event){
+// Zapobiega załadowaniu pliku 
+event.preventDefault();
 
+$('#pokazWydarzenie').modal('hide');
+// Dodaj klasę "active" do odnośnika
+$(this).addClass("active");
+
+let oknoModalne=fx2.stworzOknoModalne();
+
+// Utwórz przycisk do zamykania okna
+$("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
+.click(function(event){
+fx2.zamknijOkno(event);
+}).appendTo(oknoModalne);
+
+let idwydarzenie=$(this).attr("idwydarzenie");
+let idlekarz=$(this).attr("idlekarz");
+ $.ajax({
+            method: "POST",
+            url: "../../kalendarz/edytujjquery2/"+idwydarzenie,
+            
+            dataType: "html",
+            success: function(data){
+
+            fx2.pokazOknoModalneiCzarne(data,oknoModalne)
+
+            },
+            error: function(msg){
+            alert(msg);
+                                }
+            });
+
+});
+// Kontrola danych i wpis do bazy po wyborze Submit w Wpisz Wydarzenie
+/////////////////////////////////////////////
 $("body").on("click", "#submit", function(event){
  
 event.preventDefault();
@@ -379,8 +470,52 @@ alert(msg);
 }
  
 });
-
 ////////////////////////////
+// Kontrola danych i wpis do bazy po wyborze Submit w Edytyj Wydarzenie
+/////////////////////////////////////////////
+$("body").on("click", "#edytuj_submit", function(event){
+ 
+event.preventDefault();
+
+$(this).addClass("active");
+
+
+let formData = $(this).parents("form").serialize(),
+entry=fx.deserialize(formData),
+idwydarzenie=entry["wydarzenie_fieldset[idwydarzenie]"];
+
+let form2 = $( "#edytujWydarzenieForm" );
+
+if(form2.valid() ){
+    
+$.ajax({
+type: "POST",
+url: "../../kalendarz/edytujjquerykontrolawynikow2/"+idwydarzenie,
+data: formData,
+success: function(data) {
+    
+fx.edytujWydarzenieDoKoduHtmldzien(data,formData,idwydarzenie);
+
+fx2.zamknijOkno2();
+
+let oknoModalne2=fx2.stworzOknoModalne();
+
+$("<a>").attr("href", "#").addClass("modal-close-btn").html("&times;")
+.click(function(event){
+fx2.zamknijOkno(event);
+}).appendTo(oknoModalne2);
+
+fx2.pokazOknoModalneiCzarnePoWpisie(data,oknoModalne2);
+
+},
+error: function(msg) {
+alert(msg);
+}
+});
+
+}
+ 
+});
 /////////////////////////   
 $("body").on("click", "#anuluj", function(event){
     

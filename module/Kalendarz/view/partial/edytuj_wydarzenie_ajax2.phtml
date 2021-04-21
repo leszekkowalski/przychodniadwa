@@ -35,9 +35,11 @@ if($wpisz_czy_edytuj==='edytuj')
     $napisLogo='Zarejestruj nowe Wydarzenie w systemie !';
 }
 
-$form->setAttribute('id', 'wpiszWydarzenieForm');
+$form->setAttribute('id', 'edytujWydarzenieForm');
 
 $wydarzenieFieldset=$form->get('wydarzenie_fieldset');
+
+$idwydarzenie=$wydarzenieFieldset->get('idwydarzenie');
 
 $wydarzenieIdlekarz=$wydarzenieFieldset->get('wydarzenie_idlekarz');
 
@@ -92,7 +94,7 @@ $checkbox->setLabelAttributes([
 
 $submit=$form->get('submit');
 $submit->setAttributes([
-    'id'=>'submit',   
+    'id'=>'edytuj_submit',   
 ]);
 
 $csrf=$form->get('csrf');
@@ -173,7 +175,8 @@ echo $this->form()->openTag($form);
 
                             
                             <div class="btn btn-secondary btn-lg btn-block">
-                                <?=  $this->formHidden($wydarzenieIdlekarz);  ?>   
+                                <?=  $this->formHidden($wydarzenieIdlekarz);  ?> 
+                                  <?=  $this->formHidden($idwydarzenie);  ?> 
                                 <?=  $this->formHidden($csrf);  ?>     
                                 <?=  $this->formSubmit($submit);  ?>
             
@@ -191,32 +194,7 @@ echo $this->form()->openTag($form);
  
 jQuery(function($){
 
-if(("<?= $this->escapeJs($lekarz->getImie()) ?>")!==null){
-let imie=("<?= $this->escapeJs($lekarz->getImie()) ?>");
-let nazwisko=("<?= $this->escapeJs($lekarz->getNazwisko()) ?>");
-let imie_nazwisko=imie+' '+nazwisko;
 
-let napisPierwotny='Dokonujesz wpisu dla '+ imie_nazwisko;
-}
-
-let napis='Dokonujesz wpisu dla wszystkich lekarzy';
- //console.log(napisLabal);
- 
- 
- $( "form input:checkbox" ).click(function(){
-     
-    let wynik =$(this).is( ":checked" ); 
-
-     if(!wynik){
-        $('#checkbox_label').addClass('bg-danger'); 
-        $('#checkbox').parent().css("background-color", "white");
-        $('#checkbox_label').text(napis);
-     }else{
-         $('#checkbox_label').removeClass('bg-danger');
-         $('#checkbox_label').text(napisPierwotny);
-         $('#checkbox').parent().css({ background: "yellow"});
-     }    
- });
 /////////////////////////////////////
 $.validator.addMethod( "polskieznaki", function( value, element ) {
 	return this.optional( element ) || /^[a-ząśżźćńęłó ]+$/i.test( value );
@@ -225,7 +203,7 @@ $.validator.addMethod( "godzina", function( value, element ) {
 	return this.optional( element ) || /^[0-9]{2}:[0-9]{2}$/i.test( value );
 }, "Godzina w odpowoednim formacie" );
 ///////////////////////////
-$( "#wpiszWydarzenieForm" ).validate( {
+$( "#edytujWydarzenieForm" ).validate( {
                               // This global normalizer will trim the value of all elements
                                 // before validatng them.
                                 normalizer: function( value ) {
@@ -269,12 +247,12 @@ $( "#wpiszWydarzenieForm" ).validate( {
 					//firstname: "Please enter your firstname",
 					"wydarzenie_fieldset[wydarzenie_tytul]": {
 						required: "Please enter a tytuł",
-						minlength: "Your username must consist of at least 3 characters",
+						minlength: "Tytuł wydarzenia must consist of at least 3 characters",
                                                 polskieznaki: "Akceptujemy tylko polskie znaki"
 					},
 					"wydarzenie_fieldset[wydarzenie_opis]": {
 						required: "Please enter a username",
-						minlength: "Your username must consist of at least 3 characters",
+						minlength: "Tytuł wydarzenia must consist of at least 3 characters",
                                                 polskieznaki: "Tylko polskie znaki"
 					},
                                        

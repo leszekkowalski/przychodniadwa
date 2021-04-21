@@ -138,6 +138,80 @@ $(a).hide().insertAfter(clasa).delay(1000).fadeIn("slow");
 
 
 },
+/////////edytuje wyadzrenie (usuwa stare i wstawia nowe
+"edytujWydarzenieDoKoduHtmldzien":function(data, formData,idwydarzenieWpisane){
+ // Przekształć łańcuch zapytania w obiekt
+let DaneFormularza = fx.deserialize(formData);  
+
+//nowy obiekt daty dla biezacego dnia
+let dzien=new Date(NaN);
+//nowy obiekt daty dla nowego Wydarzenie
+let noweWydarzenie=new Date(NaN);
+
+// Wyodrębnij dzień, miesiąc i rok wydarzenia
+let DzienMiesiacRokWydarzenia=DaneFormularza["wydarzenie_fieldset[wydarzenie_data]"].split(' ')[0];
+
+// Podziel datę wydarzenia
+let DzienMiesiacRokWydarzeniaPodzielony = DzienMiesiacRokWydarzenia.split('-');
+
+let DzienMiesiacRokWydarzeniaKodHtml=$("#kalendarz").attr("data_kodhtml");
+let DzienMiesiacRokWydarzeniaKodHtmlPodzielony=DzienMiesiacRokWydarzeniaKodHtml.split("-");
+// Ustaw datę w obiekcie kalendarza
+dzien.setUTCFullYear(DzienMiesiacRokWydarzeniaKodHtmlPodzielony[0],DzienMiesiacRokWydarzeniaKodHtmlPodzielony[1]-1,DzienMiesiacRokWydarzeniaKodHtmlPodzielony[2]);
+
+noweWydarzenie.setUTCFullYear(DzienMiesiacRokWydarzeniaPodzielony[0],DzienMiesiacRokWydarzeniaPodzielony[1]-1,DzienMiesiacRokWydarzeniaPodzielony[2]);
+
+// Ponieważ obiekt daty jest tworzony na podstawie
+// czasu uniwersalnego, a następnie dostosowywany do strefy czasowej użytkownika,
+// dodaj lub odejmij określoną liczbę minut, aby uzyskać właściwą datę
+noweWydarzenie.setMinutes(noweWydarzenie.getTimezoneOffset());
+
+if ( dzien.getFullYear()===noweWydarzenie.getFullYear() && dzien.getMonth()===noweWydarzenie.getMonth() && dzien.getDay()===noweWydarzenie.getDay() ){
+ 
+let dataRozpoczecia=DaneFormularza["wydarzenie_fieldset[wydarzenie_start]"].split(':'); 
+let dataRozpoczeciaGodzina=dataRozpoczecia[0];
+let dataRozpoczeciaMinuta=dataRozpoczecia[1]; 
+let dataZakonczenia=DaneFormularza["wydarzenie_fieldset[wydarzenie_koniec]"].split(':'); 
+let dataZakonczeniaGodzina=dataZakonczenia[0];
+let dataZakonczeniaMinuta=dataZakonczenia[1]; 
+
+let clasa='#wiersz-'+dataRozpoczeciaGodzina;
+let szerokosc=500;
+let minuty_jako_marginTop= dataRozpoczeciaMinuta;
+szerokosc=szerokosc+minuty_jako_marginTop;
+
+let godz1=new Date(2021,1,1,dataRozpoczeciaGodzina,dataRozpoczeciaMinuta);
+let godz2=new Date(2021,1,1,dataZakonczeniaGodzina,dataZakonczeniaMinuta);
+let wynik_wysokosc_Minuty=(godz2.getTime() - godz1.getTime())/60000;
+
+let idwydarzenie = parseInt(data);
+let idlekarz=DaneFormularza["wydarzenie_fieldset[wydarzenie_idlekarz]"];
+let wnetrze_a=DaneFormularza["wydarzenie_fieldset[wydarzenie_tytul]"]+'  '+DaneFormularza["wydarzenie_fieldset[wydarzenie_start]"]+' - '+DaneFormularza["wydarzenie_fieldset[wydarzenie_koniec]"];
+
+let href='../kalendarz/pokaz-wydarzenie/'+idwydarzenie+'/'+idlekarz+'?id='+idwydarzenie+'&idlekarz='+idlekarz;
+let a='<a href='+href+
+        ' style="margin-top:'+minuty_jako_marginTop+'px;height:'+wynik_wysokosc_Minuty+'px; background-color:red; z-index:15; "'+' id="a"'+' class="link" >'+wnetrze_a+'</a>';
+
+if(idwydarzenie>0)
+{
+  // Usuń każde wydarzenie z klasą "active"
+        $(".active").fadeOut("slow", function(){
+            $(this).remove();
+                        });         
+ // Dodaj nowy odnośnik
+$(a).hide().insertAfter(clasa).delay(1000).fadeIn("slow");
+
+}
+
+}else{
+    // Usuń każde wydarzenie z klasą "active"
+        $(".active").fadeOut("slow", function(){
+            $(this).remove();
+                        });            
+}
+
+
+},
 // Przeprowadza deserializację łańcucha zapytania i zwraca
 // obiekt wydarzenia
 "deserialize" : function(str){

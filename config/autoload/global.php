@@ -31,8 +31,8 @@ return array (
                 'options' => [
                     // Store cached data in this directory.
                     'cache_dir' => './data/cache',
-                    // Store cached data for 1 hour.
-                    'ttl' => 60*60*1 ,
+                    // Store cached data for 1 hour * 10 godz.
+                    'ttl' => 60*60*1*10 ,
                     'namespace' => 'przychodnia',
                 ],
             ],
